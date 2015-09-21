@@ -1,9 +1,16 @@
 \section{Existing work}
 There exists a vast ways of planning a route on different devices and there is  a lot of research in this field as well, where people are trying to figure out ways to improve the already existing technologies/technics to improve route planning. The earliest versions of GPS devices, which could aid you in finding a route , only considered the shortest path or the fastests path to your destination. 
 The lastest years there has been focus on trying to predict other things like live traffic patterns and changing conditions on your route.
-In the following chapter interesting existing technologies will be discussed and scientific articles about route planning will also be introduced and explained.
+In the following chapter interesting existing technologies will be discussed and scientific articles about route planning will also be introduced and explained. Though it is necessary to first explain shortly what GPS(Global Positioning System) is and what it does, since it is the key technology for all route planning devices.
+
+GPS consists of 3 key elements, namely the satellites in space, monitoring stations on earth and a person and his GPS receiver. The satellites are needed to pinpoint a location on earth, where you need atleast 4 satellites to accomplish that. 
+There are 4 unmanned monitoring stations and one manned, the unmanned stations receive constant data from the satellites and they forward it to the manned station, which then corrects the data and afterwards sends the data back up to the satellites  again. The satellites transmits low power radio signals on different frequencies for different users.
+http://www.tomtom.com/howdoesitwork/page.php?ID=5&CID=2&Language=1
+The exact method to pinpoint your location with the 4 or more satellites is through trilateration. The way trilateration works is illustrated in figur(trilateration), though this is only in 2D, where in the real world it is 3D, but the point is the same except it is just spheres instead of circles.
+http://www.tomtom.com/howdoesitwork/page.php?ID=8&CID=2&Language=1&Lid=4
+
+
 
 Google Maps developed by Google is a navigation system, which people can download to their smartphones. It has a feature where the suggested routes will be coloured green, yellow or red where that indicates respectively clear, slow-moving or heavily congested traffic. 
 Google Maps creates the routes from historical data and live data which is sent by sensors and smartphones. The historical data includes information about what day it is and what time of the day it is, to be able to try to predict if there can occur traffic jams. The live data which are sent by sensors are placed by the government or private companies who gather traficin formation, where the live data from the smartphones are from people who are driving on the roads, reporting how fast they are moving on a particular road.
 
-Tradtionally GPS such as Garmin or TomTom behave a bit different from Google Maps.
