@@ -3,6 +3,7 @@ report/master.pdf
 *.aux
 *.bbl
 *.blg
+*-blx.bib
 *.dvi
 *.fdb_latexmk
 *.fls
