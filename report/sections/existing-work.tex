@@ -4,11 +4,11 @@ There exists vast ways of planning a route on different devices and there is  a 
 The recent years there has been focus on trying to predict other things like live traffic patterns and changing conditions on your route.
 In the following section relevant existing technologies and scientific articles will be explored so as to gain insight into the existing work of the problem domain.
 %Though it is necessary to first explain shortly what GPS is and what it does, since it is the key technology for all route planning devices.
-\subsection{Dedicated GPS products}
+\subsection*{Dedicated GPS products}
 A typical GPS, such as a TomTom devoce works by using satellites. It locates your position and then locate the point you want to navigate to, then it computes a route on a map, which is usually on a SD-card inside the TomTom device. There is no historical data applied to generate the routes.
 It also uses a technology called RDS-TMC (Radio Data System-Traffic Message Channel), which is a service that provides live-time traffic updates to your GPS. RDS-TMC works such that if there is an incident on a road, such as a crash, bad weather or queues it transmits data about this to a central information centre, that further transmit the information to a TMC information service provider. The information service provider encodes the traffic information, and transmits it to a FM radio broadcast where the information is then sent out in RDS signals which the GPS-device receives and decodes to a visual representation.
 
-\subsection{Web Mapping Services}
+\subsection*{Web Mapping Services}
 %GPS consists of 3 key elements, namely the satellites in space, monitoring stations on earth and a person and his GPS receiver. The satellites are needed to pinpoint a location on earth, where you need atleast 4 satellites to accomplish that. 
 %There are 4 unmanned monitoring stations and one manned, the unmanned stations receive constant data from the satellites and they forward it to the manned station, which then corrects the data and afterwards sends the data back up to the satellites  again. The satellites transmits low power radio signals on different frequencies for different users.
 %http://www.tomtom.com/howdoesitwork/page.php?ID=5\&CID=2\&Language=1
@@ -17,3 +17,25 @@ It also uses a technology called RDS-TMC (Radio Data System-Traffic Message Chan
 %
 Google Maps developed by Google is a Web Mapping Service that people can download to their mobile devices such as smartphones. It has a feature where the suggested routes will be coloured green, yellow or red indicating respectively clear, slow-moving or heavily congested traffic. 
 Google Maps creates the routes from historical data and live data which is sent by sensors and smartphones\todo{source}. The historical data includes information about what day it is and what time of the day it is, to be able to try to predict if there can occur traffic jams. The live data which are sent by sensors are placed by the government or private companies who gather traffic information, where the live data from the smartphones are from people who are driving on the roads, reporting\todo{Hvordan? Rapporterer enheden selv, eller skal man indtaste} how fast they are moving on a particular road. The map is not hardcoded on your device, but depending on your route and your whereabouts, segments of a map is downloaded to your device.
+
+\subsection*{Intelligent Transportation Systems}
+So far we have discussed the more or less chronological order of popularity of transportation systems technologies. However these devices rely on relatively simple route planning mechanisms. Now, we turn to a more advanced form of transportation system, namely the Intelligent Transportation Systems. An Intelligent Transportation System is a broad term, describing a system that provides traffic services, such that different kinds of users can better utilize transportation networks\todo{Mere eller mindre selvskreven definition, måske anvend definition fra ITS handbook}. This implies, that ITS are not necessarily 'intelligent', as to act and make decisions for the users, but can be more of a tool for users to assist in making smart choices.
+\subsubsection*{Obtaining traffic data}
+Any ITS must consider some data if it is to be of any real use for the user. Obtaining data is therefore one of the aspects of such a system. \cite{KamranHaas2007} describes fixed sensors on a road network, as a means to obtaining data about the passing traffic. However most of these sensors and detectors suffer from performance issues related to the changing conditions in the surrounding environment. Furthermore the fixed type of sensors are often expensive to implement and maintain\cite{KamranHaas2007}. %Several methods for obtaining traffic information has been developed and we will consider the following:
+
+\paragraph{Fixed sensors}
+- Detectors on roads, identifiying vehicles by unique id (need source)
+
+
+\paragraph{Mobile probes}
+- Triangulation through cell-towers (need source)
+- GPS-based methods (cars are either equipped with mobile gps device, built-in gps device or gps-enabled smartphone etc) (need source)
+- Built-in systems on vehicles (p2p network of data exhange of vehicles, sensors on cars to detect and exhange data of other vehicles, streetsmart traffic).
+- Mesh network of cars. (morten kilde)
+
+\subsubsection*{Analysing traffic data}*
+When data i readily available for an ITS, the system must perform some kind of analysis to determine useful information about transportation networks. BLabla proposes to partition road networks into road segments, such that information relevant for each segment are linked with the respective segment. 
+How can traffic data be analysed?
+- Traffic states
+- Road segmentation, city segmentation
+- Statistical data about road segments 
