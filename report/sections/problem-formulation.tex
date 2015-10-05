@@ -1,2 +1,23 @@
 \section{Problem formulation}
-Can traffic patterns be identified by analysing live as well as historical GPS-data of moving vehicles, giving a more understandable picture of the traffic situation, such that road networks can be better utilised?
+So far we have considered different aspects of the abstract problem of detecting traffic patterns. However, before we design a solution to the problem, we must first construct a well-defined definition of the problem such that the following solution is clear. The problem formulation is as follows:
+\\\\
+\emph{Can an intelligent system, using a directed weighted graph as a mathematical model, process and analyse raw GPS data, collected from a distributed system of gps-devices in vehicles, to detect traffic patterns indicating abnormal traffic flow such that a map of the traffic state of a road network can be constructed, that can be used to suggest alternative routes for drivers to save time and in general obtain better utilization of the road network?}
+\\\\
+Decomposing this problem formulation, we get the following subformulations:
+
+\begin{itemize}
+\item Can a road network be represented as a directed weighted graph?
+\item How can data be collected from a distributed system of gps-devices?
+\item How can the system detect traffic patterns?
+\item How do we signal drivers about route alternatives / abnormal traffic?
+\item Can such a system deliver time savings for drivers?
+\item Can such a system deliver better utilisation of road networks?
+\end{itemize}
+
+
+% Prob1: Can traffic patterns be identified by analysing live as well as historical GPS-data of moving vehicles, giving a more understandable picture of the traffic situation, such that road networks can be better utilised?
+
+% input: Raw GPS data from gps devices in vehicles
+% problem domain model: directed weighted graph
+% problem solution model: search / constraint satisfaction problem? Search problem?
+% output: "Map" of traffic incidents and congestion, where road weights have changed according to these problems
