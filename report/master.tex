@@ -19,7 +19,7 @@
 \input{setup/macros.tex}% my new macros
 
 \begin{document}
-%frontmatter
+%frontmatterf
 \pagestyle{empty} %disable ers and footers
 \pagenumbering{roman} %use roman page numbering in the frontmatter
 \input{sections/frontpage.tex}
@@ -41,10 +41,12 @@
 \input{sections/current-limitations.tex}
 \input{sections/methodology.tex}
 \input{sections/solution-criteria.tex}
+\clearpage
 \input{sections/problem-formulation.tex}
-\input{sections/system-overview}
-\chapter{Pre-processing traffic data}
-\chapter{Analysing traffic patterns}
+\chapter{Solution (mangler bedre kapitelnavn)}
+\input{sections/problem-representation.tex}
+% problem domain --> model --> solution properties
+\input{sections/solution-design.tex}
 \chapter{Conclusion}
 \input{sections/conclusion.tex}
 \printbibliography[heading=bibintoc]
