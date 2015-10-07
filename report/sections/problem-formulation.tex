@@ -1,15 +1,14 @@
 \section{Problem formulation}
-So far we have considered different aspects of the abstract problem of detecting traffic patterns. However, before we design a solution to the problem, we must first construct a well-defined definition of the problem such that the following solution is clear. The problem formulation is as follows:
+So far we have considered different aspects of the abstract problem of detecting traffic patterns. However, before we construct a solution, the problem should be well-defined such that a solution is clear. The problem is defined by the following problem formulation:
 \\\\
-\emph{Can an intelligent system, using a directed weighted graph as a mathematical model, process and analyse raw GPS data, collected from a distributed system of gps-devices in vehicles, to detect traffic patterns indicating abnormal traffic flow such that a map of the traffic state of a road network can be constructed, that can be used to suggest alternative routes for drivers to save time and in general obtain better utilization of the road network?}
+\emph{Can an intelligent agent model the road network of Beijing to process and analyse raw GPS data, collected from a network of GPS-enabled vehicles, so as to detect traffic patterns indicating abnormal traffic flow such that a map of the traffic state of a road network can be constructed, that can be used to suggest alternative routes for drivers to save time and in general obtain better utilization of the road network?}
 \\\\
-Decomposing this problem formulation, we get the following subformulations:
+Decomposing the problem formulation, we get the following questions:
 
 \begin{itemize}
-\item Can a road network be represented as a directed weighted graph?
-\item How can data be collected from a distributed system of gps-devices?
-\item How can the system detect traffic patterns?
-\item How do we signal drivers about route alternatives / abnormal traffic?
+\item How can a road network be modelled?
+\item How can data be collected and communicated between GPS-devices and the agent?
+\item How can the agent analyse traffic data to detect traffic patterns?
 \item Can such a system deliver time savings for drivers?
 \item Can such a system deliver better utilisation of road networks?
 \end{itemize}

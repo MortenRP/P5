@@ -1,0 +1,3 @@
+\section{Map generation}
+The map generation is based on the opensource map service OpenStreetMap, where it's possible to export a section of the map. In this export the roads, building etc is included. It is then possible to use APIs to extract the information from de export that are needed. To this we use the tool Osmosis, which is a java API which can query the openstreetmap file.
+The output from the osmosis tool is a xml like file, which include nodes and ways. Nodes are road intersections and ways 

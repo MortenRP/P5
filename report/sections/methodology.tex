@@ -2,11 +2,6 @@
 This section describes how we accomplish the different parts of the project. We describe our source of GPS data and how we are going to collect live data from the distributed network of GPS-devices. Furthermore we describe our mathematical model of the problem domain as well as the problem representation.
 
 \subsection*{Data source \& collection}
-For the project we will be using a GPS data set from Beijing from 10.000 taxies over a period of a week, as our historical data. A problem regarding this data is the short time span, since it does not cover holidays, or other special days, which are often at fault for massive traffical problems. We are also going to use a large data set from Beijing to simulate real-time data, this data was gathered over a period of 5 years, and include a testbase of 182 people.
-Where did we get our data, and how are we going to collect (live) data?
-
-\subsection*{Problem domain and representation}
-% problem domain: what we need to know about
-The problem domain is a network of roads, intersections and vehicles. One straightforward method for modelling the problem domain is as a weighted, directed graph. Let G be a graph $G(N,E)$ where $E$ is the set of edges corresponding to road segments between intersections, $N$ is the set of nodes corresponding to intersections of roads. Each edge $e_i \in E$ has an associated cost, $c(e_i)$ where  $c: E \rightarrow \mathbb Z_+^*$ is the cost function. The cost of each edge describes the preference of taking the particular road corresponding to the edge. We want to design an algorithm for the cost function, that dynamically change the cost for each edge, as the flow of traffic in the road network changes, such that better routes dynamically can be determined based on the current traffic situation.
+For the project we will be using a GPS data set from Beijing from 10.000 taxies over a period of a week, as our historical data\cite{Tdrive}. A problem regarding this data is the short time span, since it does not cover holidays, or other special days, which are often at fault for massive traffical problems. We are also going to use a large data set from Beijing to simulate real-time data, this data was gathered over a period of 5 years, and include a testbase of 182 people\cite{Geolife}. Both of the data sets was published by Microsoft Research.
 
 % problem representation: driver of vehicles origin and destination. Evt. time constraints?
