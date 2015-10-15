@@ -26,10 +26,10 @@ and the management of session IDs. \todo{Skal skrives færdig}
 %How do we communicate between server and client? \todo{Skriv om hvordan vi har opbygget client-server arkitekturen.}
 \section{Data Preprocessing}
 The Beijing dataset consists timestamped samples of gps-coordinates. The format of the samples is (id, date time, longitude, latitude). However since GPS measurements can be inaccurate, it is not always possible to directly infer which road the sample was taken on. Consequently the coordinates must be map-matched to a road, such that positions on the road can be inferred. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service and given a dataset of raw GPS-coordinates returns a map-matched dataset in JSON format. 
-\todo{skriv om mapgeneration}
-\todo{skriv om lagring i database og hvorfor}
+\todo{write about how and why map generation}
+\todo{write about how and why we design DB and store data in SQL database}
 \section{Data analysis}
-\todo{How do we analyse the GPS data? What information do we infer (speed, probability of traffic congestion, the design of the cost function to change based on traffic data?}
+\todo{How do we analyse the data? What information do we infer (speed, probability of traffic congestion, the design of the cost function to change based on traffic data? How are bayesian networks involved?}
 There are 2 processes involved in keeping the data for the map realistic:
 \begin{itemize}
 	\item Traffic pattern analysis of historical data
@@ -40,4 +40,4 @@ The main idea of the traffic pattern analysis is that the data gathered over a g
 
 The live traffic data analysis is used check if there are any abnormalities at a given segment, and then being able to propagate this to devices that are going through that segment. Eventually redirecting drivers such that they don't end up at a congested segment, unless nothing else is possible.
 \section{Route planning}
-How do we plan the routes? A* ....
+\todo{How do we plan the routes? A*/D*, heuristic and cost function for capacity of roads ....}
