@@ -29,6 +29,7 @@ The client server interface is built upon the Java ServerSocket and the Java Soc
 
 The messages that are sent back and forth are converted into bytes. In
 \figref{fig:bytesclientserver} it is illustrated how we pack our bytes. 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID. Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits. We have reserved one bit as a Last message ID, which is used to be able to tell if a big message, that is split into 2 or more files has ended.
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=1\textwidth]{figures/bytesclientserver.png}
@@ -36,6 +37,8 @@ The messages that are sent back and forth are converted into bytes. In
     \label{fig:bytesclientserver}
 \end{figure}
 
+A message is sent from the client every 2 seconds to the server, to be able to maintain the position and requests from the client.
+When a message is sent either from the client or the server, they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the first message is sent again, this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded. We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}
 \section{Data Preprocessing}
 The Beijing dataset\todo{Which one? There are two datasets.} consists of timestamped GPS-coordinates. The format of the data is (id, date time, longitude, latitude). The data is raw, so it needs to be map-matched to a road. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service. Given a dataset of raw GPS-coordinates, it returns a map-matched dataset in JSON format.
 \todo{write about how and why map generation}
