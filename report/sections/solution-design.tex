@@ -15,13 +15,12 @@ The system has been designed as a combination of a client-server and a repositor
 %The flowchart shows how the user inputs their destination at the start, which sent to a central server together with the source start address. Ther server then uses the data to calculate a route based on the request. The route calculation is based on a initial model of the roadnetwork, such as speedlimits and other restrictions on the roads, and also historical data that have been gathered over time from the users. The route is then sent back to the user, while driving the user will send data back about the drive, this will be the GPS points of the route. This information is then processed and analyzed to check if traffic conditions are as they are supposed to be, and if not the information can be used to recalculate routes for all the drivers which are passing through a that given segment.\todo{review section to describe new architecture}
 
 \section{Client-server communcation}
-The client server interface is built upon the Java ServerSocket and the Java Socket,
-which handles opening a port, accepting a connection, and connecting to such a port,
-through a TCP connection.
-
-The client server interface handles connection to the server,
-sending acknowledgements of receiving the complete data,
-and the management of session IDs. \todo{Skal skrives færdig}
+As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth.
+The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
+The client sends a RequestID command to the server, where the server responds with sending back a ID to the client, the ID is a integer, which simply counts one up after each RequestID. 
+%The client server interface handles connection to the server,
+%sending acknowledgements of receiving the complete data,
+%and the management of session IDs. \todo{Skal skrives færdig}
 
 %How do we communicate between server and client? \todo{Skriv om hvordan vi har opbygget client-server arkitekturen.}
 \section{Data Preprocessing}
