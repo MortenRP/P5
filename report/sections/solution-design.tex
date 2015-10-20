@@ -14,22 +14,23 @@ The system has been designed as a combination of a client-server and a repositor
 \todo{Consider if we should divide the database onto another server --> changing the architecture to 2 servers.}
 %The flowchart shows how the user inputs their destination at the start, which sent to a central server together with the source start address. Ther server then uses the data to calculate a route based on the request. The route calculation is based on a initial model of the roadnetwork, such as speedlimits and other restrictions on the roads, and also historical data that have been gathered over time from the users. The route is then sent back to the user, while driving the user will send data back about the drive, this will be the GPS points of the route. This information is then processed and analyzed to check if traffic conditions are as they are supposed to be, and if not the information can be used to recalculate routes for all the drivers which are passing through a that given segment.\todo{review section to describe new architecture}
 
-\section{Client-server communcation}
+\section{Client-server communication}
 As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth.
 The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.4\textwidth]{figures/clientserver.png}
     \caption{Client-server illustration}
-    \label{fig:client-server}
+    \label{fig:clientserver}
 \end{figure}
-\\
-\figref{fig:client-server} illustrates how our client server structure works. The client sends a RequestID command to the server, where the server responds with sending back a ID to the client, the ID is an integer, which simply counts one up after each RequestID. The reason behind the server has to give the ID is because if many clients connect, and they create their own random IDs, at some point there will be 2 or more clients who will create the same ID, which will result in errors. The client sends back an acknowledgement to the server when it has received the ID, if the server does not receive an acknowledgement, then the server will resend the NewID. When the client has received the ID it begins to send data to the server which is needed regarding creating a new route, altering a route or give information about the route you are following. The server then sends an acknowledgement that it has received the data. If the client does not receive the acknowledgement it resends the data and then awaits for the acknowledgement again.
+
+\figref{fig:clientserver} illustrates how our client-server structure works. The client sends a RequestID command to the server. The server responds with an ID, which is an integer that counts one up after each RequestID.\todo{counts up after what exactly?} The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs. The client sends back an acknowledgement to the server when it has received the ID. If the server does not receive an acknowledgement, it will resend the ID. When the client has received the ID it sends the data to the server that is needed to create a new route, or alter a route, or gives information about the route it is following. The server then sends an acknowledgement that it has received the data. If the client does not receive the acknowledgement, it resends the data and waits repeatedly until it either receives acknowledgement or times out.
 
 The messages that are sent back and forth are converted into bytes. In figure
 
 \section{Data Preprocessing}
-The Beijing dataset consists timestamped samples of gps-coordinates. The format of the samples is (id, date time, longitude, latitude). However since GPS measurements can be inaccurate, it is not always possible to directly infer which road the sample was taken on. Consequently the coordinates must be map-matched to a road, such that positions on the road can be inferred. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service and given a dataset of raw GPS-coordinates returns a map-matched dataset in JSON format. 
+The Beijing dataset\todo{Which one? There are two datasets.} consists of timestamped GPS-coordinates. The format of the data is (id, date time, longitude, latitude). The data is raw, so it needs to be map-matched to a road. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service. Given a dataset of raw GPS-coordinates, it returns a map-matched dataset in JSON format.
 \todo{write about how and why map generation}
 \todo{write about how and why we design DB and store data in SQL database}
 \section{Data analysis}
