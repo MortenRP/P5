@@ -1,10 +1,25 @@
-\section{Client-server}
-The client server interface is built upon the Java ServerSocket and the Java Socket,
-which handles opening a port, accepting a connection, and connecting to such a port,
-through a TCP connection.
+\section{Client-server communication}
+As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth.
+The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
 
-The client server interface handles connection to the server,
-sending acknowledgements of receiving the complete data,
-and the management of session IDs. \todo{Skal skrives færdig}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.4\textwidth]{figures/clientserver.png}
+    \caption{Client-server illustration}
+    \label{fig:clientserver}
+\end{figure}
 
-%How do we communicate between server and client? \todo{Skriv om hvordan vi har opbygget client-server arkitekturen.}
+\figref{fig:clientserver} illustrates how our client-server structure works. The client sends a RequestID command to the server. The server responds with an ID, which is an integer that increases every time a RequestID command is received. The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs. The client sends back an acknowledgement to the server when it has received the ID. If the server does not receive an acknowledgement, it will resend the ID. When the client has received the ID it sends the data to the server that is needed to create a new route, or alter a route, or gives information about the route it is following. The server then sends an acknowledgement that it has received the data. If the client does not receive the acknowledgement, it resends the data and waits repeatedly until it either receives acknowledgement or times out.
+
+The messages that are sent back and forth are converted into bytes. In
+\figref{fig:bytesclientserver} it is illustrated how we pack our bytes. 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID. Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits. We have reserved one bit as a Last message ID, which is used to be able to tell if a big message, that is split into 2 or more files has ended.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1\textwidth]{figures/bytesclientserver.png}
+    \caption{Illustration of bytes}
+    \label{fig:bytesclientserver}
+\end{figure}
+
+A message is sent from the client every 2 seconds to the server, to be able to maintain the position and requests from the client.
+When a message is sent either from the client or the server, they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the first message is sent again, this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded. We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}		

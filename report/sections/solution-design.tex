@@ -1,1 +1,58 @@
 
+<<<<<<< HEAD
+=======
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1\textwidth]{figures/architecture.pdf}
+    \caption{A course grained system overview.}
+    \label{fig:systemoverview}
+\end{figure}
+
+The system has been designed as a combination of a client-server and a repository "blackboard" pattern. The main server module encapsulates most of the processing of the system. The clients represent the GPS-enabled devices that communicates live GPS data through an internet connection to the server, which in turn processes and analyses the data in different subsystems. The server architecture is designed as a repository structure, where the solution repository is the shared medium of the subsystems. This architecture is well-known within artificial intelligence, where the solution is gradually built from different contributing systems, which is why we have chosen this structure of the system. Initially, the solution repository contains nothing but the problem specification, which is the set of route requests from the clients. The job of the subsystems is to transform the specification into a solution. This is done gradually by invoking the different subsystems to perform operations on the problem specification until a partial solution can be sent back to the client(s). The control shell module controls which subsystem that should be invoked, based on the contents of the solution repository. \todo{Consider if we should give a concrete example? or describe more.}
+\todo{Consider if we should divide the database onto another server --> changing the architecture to 2 servers.}
+%The flowchart shows how the user inputs their destination at the start, which sent to a central server together with the source start address. Ther server then uses the data to calculate a route based on the request. The route calculation is based on a initial model of the roadnetwork, such as speedlimits and other restrictions on the roads, and also historical data that have been gathered over time from the users. The route is then sent back to the user, while driving the user will send data back about the drive, this will be the GPS points of the route. This information is then processed and analyzed to check if traffic conditions are as they are supposed to be, and if not the information can be used to recalculate routes for all the drivers which are passing through a that given segment.\todo{review section to describe new architecture}
+
+\section{Client-server communication}
+As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth.
+The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.4\textwidth]{figures/clientserver.png}
+    \caption{Client-server illustration}
+    \label{fig:clientserver}
+\end{figure}
+
+\figref{fig:clientserver} illustrates how our client-server structure works. The client sends a RequestID command to the server. The server responds with an ID, which is an integer that increases every time a RequestID command is received. The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs. The client sends back an acknowledgement to the server when it has received the ID. If the server does not receive an acknowledgement, it will resend the ID. When the client has received the ID it sends the data to the server that is needed to create a new route, or alter a route, or gives information about the route it is following. The server then sends an acknowledgement that it has received the data. If the client does not receive the acknowledgement, it resends the data and waits repeatedly until it either receives acknowledgement or times out.
+
+The messages that are sent back and forth are converted into bytes. In
+\figref{fig:bytesclientserver} it is illustrated how we pack our bytes. 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID. Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits. We have reserved one bit as a Last message ID, which is used to be able to tell if a big message, that is split into 2 or more files has ended.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1\textwidth]{figures/bytesclientserver.png}
+    \caption{Illustration of bytes}
+    \label{fig:bytesclientserver}
+\end{figure}
+
+A message is sent from the client every 2 seconds to the server, to be able to maintain the position and requests from the client.
+When a message is sent either from the client or the server, they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the first message is sent again, this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded. We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}
+\section{Data Preprocessing}
+The Beijing dataset\todo{Which one? There are two datasets.} consists of timestamped GPS-coordinates. The format of the data is (id, date time, longitude, latitude). The data is raw, so it needs to be map-matched to a road. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service. Given a dataset of raw GPS-coordinates, it returns a map-matched dataset in JSON format.
+\todo{write about how and why map generation}
+\todo{write about how and why we design DB and store data in SQL database}
+
+\section{Data analysis}
+\todo{How do we analyse the data? What information do we infer (speed, probability of traffic congestion, the design of the cost function to change based on traffic data? How are bayesian networks involved?}
+There are 2 processes involved in keeping the data for the map realistic:
+\begin{itemize}
+	\item Traffic pattern analysis of historical data
+	\item Live traffic data analysis
+\end{itemize}
+
+The main idea of the traffic pattern analysis is that the data gathered over a given period, at some point will be bulk processed to see if traffic patterns keep the same. Such that the system allways have the best image of the traffic for a particular day, and use these patterns for the best route calculation.
+
+The live traffic data analysis is used check if there are any abnormalities at a given segment, and then being able to propagate this to devices that are going through that segment. Eventually redirecting drivers such that they don't end up at a congested segment, unless nothing else is possible.
+\section{Route planning}
+\todo{How do we plan the routes? A*/D*, heuristic and cost function for capacity of roads ....}
+>>>>>>> 40a08978214fe15826b51ad03d168b2b67298f13
