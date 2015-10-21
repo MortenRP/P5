@@ -1,0 +1,4 @@
+\section{Road network model}
+To represent a road network we model the problem as a weighted, directed graph. \\
+Let G be a weighted directed graph $G(I,R)$, where $R$ is the set of roads between intersections and $I$ is the set of intersections of roads. Each intersection $I_i \in I$ is a tuple $(i_o, i_t)$ where $i_o, i_t \in I$ and represents the direction of a road from the origin intersection, $i_o$ to the target intersection $i_t$. Each road also has an associated cost, $c(r_i)$ where  $c: R \rightarrow \mathbb R_+$ is the cost function. The cost of each edge describes the preference of taking the particular road. 
+We want to design an algorithm for the cost function, that dynamically change the cost for each edge, as the flow of traffic in the road network changes.
