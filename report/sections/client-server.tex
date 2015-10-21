@@ -1,6 +1,7 @@
 \section{Client-server communication}
 As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth.
-The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
+The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. 
+We chose TCP because it is a stream oriented protocol which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput. The other option would have been UDP, which is a message oriented protocol. UDP is used for sending messages from one point to many points which minimizes the time it takes for a message to be sent and received. UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer. 
 
 \begin{figure}[h!]
   \centering
