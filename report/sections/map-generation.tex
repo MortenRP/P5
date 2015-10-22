@@ -2,13 +2,28 @@
 The map generation is based on the opensource map service OpenStreetMap, where it's possible to export a section of the map. In this export the roads, building etc is included. It is then possible to use APIs to extract the information from de export that are needed. To this we use the tool Osmosis, which is a java API which can query the openstreetmap file.
 The output from the osmosis tool is a xml like file, which include nodes and ways. Nodes are road intersections and ways 
 
-\subsection{Map source}
 The map generation is based on the opensource map service OpenStreetMap, but because their webservice only include the possibility to extract small portions of the map.
 Therefore we have chosen to use a mirror site, Geofabrik, which holds extract of the whole map and these are updated daily. This makes it possible for us to extract the whole map for China.
 
-\subsection{Pre-processing}
+\subsection{Format & Pre-processing}
 The maps from Geofabrik in encoded in a comprimized format called pbf. To extract the relevant data from this format we are using a tool Osmosis, to query the file for the information that we need, which are the road network.
 We have to limit the query space only to Beijing this can be done by using a parameter called bounding-box where it is possible to specify the restricting longitudes and latitudes for north, south, east and west.
 Because the map that we have limited still contains information that are not relevant, we have to 
+The map is structured in an xml format, where all points of interest are marked as a node, with tags attatched in it which includes key-value pairs about the point.
+Ways almost similar structured, but they also contain a nd tag which contains as it value the id of a node related to the way. 
+
+\begin{lstlisting}[style=XML, caption=Node representation]
+<node id, version, timestamp, uid, user, changeset, longitude, latitude >
+	<tag key, value />
+</node>
+\end{lstlisting}
+
+\begin{lstlisting}[style=XML, caption=Way representation]
+<Way id, version, timestamp, uid, user, changeset >
+	<nd ref />
+	<tag key, value />
+</node>
+\end{lstlisting}
 
 \subsection{Generation}
+Here we extract the information left in the export, which are ways and nodes. In this step we generate data data structures to be used in our model, from the ways and nodes. 
