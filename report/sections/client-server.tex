@@ -1,8 +1,20 @@
 \section{Client-server communication}
-As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth. Smartphones by drivers will be acting as clients, where they need to be able to send information such as location and speed to the server in some time interval. The server will handle this information and send it further for analyzing, the server will also send updates regarding the route back to the clients, to make sure if events occur on a route that a client is on it will be possible to reroute the client.
-\\
-The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. 
-We chose TCP because it is a stream oriented protocol which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput. The other option would have been UDP, which is a message oriented protocol. UDP is used for sending messages from one point to many points which minimizes the time it takes for a message to be sent and received. UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer. 
+As mentioned in the former section, we will be using a client-server structure.
+The reason behind this choice, is the need to be able to send information back and forth.
+Smartphones used by drivers will be acting as clients,
+where they need to be able to send information such as location and speed to the server in some given time interval.
+The server will handle this information and send it further for analyzing,
+the server will also send updates regarding the route back to the clients,
+to make sure, if events occur on a route that a client is on, it will be possible to reroute the client.
+
+The client server interface is built upon the Java ServerSocket and the Java Socket,
+which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. 
+We chose TCP because it is a stream oriented protocol,
+which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput.
+The other option would have been UDP, which is a message oriented protocol.
+UDP is used for sending messages from one point to many points,
+which minimizes the time it takes for a message to be sent and received.
+UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer. 
 
 \begin{figure}[h!]
   \centering
@@ -11,17 +23,36 @@ We chose TCP because it is a stream oriented protocol which is ideal for transfe
     \label{fig:clientserver}
 \end{figure}
 
-\figref{fig:clientserver} illustrates how our client-server structure works. The client sends a RequestID command to the server. The server responds with an ID, which is an integer that increases every time a RequestID command is received. The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs. The client sends back an acknowledgement to the server when it has received the ID. If the server does not receive an acknowledgement, it will resend the ID. When the client has received the ID it sends the data to the server that is needed to create a new route, or alter a route, or gives information about the route it is following. The server then sends an acknowledgement that it has received the data. If the client does not receive the acknowledgement, it resends the data and waits repeatedly until it either receives acknowledgement or times out.
+\figref{fig:clientserver} illustrates how our client-server structure works.
+The client sends a RequestID command to the server.
+The server responds with an ID, which is an integer that increases every time a RequestID command is received.
+The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs.
+The client sends back an acknowledgement to the server when it has received the ID.
+When the client has received the ID, it then acknowledges the ID received.
+The client sends the data to the server that is needed to create a new route,
+or alter a route, or gives information about the route it is following.
+The server then sends an acknowledgement that it has received the data.
+If the client does not receive the acknowledgement,
+it resends the data and waits repeatedly until it either receives acknowledgement or times out. \todo{Not how it works now, but hopefully we will fix this}
 
-The messages that are sent back and forth are converted into bytes. In
-\figref{fig:bytesclientserver} it is illustrated how we pack our bytes. 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID. Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits. We have reserved one bit as a Last message ID, which is used to be able to tell if a big message, that is split into 2 or more files has ended.
+The messages that are sent back and forth are converted into bytes.
+In \figref{fig:bytesclientserver} it is illustrated how the bytes are packed.
+32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID.
+Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits.
+We have reserved one bit as a Last message ID, which is used to be able to tell if a big message,
+that is split into 2 or more files has ended.
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=1\textwidth]{figures/bytesclientserver.png}
-    \caption{Illustration of bytes}
+    \caption{Illustration of bytes (TODO det der vi snakkede om med striberne)}
     \label{fig:bytesclientserver}
 \end{figure}
 
-A message is sent from the client every 2 seconds to the server, to be able to maintain the position and requests from the client.
-When a message is sent either from the client or the server, they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the first message is sent again, this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded. We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}		
+A message is sent from the client every 2 seconds to the server,
+to be able to maintain the position and requests from the client.
+When a message is sent either from the client or the server,
+they are both set to wait for 5 seconds to receive the acknowledgement message,
+if no such message is received the first message is sent again,
+this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded.
+We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}		
