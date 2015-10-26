@@ -1,5 +1,6 @@
 \section{Client-server communication}
 As mentioned in the former section, we will be using a client-server structure. The reason behind this choice, is we need to be able to send information back and forth. Smartphones by drivers will be acting as clients, where they need to be able to send information such as location and speed to the server in some time interval. The server will handle this information and send it further for analyzing, the server will also send updates regarding the route back to the clients, to make sure if events occur on a route that a client is on it will be possible to reroute the client.
+\\
 The client server interface is built upon the Java ServerSocket and the Java Socket, which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. 
 We chose TCP because it is a stream oriented protocol which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput. The other option would have been UDP, which is a message oriented protocol. UDP is used for sending messages from one point to many points which minimizes the time it takes for a message to be sent and received. UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer. 
 
