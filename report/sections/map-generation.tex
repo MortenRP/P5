@@ -1,5 +1,5 @@
 \section{Map generation}
-To model the road network of Beijing we need to have the specifik information about all the roads in the road network. This information is avaliable several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an opensource map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possiblity of wrong data, limited data, etc. But because this service was the only free service that we could find, we see no other option than having to bear in mind that these problems can occur. We have also found that OpenStreetMap cannot export large extracts of a map, such as the whole city of Beijing, therefore we have chosen to use one of its mirror sites, Geolife, which holds extract of the whole world, segmented into countries and these are updated daily. This makes it possible for us to extract the whole map for China.
+To model the road network of Beijing we need to have the specifik information about all the roads in the road network. This information is avaliable several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an opensource map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possiblity of wrong data, limited data, etc. But because this service was the only free service that we could find, we see no other option than having to bear in mind that these problems can occur. We have also found that OpenStreetMap cannot export large extracts of a map, such as the whole city of Beijing, therefore we have chosen to use one of its mirror sites, Geofabrik, which holds extract of the whole world, segmented into countries and these are updated daily. This makes it possible for us to extract the whole map for China.
 
 \subsection{Format \& Pre-processing}
 The maps from Geofabrik comes in compressed format called pbf. To extract the relevant data from this format we are using a tool, Osmosis, to query the file using several filters, to extract only the information relevant.
@@ -7,7 +7,7 @@ We are using two types of filters with Osmosis, the first is to limit the area t
 With this filter we have the possibility to specify which roads we want to have in the output. Because all paths are marked in OpenStreetMap as a way, we want to filter paths such as sidewalks, bicycle ways, and other ways that are not possible to use with a car.
 
 The extracted data from the Osmosis query is then exported to a file which is structured in a way that resembles the xml format. There are two types of left in the export, which are nodes and ways. Nodes represent road intersections and are also used to indicate points along a road if the road is curved. Both nodes and ways can include key-value pairs that contain information, i.e. if a way are oneway, if a intersection have a traffic light, ect.
-Ways almost similar structured, but they also contain a nd tag which contains as it value the id of a node related to the way. 
+Ways almost similar structured, but they also contain a nd tag which contains as it value the id of a node related to the way.
 
 \begin{lstlisting}[style=XML, caption=Node representation]
 <node id, version, timestamp, uid, user, changeset, longitude, latitude >
@@ -45,7 +45,7 @@ We want to model the road network as a graph, but the relation between ways and 
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.4\textwidth]{figures/way-w-nodes.png}
+    \includegraphics[width=0.8\textwidth]{figures/way-w-nodes.png}
     \caption{A way with nodes}
     \label{fig:waywithnodes}
 \end{figure}
