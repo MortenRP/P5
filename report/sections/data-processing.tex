@@ -11,6 +11,3 @@ The gps dataset is converted into the GPX format which is subsequently map-match
 The Beijing dataset consists timestamped samples of gps-coordinates. The format of the samples is (id, date time, longitude, latitude). However since GPS measurements can be inaccurate, it is not always possible to directly infer which road the sample was taken on. Consequently the coordinates must be map-matched to a road, such that positions on the road can be inferred. To perform map-matching, the system calls the TrackMatching webservice\cite{TrackMatching}. This service exposes an API for map-matching to the OpenStreetMap service and given a dataset of raw GPS-coordinates returns a map-matched dataset in JSON format. 
 \todo{write about how and why map generation}
 \todo{write about how and why we design DB and store data in SQL database}
-\subsection{Map generation}
-The map generation is based on the opensource map service OpenStreetMap, where it's possible to export a section of the map. In this export the roads, building etc is included. It is then possible to use APIs to extract the information from de export that are needed. To this we use the tool Osmosis, which is a java API which can query the openstreetmap file.
-The output from the osmosis tool is a xml like file, which include nodes and ways. Nodes are road intersections and ways 
