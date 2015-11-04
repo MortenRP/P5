@@ -49,8 +49,7 @@ that is split into 2 or more files has ended.
     \label{fig:bytesclientserver}
 \end{figure}
 
-A message is sent from the client every 2 seconds to the server,
-to be able to maintain the position and requests from the client.
+The client will ask for a GPS update every 5 seconds, this is done to be able to maintain a precise location of the client. A message is sent from the client with the GPS location and current speed every 10 seconds to the server.
 When a message is sent either from the client or the server,
 they are both set to wait for 5 seconds to receive the acknowledgement message,
 if no such message is received the first message is sent again,
