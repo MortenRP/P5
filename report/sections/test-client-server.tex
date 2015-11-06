@@ -2,10 +2,12 @@
 To be certain that our client server communication works as it should, we will do both "real-life" practical tests and black-box testing, e.g. making sure the client and server behaves as it should on different occasions.
 
 \subsection{Multiple clients connected to server}
-When the client was developed it was only tested from an emulator in Android Studio, and on a single client device. To make sure the server can handle multiple clients, we connected 7 smartphones and connected them to the server.
+When the client was developed it was only tested from an emulator in Android Studio, and on a single client device. To make sure the server can handle multiple clients. We connected 7 smartphones and downloaded the application and began to send messages from them, speed and location, to the server. We did not receive any client errors of lost messages and the server handled all the connections without crashing.
 
 \subsection{If message is lost}
 If a message is lost, the client or the server will not receive the acknowledgement, that confirms the message has been properly sent. If this occurs the client or server should try to resend the message up to 3 times.
 
 \subsection{GPS location and speed}
 The location of the client and the speed it is moving at has been tested in a car with one person driving the car and another using a smartphone, where the smartphone displays the current speed and the location after a click on a button. The speed was compared to the car's speedometer which matched and the GPS location that was shown was later checked on a map, where the locations given by the smartphone also were correct.
+
+\todo{Add more tests to client-server!}
