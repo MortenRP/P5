@@ -1,70 +1,15 @@
-\section{Learning from the data}
+\section{Learning from the traffic}
 This section describes the process of analysing the data to find congestion patterns. We first describe the knowledge we are interested in and how to represent it, then we consider how patterns are defined.
 
-\subsection{Knowledge representation}
-Knowledge about the road network comes from knowledge about the state of traffic on a road at a given time e.g. a  person could know about morning traffic on popular roads from his experience driving on that road to work in the morning. We wish for the system to gain this kind of knowledge, and to do that we must analyse the data to find congestion patterns.
-\subsubsection*{State of traffic}
-But before the data can be analysed, a representation of the knowledge must be devised. Thus, to represent the knowledge about the state of traffic, the state of traffic itself must be defined. We propose the state of traffic on some road, to be determined by one or more \emph{observations} of the traffic on said road. An \emph{observation} on a road, is a measurement of speed driven by a vehicle, on a certain date and time. Therefore, let $O$ be the set of all observations of all roads R; that is, an observation $o \in O$ is one measurement of the speed of a particular road on a particular time and day:
-\begin{align*}
-O = (S, T, D, M, Y)
-\end{align*}
-where $S = \mathbb R^{+}$, $T$ is a 24-hour formatted time-stamp of the when the observation was made, $D= \{mon, tue, wed, thu, fri, sat, sun\}$,\\ $M = \{jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec\}$ and Y is the year of the observation. \\
-We then define the state of traffic, as the average speed of observations constrained by some specific date and time; that is, the state of traffic of some road r, between some time $t1$ and $t2$ and day $D$, is the average of the speed of every observation on that date within that time-interval.\\
-Let the state of traffic be:
-\begin{align*}
-state: E \times T \times T \times D \times M \times Y \rightarrow \mathbb R^+\\
-\end{align*}
-\begin{align*}
-state(r, t1, t2, d, m, y) = \frac{\sum\limits_{O_i} S_i}{|\{O_1,..,O_n\}|} \qquad 
-&where \: \mu (r,t1,t2, d, m, y) = \{O_1,..,O_n\} \\
-&and \: O_i=\{S_i, T_i, D_i, M_i, Y_i\}
-\end{align*}
-Where $\mu$ returns a set of observations for the road R, within the time interval of $T1$ and $T2$:
-\begin{align*}
-\mu(R,T_{start},T2_{end}, d, m, y) = \{O_1,...,O_n\} \qquad &where \: \forall T_i \in O_i\\
-&T_{start} \leq T_i \leq T_{end}, \\
-&d = d_i, m = m_i, y = y_i, \\
-&O_i = (S_i, T_i, d_i, m_i, y_i) \\
-&and \: r \in R.\\
-\end{align*}
-\subsubsection{Probability of congestion}
-With observations we can estimate how the state of traffic is, within some time interval. However, observations on the same weekday, but in different weeks might be contradictory in terms of the state of traffic. An example would be that a person observes that \emph{most} Monday mornings there are heavy traffic on the road to work. We wish to capture the notion of \emph{most}, by estimating the probability of congestion based on the number of \emph{instances} of congested states of traffic for some road. By doing this, we can use the probabilities to affect the choices of which roads to take.\\
-An \emph{instance} of the state of traffic for some day, is just the state of traffic for a particular date. An example of traffic state instances are in table \ref{tab: traffic-state-instances}
-
-
-\begin{table}[h]
-\centering
-\caption{Example instances of the traffic state mon, 08:00, 09:00}
-\label{tab: traffic-state-instances}
-\begin{tabular}{l}
-\textbf{Instance} \\ \hline
-5-10-2015         \\
-12-10-2015        \\
-19-10-2015       
-\end{tabular}
-\end{table}
-\subsection{Regression model}
-
-
-To distinguish between different degrees of congestion, 
-we define several classes of congestion as shown in table \ref{tab:congestion-classes}. 
-
-\begin{table}[]
-\centering
-\caption{Classes of congestion.}
-\label{tab:congestion-classes}
-\begin{tabular}{l|l}
-\textbf{Class} & \textbf{Description} \\ \hline
-None           & \textgreater0.9      \\
-Mild           & 0.9 \textgreater     \\
-Heavy          & 0.5 \textgreater    
-\end{tabular}
-\end{table}
-Different classes of congestion describes the state of traffic for a given road. The \emph{none} class of congestion indicates no congestion, \emph{mild} indicates a minor congestion, where the speed is slower than the speed-limit. The \emph{heavy} class of congestion indicates major congestion where traffic is slowed down by 50\% or more than the speed limit.\\
-We use these classes to compute the probabilities of congestion on some road given a day and time.
-Let the probability of some class of congestion, given a set of observations be:
-\begin{align*}
-P: C \times O_r' \rightarrow x \,|\, 0 < x < 1 \: and \: x \in \mathbb R
-\end{align*}
-where $C=\{none, mild, heavy\}$, $O_r'$ is some set of observations of $r$ and $P(none, O_r')+P(mild, O_r')+P(heavy, O_r') = 1$.
-As such, for any given road we can compute the probabilities of the different classes of congestion. 
+\subsection{Weka}
+% What is it?
+% Why use it?
+% How do we use it?
+\subsection{Linear regression model trees}
+% What is it?
+% Why use it?
+% How did we use it?
+\subsection{Segmentation of observations}
+% What is it?
+% Why use it?
+% How do we use it?

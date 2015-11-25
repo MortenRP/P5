@@ -35,6 +35,7 @@
 %mainmatter
 \pagenumbering{arabic} %use arabic page numbering in the mainmatter
 \input{sections/introduction.tex}
+% Problem analysis
 \chapter{Problem analysis}
 \input{sections/problem-analysis-intro}
 \input{sections/relevance.tex}
@@ -45,17 +46,27 @@
 \clearpage
 \input{sections/problem-formulation.tex}
 \chapter{Solution (mangler bedre kapitelnavn)}
+% Solution
 \input{sections/solution-intro}
 \input{sections/system-overview.tex}
-\input{sections/model}
-\input{sections/map-generation.tex}
 \input{sections/client-server}
+% 	Data aquisition and preprocessing
+\input{sections/data-aquisition.tex}
+\input{sections/map-generation.tex}
 \input{sections/data-processing.tex}
+%	Knowledge representation
+\input{sections/model}
+
+%	Learning
 \input{sections/data-mining.tex}
+
+% 	Routing approach
 \input{sections/route-planning.tex}
+% Test, evaluation and conclusion
 \chapter{Test and Evaluation}
 \input{sections/test-client-server.tex}
 \input{sections/evaluation-process.tex}
+\section{Future work}
 \chapter{Conclusion}
 \input{sections/conclusion.tex}
 \printbibliography[heading=bibintoc]

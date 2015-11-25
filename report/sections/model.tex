@@ -1,4 +1,36 @@
-\section{Road network model}
+\section{Knowledge representation}
+Knowledge about the road network comes from knowledge about the state of traffic on a road at a given time e.g. a  person could know about morning traffic on popular roads from his experience driving on that road to work in the morning. We wish for the system to gain this kind of knowledge, and to do that we must analyse the data to find congestion patterns.
+\begin{itemize}
+\item WHAT is going to be in this section
+\item WHY are we bothering with this section?
+\item HOW follows from the subsections.
+\end{itemize}
+\subsection{Road network representation}
 To represent a road network we model the problem as a weighted, directed graph. \\
 Let G be a weighted directed graph $G(I,R)$, where $R$ is the set of roads between intersections and $I$ is the set of intersections of roads. Each intersection $I_i \in I$ is a tuple $(i_o, i_t)$ where $i_o, i_t \in I$ and represents the direction of a road from the origin intersection, $i_o$ to the target intersection $i_t$. Each road also has an associated cost, $c(r_i)$ where  $c: R \rightarrow \mathbb R_+$ is the cost function. The cost of each edge describes the preference of taking the particular road. 
 We want to design an algorithm for the cost function, that dynamically change the cost for each edge, as the flow of traffic in the road network changes.
+
+\subsection{Traffic representation}
+But before the data can be analysed, a representation of the knowledge must be devised. Thus, to represent the knowledge about the state of traffic, the state of traffic itself must be defined. We propose the state of traffic on some road, to be determined by one or more \emph{observations} of the traffic on said road. An \emph{observation} on a road, is a measurement of speed driven by a vehicle, on a certain date and time. Therefore, let $O$ be the set of all observations of all roads R; that is, an observation $o \in O$ is one measurement of the speed of a particular road on a particular time and day:
+\begin{align*}
+O = (S, T, D, M, Y)
+\end{align*}
+where $S = \mathbb R^{+}$, $T$ is a 24-hour formatted time-stamp of the when the observation was made, $D= \{mon, tue, wed, thu, fri, sat, sun\}$,\\ $M = \{jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec\}$ and Y is the year of the observation. \\
+We then define the state of traffic, as the average speed of observations constrained by some specific date and time; that is, the state of traffic of some road r, between some time $t1$ and $t2$ and day $D$, is the average of the speed of every observation on that date within that time-interval.\\
+Let the state of traffic be:
+\begin{align*}
+state: E \times T \times T \times D \times M \times Y \rightarrow \mathbb R^+\\
+\end{align*}
+\begin{align*}
+state(r, t1, t2, d, m, y) = \frac{\sum\limits_{O_i} S_i}{|\{O_1,..,O_n\}|} \qquad 
+&where \: \mu (r,t1,t2, d, m, y) = \{O_1,..,O_n\} \\
+&and \: O_i=\{S_i, T_i, D_i, M_i, Y_i\}
+\end{align*}
+Where $\mu$ returns a set of observations for the road R, within the time interval of $T1$ and $T2$:
+\begin{align*}
+\mu(R,T_{start},T2_{end}, d, m, y) = \{O_1,...,O_n\} \qquad &where \: \forall T_i \in O_i\\
+&T_{start} \leq T_i \leq T_{end}, \\
+&d = d_i, m = m_i, y = y_i, \\
+&O_i = (S_i, T_i, d_i, m_i, y_i) \\
+&and \: r \in R.\\
+\end{align*}
