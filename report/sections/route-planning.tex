@@ -7,12 +7,6 @@ The aim of this section is to give a clear overview of what elements the route p
 This process can be divided into sub process that are each responsible for an area of work.
 % evt. Main problems adressed in this section
 
-\subsection{Contraction hierarchies}\label{contraction-hierarchies}
-% What is it?
-% Why use it?
-% How do we use it?
-The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
-
 \subsection{Parallelized bi-directional A*} \label{algorithms}
 
 In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.

@@ -1,12 +1,16 @@
 \section{Knowledge representation}
-In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More concretely, we consider how we model knowledge about the road network and the GPS dataset of traffic in Beijing. We consider the knowledge representation for several reasons. First of all, we want to make sure that the model adequately portrays the real roads and traffic of Beijing. Secondly, we want to be able to reason about this knowledge to be able to find patterns in the traffic.
+In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More concretely, we consider how we model knowledge about the road network and traffic in Beijing. We consider the knowledge representation for several reasons. First of all, we want to make sure that the model adequately portrays the real roads and traffic of Beijing. Secondly, we want to be able to reason about this knowledge to later be able to find patterns in the traffic.
 % WHAT is going to be in this section
 % WHY are we bothering with this section?
 % HOW follows from the subsections.
+
 \subsection{Road network representation}
-To represent the road network we model the problem as a weighted, directed graph. \\
-Let G be a weighted directed graph $G(I,R)$, where $R$ is the set of roads between intersections and $I$ is the set of intersections of roads. Each intersection $I_i \in I$ is a tuple $(i_o, i_t)$ where $i_o, i_t \in I$ and represents the direction of a road from the origin intersection, $i_o$ to the target intersection $i_t$. Each road also has an associated cost, $c(r_i)$ where  $c: R \rightarrow \mathbb R_+$ is the cost function. The cost of each edge describes the preference of taking the particular road. 
-We want to design an algorithm for the cost function, that dynamically change the cost for each edge, as the flow of traffic in the road network changes.
+% Why and what?
+To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.\\
+% How ?
+Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each $e \in E$ is a tuple $e=(n_o, n_t, s)$ where $n_o, n_t \in N$ and represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$ and $s$ is the speed limit. The speed limit captures the most important difference between different types of roads, since we are only interested in \emph{how fast can i travel along this road}. Furthermore, two-way roads are represented as two edges, $e_1, e_2$ where $e_1 = (u, v)$ and $e_2=(v, u)$. Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to chose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}
+\\
+Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the cost function to represent differences between different types of roads. 
 
 \subsection{Traffic representation}
 Knowledge about the traffic comes from knowledge about the state of traffic on a road at a given time e.g. a  person could know about morning traffic on popular roads from his experience driving on that road to work in the morning. We wish for the system to gain this kind of knowledge, and to do that we must analyse the data to find congestion patterns.\\
