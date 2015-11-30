@@ -1,7 +1,10 @@
 \section{Route planning}
 % What is this section?
+In this section the process of finding a route will be describe.
 % Why is this section here?
+The aim of this section is to give a clear overview of what elements the route planning consist of.
 % How follows from the subsections....
+This process can be divided into sub process that are each responsible for an area of work.
 % evt. Main problems adressed in this section
 
 \subsection{Contraction hierarchies}\label{contraction-hierarchies}
@@ -11,14 +14,17 @@
 The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
 
 \subsection{Parallelized bi-directional A*} \label{algorithms}
-% What is it?
-% Why use it?
-% How do we use it?
+
 In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.
+% What is it?
+Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
+% Why use it?
+The reason for this decision is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$. Bi-directional also have the benefit of working well when running in paralleled.
 
-For finding a path though the graph bidirectional search is used. The reason for this decision is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$. The problem with using a bidirectional search is to get the two patch to meet up. This is where constructive heuristic is normally used, for this project the function deskribed in section \ref{graph} is used. The next problem is how a disition about whict way to go, this is the job of the cost function. The cost function is deskribed is section \ref{graph}.
 
-Bidirectional graph search work from a start an end node to fide a way between them. In essen one runes two Dijkstra's search on the graph.
+The problem with using a bidirectional search is to get the two patch to meet up. This is where constructive heuristic is normally used, for this project the function deskribed in section \ref{graph} is used. The next problem is how a disition about whict way to go, this is the job of the cost function. The cost function is deskribed is section \ref{graph}.
+
+% How do we use it?
 
 \subsubsection{Cost function}
 % What is it?
