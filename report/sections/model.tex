@@ -8,32 +8,19 @@ In this section we describe what we are going to consider knowledge in the syste
 % Why and what?
 To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.\\
 % How ?
-Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each $e \in E$ is a tuple $e=(n_o, n_t, s)$ where $n_o, n_t \in N$ and represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$ and $s$ is the speed limit. The speed limit captures the most important difference between different types of roads, since we are only interested in \emph{how fast can i travel along this road}. Furthermore, two-way roads are represented as two edges, $e_1, e_2$ where $e_1 = (u, v)$ and $e_2=(v, u)$. Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to chose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}
+Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each $e \in E$ is a tuple $e=(n_o, n_t, s)$ where $n_o, n_t \in N$ and represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$ and $s$ is the speed limit. The speed limit captures the most important difference between different types of roads, since we are only interested in \emph{how fast can i travel along this road}. Furthermore, two-way roads are represented as two edges, $e_1, e_2$ where $e_1 = (u, v)$ and $e_2=(v, u)$. Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to choose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}
 \\
 Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the cost function to represent differences between different types of roads. 
 
-\subsection{Traffic representation}
-Knowledge about the traffic comes from knowledge about the state of traffic on a road at a given time e.g. a  person could know about morning traffic on popular roads from his experience driving on that road to work in the morning. We wish for the system to gain this kind of knowledge, and to do that we must analyse the data to find congestion patterns.\\
-But before the data can be analysed, a representation of the knowledge must be devised. Thus, to represent the knowledge about the state of traffic, the state of traffic itself must be defined. We propose the state of traffic on some road, to be determined by one or more \emph{observations} of the traffic on said road. An \emph{observation} on a road, is a measurement of speed driven by a vehicle, on a certain date and time. Therefore, let $O$ be the set of all observations of all roads R; that is, an observation $o \in O$ is one measurement of the speed of a particular road on a particular time and day:
+\subsection{Traffic representation}\label{KR:traffic}
+We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a seperate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.\\
+From the Bejing datset, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.\\
+Let an \emph{observation}, $O$, be:
 \begin{align*}
-O = (S, T, D, M, Y)
+O = (T, D, W, S, E)
 \end{align*}
-where $S = \mathbb R^{+}$, $T$ is a 24-hour formatted time-stamp of the when the observation was made, $D= \{mon, tue, wed, thu, fri, sat, sun\}$,\\ $M = \{jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec\}$ and Y is the year of the observation. \\
-We then define the state of traffic, as the average speed of observations constrained by some specific date and time; that is, the state of traffic of some road r, between some time $t1$ and $t2$ and day $D$, is the average of the speed of every observation on that date within that time-interval.\\
-Let the state of traffic be:
-\begin{align*}
-state: E \times T \times T \times D \times M \times Y \rightarrow \mathbb R^+\\
-\end{align*}
-\begin{align*}
-state(r, t1, t2, d, m, y) = \frac{\sum\limits_{O_i} S_i}{|\{O_1,..,O_n\}|} \qquad 
-&where \: \mu (r,t1,t2, d, m, y) = \{O_1,..,O_n\} \\
-&and \: O_i=\{S_i, T_i, D_i, M_i, Y_i\}
-\end{align*}
-Where $\mu$ returns a set of observations for the road R, within the time interval of $T1$ and $T2$:
-\begin{align*}
-\mu(R,T_{start},T2_{end}, d, m, y) = \{O_1,...,O_n\} \qquad &where \: \forall T_i \in O_i\\
-&T_{start} \leq T_i \leq T_{end}, \\
-&d = d_i, m = m_i, y = y_i, \\
-&O_i = (S_i, T_i, d_i, m_i, y_i) \\
-&and \: r \in R.\\
-\end{align*}
+where T is a encoding of a timestamp, D is the encoding of the date, W=\{Mon, Tue, Wed, Thu, Fri, Sat\} is the weekday when the observation was made. S is a non-negative real number representing the observed speed, and E is the road-segment on which the observation was made.\\
+
+\subsubsection{Estimating observation speed}\label{KR:speed}
+When instantiating observations, time, date, weekday and segment can easily be extracted directly from the mapmatched GPS data. However, speed must be computed from the difference in time and distance between GPS waypoints.
+% How to estimate speed

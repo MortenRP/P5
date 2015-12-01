@@ -4,15 +4,49 @@
 % How? --> follows from the subsections.
 In order to reason about the traffic in Beijing, and provide some measure of how the previous traffic possibly affects our belief in how the future traffic situation will be in the road network, we analyse the preprocessed data to look for patterns. In this section, we consider methods for extracting such patterns and propose how to apply them on the Bejing dataset.
 
+
+\subsection{Model trees of observations}\label{patterns:model-trees}
+From our knowledge representation of the road network and traffic, we want to predict how traffic affects the travel time of roads in the road network. In order to do this, we need a measure of the traffic on roads. There are several ways one could construct such a measure, incuding
+\begin{itemize}
+\item \emph{capacity}: How many vehicles can travel on a road, safely, while not negatively affecting the average speed driven on the road?
+\item \emph{classification}: Define a class feature of a road, that defines the state of the road. An example could be $Traffic \in \{free, light, medium, heavy\}$. A given road then has a classification based on the observations of speed within some time period.
+\item \emph{speed}: we measure the traffic on a given road, by how fast you can drive on the road. In addition, one could measure the ratio between speed and speed limit.
+\end{itemize}
+
+% Why use it?
+ - We want to predict impact of traffic on travel time.
+ - How do we measure traffic ? 
+ 	-	Capacity of roads?
+ 		- Difficult to determine accurately, people drive unsafe?
+ 	- 	Speeds on roads?
+ 	-	Try to classify on congestion?
+ 		- k-ary class feature, that classifies a road.
+ 		- Penalty of different classes.
+ 		- How do we discretize our data into reasonable classes?
+ 		- What about roads costs that are almost equal?
+ 		- Classes defined by us might not reflect reality.
+ 	-	Speed is more "pure" measurement of travel properties of a road
+ 		- Speed tells both tells us the penalty of driving on road and has a better granularity of deciding between two almost equal costs of roads.
+ 		- Methods for learning traffic:
+ 			-	Linear regression
+ 			-	Polynomial regression
+ 				- Fits the learning data better, but might not fit future samples better! (SSE)
+ 			-	But! Traffic also changes over time? (day, week etc..)
+ 			-	Divide days into segments, for every segment define fit a linear regression function.
+ 			-	How do we segment days?
+ 			-	Residual sum
+ 			-	Algorithms, M5P automatically splits and generates linear functions
+ 
+% What is it?
+% How did we use it?
+% Alternatives ?
+
 \subsection{Weka}\label{patterns:weka}
 % What is it?
 % Why use it?
 % How do we use it?
-\subsection{Linear regression model trees}\label{patterns:model-trees}
-% What is it?
-% Why use it?
-% How did we use it?
-\subsection{Segmentation of observations}\label{patterns:segmentation}
+
+\subsection{Regression segments}\label{patterns:segmentation}
 % What is it?
 % Why use it?
 % How do we use it?
