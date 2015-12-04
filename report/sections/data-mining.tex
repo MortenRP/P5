@@ -16,7 +16,7 @@ To more easily be able to evaluate roads where traffic is similar, we must use a
 \subsection{Model trees}\label{patterns:model-trees}
 To predict the traffic speed on a given road segment, at a given time we can consider a prediction a function:
 \begin{align*}
-speed: S \times T \times W \rightarrow \mathbb{R}
+speed: E \times T \times W \rightarrow \mathbb{R}
 \end{align*}
 that takes a segment and time of the wanted prediction, and outputs the prediction as a real valued speed. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time.
 Predicting the numeric value of some variable based on previous observations is typically associated with regression. Regression fits input and output pairs to a function, such that future values for input pairs can be predicted. Fitting a regression function on the observations for a particular road segment, can provide a way to predict the traffic on the segment. Since traffic varies over time, one could argue that a polynomial regression function would fit the observations better than a linear function as illustrated in figure \ref{fig:compare-regression}.
@@ -34,7 +34,7 @@ Even though the higher order regression functions generally fits the training da
     f_n(s) & \quad \text{if } t \text{ is in } p_n
   \end{cases}
 \]
-where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment s. The idea is illustrated in figure \ref{fig:segmented-regression}
+where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment s. The idea is illustrated in figure. \ref{fig:segmented-regression}
 \begin{figure}\label{fig:segmented-regression}
 \centering
 TODO: DRAW FIGURE
@@ -69,6 +69,7 @@ TODO: DRAW FIGURE
 % Alternatives ?
 \\
 \subsection{Partitioning scheme}\label{patterns:segmentation}
+
 % Why do it?
 % What is it?
 % How do we use it?
