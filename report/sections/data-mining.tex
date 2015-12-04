@@ -1,4 +1,4 @@
-\section{Finding traffic patterns}
+\section{Finding traffic patterns}\label{traffic-patterns}
 % Why find traffic patterns?
 % What is this section for?
 % How? --> follows from the subsections.
@@ -13,7 +13,7 @@ From our knowledge representation of the road network and traffic, we want to pr
 The capacity of a road would be possible to estimate from the speed limit, length of a road, safety distances and number of cars. However, drivers do not always drive in a uniform manner, which makes it difficult to accurately estimate capacities.
 Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed. This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
-\subsection{Model trees}\label{patterns:model-trees}
+\subsection{Regression model}\label{patterns:regression-model}
 To predict the traffic speed on a given road segment, at a given time we can consider a prediction a function:
 \begin{align*}
 speed: S \times T \times W \rightarrow \mathbb{R}
@@ -26,19 +26,22 @@ Predicting the numeric value of some variable based on previous observations is 
 \caption{Different regression fits on the same dataset.}
 \end{figure}
 Even though the higher order regression functions generally fits the training data better, this might not be the case for future observations where the data actually might fit the linear case best. However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions portrays straight lines, whereas fluctuations would be more acurately portrayed as curves in the function. For this reason, we instead utilise several linear regression functions over the course of a day. More specifically, we split a day  into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t1,t2)$ and $t1,t2$ are time-stamps. Thus, a partition is defined as a period of time between $t1$ and $t2$. For every $p_i$, we perform a linear regression over the observations within that period of time. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
-\[ speed(s,t) =
-  \begin{cases}
-    f_1(s)       & \quad \text{if } t \text{ is in } p_1\\
-    f_2(s)  & \quad \text{if } t \text{ is in } p_2\\
-    &\vdots\\
-    f_n(s) & \quad \text{if } t \text{ is in } p_n
-  \end{cases}
-\]
-where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment s. The idea is illustrated in figure \ref{fig:segmented-regression}
-\begin{figure}\label{fig:segmented-regression}
+\begin{equation}\label{eq:speed-piecewise}
+speed(s,t) =
+\begin{cases}
+f_1(s)       & \quad \text{if } t \text{ is in } p_1\\
+f_2(s)  & \quad \text{if } t \text{ is in } p_2\\
+&\vdots\\
+f_n(s) & \quad \text{if } t \text{ is in } p_n
+\end{cases}
+\end{equation}
+
+where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment s. The idea is illustrated in Figure \ref{fig:segmented-regression}
+\begin{figure}
 \centering
-TODO: DRAW FIGURE
-\caption{Segmentation based linear regression}
+\includegraphics[trim={0 9cm 0 9cm},clip, width=\textwidth]{figures/piecewise.pdf}
+\caption{Example of piecewise linear regression - day of 24 hours are partitioned into 4 parts. Every partition has a linear function describing traffic in this time period.}
+\label{fig:segmented-regression}
 \end{figure}
 % Why use it?
 % - We want to predict impact of traffic on travel time.
@@ -70,11 +73,54 @@ TODO: DRAW FIGURE
 \\
 \subsection{Partitioning scheme}\label{patterns:segmentation}
 % Why do it?
-% What is it?
-% How do we use it?
+%	Want: piecewise linear functions, but how should we partition the days?
+In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in Figure \label{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
+\begin{itemize}
+	\item Where should we split the day, such that important changes in traffic are captured?
+	\item How many observations is required to perform regression?
+	\item How do we guarantee enough observations in every partition?
+\end{itemize}
+While it makes sense to have equally sized partitions, it does not guarantee that there will be enough observations to perform a accurate regression for every partition (an example would be, that there are usually less vehicles driving at night, thus less observations in this partition). Furthermore, since traffic patterns most likely are different for different road segments, a static partitioning is not guaranteed to capture important patterns in traffic, such as morning traffic. Therefore, we must incorporate a finer granularity in the partitioning scheme, to capture the differences traffic patterns and to ensure that there will be enough observations to actually perform regression.
+This leads us to a dynamic partitioning scheme, where the partitioning is based on the density of observations and how well the function fits the data. A measure to use for such a partitioning, could be the Sum of Squared Errors, which is a measure of how close a predicted value is to the real value. Partitioning is then done, based on minimizing the Sum of Squared Errors, as this yields more accurate regression models.
 
-\subsubsection{Implementation}\label{patterns:weka}
+\subsection{Model trees}\label{patterns:weka}
 % What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
 % How do we use it? (M5p in weka)
+In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore intregrates well with our system.
 
+We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3s internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
+
+The M5P algorithm ...
+\todo{Write about the M5P algorithm and how it does what we want} 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\node {t}
+	[level distance=3cm]
+	child { node {$f_1(e)$} edge from parent [->] node [left] {$ < 06:00 $} }
+	child { node {t} 
+		child { node {$f_2(e)$} edge from parent [->] node [left] {$ < 18:00 $}}
+		child { node {$f_3(e)$} edge from parent [->] node [right] {$ 18:00 \le $} }
+		edge from parent [->] node [right] {$06:00 \le $}
+	}
+	;
+	\end{tikzpicture}
+	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
+\end{figure}
+
+
+\subsection{Quality measure}\label{quality-measure}
+Some of the observations might be based on a small number of GPS samples, or data that is mapmatched with a high error rate (accuracy of which road was best to mapmatch on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
+\begin{equation}
+Q(o) = \frac{|wp|}{|e|}+0.29
+\end{equation}
+where $|e|$ is the length of a road segment $e$, and $|wp|$ is the number of waypoints used to construct $o$.
+% Why?
+% 	some data might be unreliable, better to use good data first
+% What?
+% 	We introduce a quality measure --> such that we can decide which observations are "better" in the sense of accuracy observations.
+% How?
+%	based on the ratio between the length of the segment and the
+%	number 	of 	waypoints
+% Could also include error rate from mapmatching, but unsure what it means (probably means accuracy of which the mapmatching was done)

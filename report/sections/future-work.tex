@@ -1,10 +1,14 @@
 \section{Future work}
-\subsection{Smoothing of model tree}
-
 \subsection{Contraction hierarchies}\label{contraction-hierarchies}
 % What is it?
 % Why use it?
 % How do we use it?
 The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
 
-\subsection{Utility på kilder til observationer under regression generation}
+\begin{itemize}
+	\item smoothing of piecewise functions.
+	\item Contraction hierarhies in dynamic road networks
+	\item Utility på kilder til observationer under regression generation
+	\item better cleaning of GPX files (some problems with a LOT of inferred roads with no waypoints)
+	\item include more features in the prediction. Min/max speed, number of vehicles on road etc....
+\end{itemize}
