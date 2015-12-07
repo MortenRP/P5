@@ -98,5 +98,11 @@ Generally, GPS coordinates measured are often imprecise due to external factors,
 \item Which road in the road network was a vehicle traveling on?
 \item At what speed was the vehicle traveling?
 \end{enumerate}
-The main problem is illustrated in figure \todo{make and insert figure}. The GPS samples are imprecise in the sense, that they are not mapped directly onto roads. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates of roads, since the distance from the samples to the two roads might be equal.\\
+The main problem is illustrated in figure \ref{fig:mapmatching}. 
+\begin{figure}
+\includegraphics[scale=1]{figures/mapmatching.png}
+\caption{GPS samples and the actual road driven on.}
+\label{fig:mapmatching}
+\end{figure}
+The orange and black colored GPS samples are imprecise in the sense, that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates of roads, since the distance from the samples to the two roads might be equal.\\
 Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exists that performs this task, including TrackMatching, GraphHopper and N-Gemma. Limited informal evaluations of these implementations showed that TrackMatching provided a more precise mapmatching than GraphHopper, which both work on GPX formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the of use of N-Gemma, since TrackMatching was adequate solution to our MapMatching problem, despite it being a webservice.\\  Alternatively, we consider implementing an map-matching algorithm ourselves, however considering the focus of the project is about constructing an intelligent routing agent, not an efficient mapmatching algorithm, we decided that utilising an existing implementation would be preferable, to have more time for our primary focus.

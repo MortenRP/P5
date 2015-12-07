@@ -1,5 +1,5 @@
 \section{Knowledge representation}
-In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More concretely, we consider how we model knowledge about the road network and traffic in Beijing. We consider the knowledge representation for several reasons. First of all, we want to make sure that the model adequately portrays the real roads and traffic of Beijing. Secondly, we want to be able to reason about this knowledge to later be able to find patterns in the traffic.
+In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More concretely, we consider how we model knowledge about the road network and traffic in Beijing. We consider the knowledge representation for several reasons. First of all, the raw GPS samples and map data is not really useful to reason about, as there are a lot of unessary details included. Thus, we want to make sure that the model adequately portrays the real roads and traffic of Beijing only with the required level of detail. Secondly, we want to be able to reason about this knowledge to later be able to find patterns in the traffic.
 % WHAT is going to be in this section
 % WHY are we bothering with this section?
 % HOW follows from the subsections.
@@ -31,4 +31,18 @@ From the mapmatched dataset, we obtain the set of all observations on the segmen
 
 \subsubsection{Estimating observation speed}\label{KR:speed}
 % How to estimate speed
-\todo{explain how we calculate the speed}
+Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $w_i = (d_i, w_i, t1_i, t2_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
+\begin{align*}
+o_e = (t_1, d_1, w_1, S, e)
+\end{align*}
+where
+\begin{align*}
+S = median(\{s_1,...s_i,...,s_n\})
+\end{align*}
+and
+\begin{align*}
+s_i = \frac{dist(w_i, w_{i+1})}{t_i - t_{i+1}} \qquad \text{ where } 0 < i < n
+\end{align*}
+\begin{align*}
+median: S^n \rightarrow \mathbb{R}
+\end{align*}
