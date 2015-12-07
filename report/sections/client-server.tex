@@ -52,6 +52,4 @@ that is split into 2 or more files has ended.
 
 The client will ask for a GPS update every 5 seconds, this is done to be able to maintain a precise location of the client. This information, plus the speed, will be cached and then sent every 20 seconds to the server.
 When a message is sent either from the client or the server,
-they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the first message is sent again,
-this approach continues for 3 loops if there is still no acknowledgement sent back the message is discarded.
-We have made this choice because of one message lost is not a critical problem for our system and will not have any major effect on our calculations.\todo{The times client/server await is not well documented, fix it!}		
+they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the message is sent again, if there is no acknowledgement received on the second try then the message is discarded. We could have continued to try and resend the message several times, but a lost GPS coordinate from a user is not a critical problem for our system and will not have any major effect on our calculations.		
