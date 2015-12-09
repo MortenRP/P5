@@ -16,7 +16,7 @@ Performing some discrete classification could help to distinguish between differ
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
 To predict the traffic speed on a given road segment, at a given time we can consider a speed prediction a function:
-\begin{align}
+\begin{align}\label{eq:speed}
 speed: E \times T \times W \rightarrow \mathbb{R}
 \end{align}
 that maps a road segment, time of day and day of week to the a real valued speed prediction. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time. \par
@@ -131,3 +131,11 @@ We utilise a few filters for preprocessing our observations. Some observations a
 	\end{tikzpicture}
 	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
 \end{figure}
+\subsection{Weight function}\label{sec:weight-function}
+With the regression model for predicting speed on a road segment from time and day of the week, we now return to the weight function introduced in Section \ref{sec:road-network-rep}. Let 
+\begin{align}
+c: E \times T \times W \rightarrow \mathbb{R+}
+\end{align}
+be he \emph{weight function} that maps an edge, timestamp and day of the week, to a predicted speed of traffic.
+
+The weight function works, by using the $speed$ function \ref{eq:speed}
