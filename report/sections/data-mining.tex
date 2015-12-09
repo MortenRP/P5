@@ -132,15 +132,16 @@ We utilise a few filters for preprocessing our observations. Some observations a
 	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
 \end{figure}
 \subsection{Weight function}\label{sec:weight-function}
-With the regression model for predicting speed on a road segment from time and day of the week, we now return to the weight function introduced in Section \ref{sec:road-network-rep}. Let 
+As mentioned in Section \ref{}, we are interested in, given a road a road segment, time and day of the week, how fast you can travel through the road segment. This problem is solved, by the weight function.
+With the regression model for predicting speed on a road segment from time and day of the week, we can compute the prediction for the travel time. Let 
 \begin{align}
-c: E \times T \times W \rightarrow \mathbb{R+}
+weight: E \times T \times W \rightarrow \mathbb{R_+}
 \end{align}
 be the \emph{weight function} that maps an edge $e$, timestamp $t$ and day of the week $w$, to a real valued speed of traffic.
 
-The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
+The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
 \begin{align}
-w(e,t,w) = \frac{speed(e,t,w)}{len(e)}
+weight(e,t,w) = \frac{speed(e,t,w)}{len(e)}
 \end{align}
 where:
 \begin{align}

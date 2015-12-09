@@ -17,7 +17,7 @@ Furthermore, two-way roads are represented as two edges,
 \begin{align*}
   e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)
 \end{align*}
-Each edge, $e$, also has an associated weight, $w(e)$ where  $w: E \times T \times W \rightarrow \mathbb R_+$ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
+Each edge, $e$, also has an associated weight, $weight(e)$ where  $weight: E \times T \times W \rightarrow \mathbb R_+$ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
 
 Usually, the weight of an edge is used to choose between edges in search algorithms. Similarly, we construct our weight function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til weight function} \par
 Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the weight function to represent differences between different types of roads.
@@ -39,20 +39,17 @@ e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
 From the mapmatched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Furtunately, the time of day, segment indetifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed.
 
-\subsubsection{Estimating observation tspeed}\label{KR:speed}
+\subsubsection{Estimating observation speed}\label{KR:speed}
 % How to estimate speed
-Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t1_i, t2_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
+Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
 \begin{align*}
 o_e = (t_1, d_1, w_1, S, e)
 \end{align*}
 where
 \begin{align*}
-S = median(\{s_1,...,s_i,...,s_n\})
+S = median(\{s_1,...,s_i,...,s_{n-1}\})
 \end{align*}
 and
 \begin{align*}
-s_i = \frac{dist(w_i, w_{i+1})}{t_i - t_{i+1}} \qquad \text{ where } 0 < i < n
-\end{align*}
-\begin{align*}
-median: S^n \rightarrow \mathbb{R}
+s_i = \frac{dist(wp_i, wp_{i+1})}{t_{i+1} - t_i} \qquad \text{ for } 0 < i < n
 \end{align*}
