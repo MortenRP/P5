@@ -75,7 +75,6 @@ where $f_1,...,f_n$ are linear regression functions for each partition over the 
 % Alternatives ?
 \\
 \subsection{Partitioning scheme}\label{patterns:segmentation}
-
 % Why do it?
 %	Want: piecewise linear functions, but how should we partition the days?
 In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in Figure \label{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
@@ -84,7 +83,8 @@ In order to use the piecewise linear regression approach, we must devise a parti
 	\item How many observations is required to perform regression?
 	\item How do we guarantee enough observations in every partition?
 \end{itemize}
-While it makes sense to have equally sized partitions, it does not guarantee that there will be enough observations to perform a accurate regression for every partition (an example would be, that there are usually less vehicles driving at night, thus less observations in this partition). Furthermore, since traffic patterns most likely are different for different road segments, a static partitioning is not guaranteed to capture important patterns in traffic, such as morning traffic. Therefore, we must incorporate a finer granularity in the partitioning scheme, to capture the differences traffic patterns and to ensure that there will be enough observations to actually perform regression.
+While it makes sense to have equally sized partitions, it does not guarantee that there will be enough observations to perform a accurate regression for every partition (an example would be, that there are usually less vehicles driving at night, thus less observations in this partition). Furthermore, since traffic patterns most likely are different for different road segments, a static partitioning is not guaranteed to capture important patterns in traffic, such as morning traffic. Therefore, we must incorporate a finer granularity in the partitioning scheme, possibly different for every segment, to capture the differences traffic patterns and to ensure that there will be enough observations to actually perform regression.
+
 This leads us to a dynamic partitioning scheme, where the partitioning is based on the density of observations and how well the function fits the data. A measure to use for such a partitioning, could be the Sum of Squared Errors, which is a measure of how close a predicted value is to the real value. Partitioning is then done, based on minimizing the Sum of Squared Errors, as this yields more accurate regression models.
 
 \subsection{Quality measure}\label{quality-measure}
@@ -111,12 +111,8 @@ In our implementation of the regression model described in Section \ref{patterns
 We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
 
 \subsubsection{The M5P algorithm}
-\begin{itemize}
-\item Why use it?
-\item What it is?
-\item How does it work?
-\end{itemize}
-\todo{Write about the M5P algorithm and how it does what we want}
+The M5P algorithm constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from learning examples with either regression models or constants at the leaves. It works by constructing a decision tree where splits are determined from a splitting criterion, and then pruning the tree and smoothing the regression models relative to eachother. Instead of chosing a feature from the lowest entropy, the algorithm choses features based on the expected variance from the observations used as training data.\todo{explain more in detail.} Thereforem, the algorithm detects partitions for the piecewise linear regresion mode that the model tree represents, which means that no explicit definition of partitions is required. 
+
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
@@ -131,6 +127,7 @@ We utilise a few filters for preprocessing our observations. Some observations a
 	;
 	\end{tikzpicture}
 	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
+	\label{fig:model-tree}
 \end{figure}
 \subsection{Weight function}\label{sec:weight-function}
 As mentioned in Section \ref{}, we are interested in, given a road a road segment, time and day of the week, how fast you can travel through the road segment. This problem is solved, by the weight function.
