@@ -136,6 +136,14 @@ With the regression model for predicting speed on a road segment from time and d
 \begin{align}
 c: E \times T \times W \rightarrow \mathbb{R+}
 \end{align}
-be he \emph{weight function} that maps an edge, timestamp and day of the week, to a predicted speed of traffic.
+be the \emph{weight function} that maps an edge $e$, timestamp $t$ and day of the week $w$, to a real valued speed of traffic.
 
-The weight function works, by using the $speed$ function \ref{eq:speed}
+The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
+\begin{align}
+w(e,t,w) = \frac{speed(e,t,w)}{len(e)}
+\end{align}
+where:
+\begin{align}
+len:E \rightarrow \mathbb{R_+}
+\end{align}
+is a length function, that maps edges to their length.
