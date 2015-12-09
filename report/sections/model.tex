@@ -45,11 +45,23 @@ s \in \mathbb{R} &\text{ is the speed and}\\
 e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
 
-From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed.
+From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed. Observations are generated on a link-to-link basis.\todo{Define link somewhere}
+
+We have encountered a number of problems that can occur when generating observations:
+
+\begin{enumerate}
+	\item Speeds cannot be accurately calculated when there are fewer than two waypoints on a link.
+	\item Sometimes, a few consecutive waypoints are identical. This is only a problem when all the waypoints are identical, as that is effectively equivalent to having only a single waypoint.
+	\item The map used by the TrackMatching may differ from the one used locally. In one case, a way in the TrackMatching map was represented as two separate ways in the map we used. In another, a node in the map used by TrackMatching did not exist in ours.
+	\item Some of the drivers in the Beijing dataset drove in the wrong direction on a one-way road. This might be an error in the map.
+	\item Due to the inaccuracies in GPS technology, someone staying in the same place will appear to move back and forth on a way. The same will happen in a few cases when the map-matcher includes waypoints that should have been pruned.
+\end{enumerate}
+
+The problems are solved by skipping links where they occur. This increases the average quality of observations in exchange for a slight decrease in the quantity.
 
 \subsubsection{Estimating observation speed}\label{KR:speed}
 % How to estimate speed
-Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
+Given a road segment $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
 \begin{align*}
 o_e = (t_1, d_1, w_1, S, e)
 \end{align*}
