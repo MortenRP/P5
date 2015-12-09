@@ -10,31 +10,31 @@ From our knowledge representation of the road network and traffic, we want to pr
 \item \emph{classification}: Define a class feature of a road, that defines the state of the road. An example could be $Traffic \in \{free, light, medium, heavy\}$. A given road then has a classification based on the observations of speed within some time period.
 \item \emph{speed}: we measure the traffic on a given road, by how fast you can drive on the road. In addition, one could measure the ratio between speed and speed limit.
 \end{itemize}
-The capacity of a road would be possible to estimate from the speed limit, length of a road, safety distances and number of cars. However, drivers do not always drive in a uniform manner, which makes it difficult to accurately estimate capacities.
-Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed.
+The capacity of a road would be possible to estimate from the speed limit, length of a road, safety distances and number of cars. However, drivers do not always drive in a uniform manner, which makes it difficult to accurately estimate capacities.\par
+Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed. This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.\par
 
-This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
-To predict the traffic speed on a given road segment, at a given time we can consider a prediction a function:
-\begin{align*}
+To predict the traffic speed on a given road segment, at a given time we can consider a speed prediction a function:
+\begin{align}
 speed: E \times T \times W \rightarrow \mathbb{R}
-\end{align*}
-that takes a segment and time of the wanted prediction, and outputs the prediction as a real valued speed. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time.
-Predicting the numeric value of some variable based on previous observations is typically associated with regression. Regression fits input and output pairs to a function, such that future values for input pairs can be predicted. Fitting a regression function on the observations for a particular road segment, can provide a way to predict the traffic on the segment. Since traffic varies over time, one could argue that a polynomial regression function would fit the observations better than a linear function as illustrated in figure \ref{fig:compare-regression}.
+\end{align}
+that maps a road segment, time of day and day of week to the a real valued speed prediction. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time. \par
+Predicting the numeric value of some variable based on previous observations is typically associated with regression. Regression fits input and output pairs to a function, such that future values for input pairs can be predicted. Fitting a regression function on the observations for a particular road segment, provides a way to predict the traffic on the segment. However, since traffic varies over time, one could argue that a polynomial regression function would fit the observations better than a linear function as illustrated in figure \ref{fig:compare-regression}.
 \begin{figure}
 \includegraphics[width=\textwidth]{figures/compare-regression.pdf}
 \caption{Different regression fits on the same dataset.}
 \label{fig:compare-regression}
 \end{figure}
-Even though the higher order regression functions generally fits the training data better, this might not be the case for future observations where the data actually might fit the linear case best. However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions portrays straight lines, whereas fluctuations would be more acurately portrayed as curves in the function. For this reason, we instead utilise several linear regression functions over the course of a day. More specifically, we split a day  into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t1,t2)$ and $t1,t2$ are time-stamps. Thus, a partition is defined as a period of time between $t1$ and $t2$. For every $p_i$, we perform a linear regression over the observations within that period of time. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
+Even though the higher order regression functions generally fits the training data better, such a fit might cause \emph{overfitting} observations, where the accuracy of future predictions decreases and the a linear fit might fit the future observations better. \par
+However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions by definition cannot model large fluctuations. For this reason, we instead utilise several linear regression models over the course of a day. More specifically, we split a day into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t_1,t_2)$ and $t_1,t_2$ are time-stamps. Thus, a partition is defined as a period of time between $t_1$ and $t_2$. For every $p_i$, we perform a linear regression fit, $f_i$, over the observations within that period of time where $f_i:T \rightarrow \mathbb{R}$. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
 \begin{equation}\label{eq:speed-piecewise}
-speed(s,t) =
+speed(e,t, w) =
 \begin{cases}
-f_1(s)       & \quad \text{if } t \text{ is in } p_1\\
-f_2(s)  & \quad \text{if } t \text{ is in } p_2\\
+f_1(e)       & \quad \text{if } t \in p_1\\
+f_2(e)  & \quad \text{if } t \in p_2\\
 &\vdots\\
-f_n(s) & \quad \text{if } t \text{ is in } p_n
+f_n(e) & \quad \text{if } t \in p_n
 \end{cases}
 \end{equation}
 
@@ -87,7 +87,7 @@ While it makes sense to have equally sized partitions, it does not guarantee tha
 This leads us to a dynamic partitioning scheme, where the partitioning is based on the density of observations and how well the function fits the data. A measure to use for such a partitioning, could be the Sum of Squared Errors, which is a measure of how close a predicted value is to the real value. Partitioning is then done, based on minimizing the Sum of Squared Errors, as this yields more accurate regression models.
 
 \subsection{Quality measure}\label{quality-measure}
-Some of the observations might be based on a small number of GPS samples, or data that is mapmatched with a high error rate (accuracy of which road was best to mapmatch on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
+Some of the observations might be based on a small number of GPS samples, or data that is map-matched with a high error rate (accuracy of which road was best to map-match on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
 \begin{equation}
 Q(o) = \frac{|wp|}{|e|}+0.29
 \end{equation}
@@ -105,9 +105,9 @@ where $|e|$ is the length of a road segment $e$, and $|wp|$ is the number of way
 % What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
 % How do we use it? (M5p in weka)
-In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore intregrates well with our system.
+In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore integrates well with our system.
 
-We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3s internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
+We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
 
 \subsubsection{The M5P algorithm}
 \begin{itemize}
