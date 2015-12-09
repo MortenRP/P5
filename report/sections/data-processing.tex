@@ -1,19 +1,22 @@
 \section{Data Preprocessing}
-Here we discuss how to process the Beijing dataset. The overall process is illustrated in \ref{fig:data-processing}. 
+Here we discuss how to process the Beijing dataset. The overall process is illustrated in \ref{fig:data-processing}.
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=1\textwidth]{figures/data-processing.pdf}
     \caption{From raw gps data to database}
     \label{fig:data-processing}
 \end{figure}
+
 The gps dataset is converted into the GPX format which is subsequently map-matched to the road network of Beijing. The map-matched data is then converted into the model objects of the system, and are then stored in the respective tables of the database. Likewise, the map of the Beijing road network is converted to model objects and stored in the database. By doing so, we have a knowledge base of the road network of Beijing and data about vehicle movements in a unified format. \todo{maybe we should perform some data cleaning}
+
 \subsection{Map generation}
 To model the road network of Beijing we need to have the specific information about all the roads in the road network. This information is available several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an open source map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possibility of wrong data, limited data, etc\todo{Er det godt nok bare at skrive etc? + kilde?}. But because this service was the only free service that we could find, we see no other option than having in mind that these problems can occur. We have also found that OpenStreetMap cannot export large areas of a map, such as the whole city of Beijing. Therefore we have chosen to use one of its mirror sites, Geofabrik, which holds extract\todo{Forstår ikke helt det?} of the whole world, segmented into countries and these are updated daily. This makes it possible for us to extract the whole map for China.
 
 \subsubsection{Format \& Pre-processing}
 The maps from Geofabrik comes in a compressed format called pbf. To extract the relevant data from this format we are using a tool called Osmosis, to query the file using several filters to be able to extract only the information relevant.
-We are using two types of filters with Osmosis, the first is to limit the area that we want to extract, since the map we got is for all of China. The second filter is used to extract only roads from the restricted area.
-With this filter we have the possibility to specify which roads we want to have in the output. Because all paths are marked in OpenStreetMap as a way, we want to filter paths such as side-walks, bicycle ways, and other ways that are not possible to use with a car.
+
+We are using two types of filters with Osmosis, the first is to limit the area that we want to extract, since the map we got is for all of China. The second filter is used to extract only roads from the restricted area. With this filter we have the possibility to specify which roads we want to have in the output. Because all paths are marked in OpenStreetMap as a way, we want to filter paths in order to remove side-walks, bicycle ways, and other ways that are not possible to use with a car.
 
 The extracted data from the Osmosis query is then exported to a file which is structured in a way that resembles the XML format. There are two types left in the export, which are nodes and ways. Nodes represent road intersections and are also used to indicate points along a road if the road is curved. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a intersection have a traffic light, ect\todo{igen, er etc godt nok at skrive?}.
 Ways are almost similar structured, but they also contain a nd tag which contains a value the id of a node related to the way.\todo{Forstår ikke den sidste sætning her}
@@ -31,7 +34,7 @@ Ways are almost similar structured, but they also contain a nd tag which contain
 </way>
 \end{lstlisting}
 
-We have illustrated the representation of nodes, ways, edges and segments in \figref{fig:waywithnodes}. Where the red nodes are intersections, the green nodes are points along a way, ways are the black lines, edges are the lines between every node, and a segment is the blue lines between intersection nodes.
+We have illustrated the representation of nodes, ways, edges and segments in \figref{fig:waywithnodes}. The red nodes represent intersections, the green nodes are points along a way, edges are the black lines between every node, the way is the entire black line, and segments are represented by the blue lines between intersection nodes.
 
 \begin{figure}[h!]
   \centering
@@ -41,13 +44,14 @@ We have illustrated the representation of nodes, ways, edges and segments in \fi
 \end{figure}
 
 \subsubsection{Generation}
-To be able to extract the information in the Osmosis export, a XML parser is used to model the road network. When a node or way tag is read a equivalent data structure is created and stored. 
+An XML parser is used to extract the information from the Osmosis export that is needed to model the road network. When a node or way tag is read a equivalent data structure is created and stored.
+
 \begin{lstlisting}[style=java, caption=Datastructure for a node]
 Node{
 	long id;
 	double longitude;
 	double latitude;
-	Ways[] connectedWays;
+	Way[] connectedWays;
 }
 \end{lstlisting}
 
@@ -61,6 +65,7 @@ Way{
 
 We want to model the road network as a graph, but the relation between ways and nodes are not in this format when exported from Osmosis, so we have to work on the data structures generated from the parser.
 Besides the original way and node data structures, we have chosen to create two other classes such that we are able to construct a graph, these are called edges and segments.
+
 Edges are the links between every two nodes and a segment is the link between to intersection nodes. When generating these classes from ways and nodes, we have to check whether a way has a tag attached to it which describes if the way is one-way or not, because if it is we have to create edges and segments in both directions.
 
 \begin{lstlisting}[style=java, caption=Datastructure for an edge]
@@ -84,25 +89,28 @@ Segment{
 \end{lstlisting}
 
 The relation between edges and segments is that each edge of a segment contains a reference to the segment that it is a part of, the same is true from the relation between ways and segments.
+
 \subsection{GPS sample cleaning}
 % WHAT IS IT?
 % WHY DO WE DO IT?
 % HOW DO WE DO IT?
-We perform a simple process of cleaning the GPS data, by filtering GPS samples from outside the physical city limits. The limits are given by a bounding box defined by the coordinates \todo{insert coordinates}. Cleaning the data before further processing is key, since not all of the data is accurate or even useful for reasoning about the traffic. We Even though of the data that is filtered is reliable enough, we delimit our focus on congestion in the city center, so we chose to look aside this data. Since most of the data is clustered in the city center anyway, we do not lose significant parts of the dataset by filtering these samples.\\
-Furthermore, some GPS samples are of very bad quality. Some routes are (according to the GPS samples) at one moment driving through Bejing, and the next moment suddenly driving in Africa or Europe. This phenomenon could be caused by weak connection to the GPS satelites e.g. when driving through are tunnel. The inacuraries these corrupt samples introduce, are taken care of as well by filtering samples outside of the city limits. Fortunately, we do not lose all of the samples associated with the rest of the route involved - just the corrupted sample.\\\\
-GPS samples that is shown to have completely unrealistic properties is also cleaned from the dataset. An example would be the speed driven between two samples relative to the change in distance between the sampling timestamps. If the speed required to move the physical distance in that time is unrealistic (say, well above what a car can actually drive), we filter these "bad" observations. Note that we actually postpone the filtering of these samples, as it is easier to take into account after mapmatching of the GPS samples has been completed. 
+We perform a simple process of cleaning the GPS data, by filtering GPS samples from outside the physical city limits. The limits are given by a bounding box defined by the coordinates \todo{insert coordinates}. Cleaning the data before further processing is key, since not all of the data is accurate or even useful for reasoning about the traffic. We Even though of the data that is filtered is reliable enough, we delimit our focus on congestion in the city center, so we chose to look aside this data. Since most of the data is clustered in the city center anyway, we do not lose significant parts of the dataset by filtering these samples.
+
+Furthermore, some GPS samples are of very bad quality. Some routes are (according to the GPS samples) at one moment driving through Bejing, and the next moment suddenly driving in Africa or Europe. This phenomenon could be caused by weak connection to the GPS satelites e.g. when driving through are tunnel. The inacuraries these corrupt samples introduce, are taken care of as well by filtering samples outside of the city limits. Fortunately, we do not lose all of the samples associated with the rest of the route involved - just the corrupted sample.
+
+GPS samples that is shown to have completely unrealistic properties is also cleaned from the dataset. An example would be the speed driven between two samples relative to the change in distance between the sampling timestamps. If the speed required to move the physical distance in that time is unrealistic (say, well above what a car can actually drive), we filter these "bad" observations. Note that we actually postpone the filtering of these samples, as it is easier to take into account after map-matching of the GPS samples has been completed. 
 
 \subsection{Map matching}
-Generally, GPS coordinates measured are often imprecise due to external factors, and does therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the Beijing dataset must treated as approximations of GPS locations. This causes some problems in terms of how we should interpret the GPS samples as traffic, since we are interested the following properties:
-\begin{enumerate}
-\item Which road in the road network was a vehicle traveling on?
-\item At what speed was the vehicle traveling?
-\end{enumerate}
-The main problem is illustrated in figure \ref{fig:mapmatching}. 
+Generally, GPS coordinates measured are often imprecise due to external factors, and do therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the Beijing dataset must be treated as approximations of GPS locations. This causes some problems in terms of how we should decide which road the vehicle was traveling on and what its speed was.
+
 \begin{figure}
 \includegraphics[scale=1]{figures/mapmatching.png}
 \caption{GPS samples and the actual road driven on.}
 \label{fig:mapmatching}
 \end{figure}
-The orange and black colored GPS samples are imprecise in the sense, that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates of roads, since the distance from the samples to the two roads might be equal.\\
-Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exists that performs this task, including TrackMatching, GraphHopper and N-Gemma. Limited informal evaluations of these implementations showed that TrackMatching provided a more precise mapmatching than GraphHopper, which both work on GPX formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the of use of N-Gemma, since TrackMatching was adequate solution to our MapMatching problem, despite it being a webservice.\\  Alternatively, we consider implementing an map-matching algorithm ourselves, however considering the focus of the project is about constructing an intelligent routing agent, not an efficient mapmatching algorithm, we decided that utilising an existing implementation would be preferable, to have more time for our primary focus.
+
+The problem is illustrated in figure \ref{fig:mapmatching}. The orange-and-black colored GPS samples are imprecise in the sense that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates for roads, since the distance from the samples to the two roads might be equal.
+
+Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exist that perform this task, including TrackMatching, GraphHopper and N-Gemma.\todo{Consider adding a source for each tool.} Limited informal evaluations of these implementations showed that TrackMatching provided a more precise map-matching than GraphHopper, both of which work with GPX-formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the of use of N-Gemma, since TrackMatching was an adequate solution to our map-matching problem, despite it being a webservice.
+
+Alternatively, we consider implementing an map-matching algorithm ourselves, however given that the focus of the project is on constructing an intelligent routing agent; not an efficient map-matching algorithm, we decided that our time would be better spent elsewhere, and opted for utilising an existing implementation for map-matching.

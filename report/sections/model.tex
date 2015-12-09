@@ -9,9 +9,16 @@ e about the road network and traffic in Beijing. We consider the knowledge repre
 % Why and what?
 To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.\\
 % How ?
-Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each $e \in E$ is a tuple $e=(n_o, n_t)$ where $n_o, n_t \in N$ and represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$ and $s$ is the speed limit. The speed limit captures the most important difference between different types of roads, since we are only interested in \emph{how fast can i travel along this road}. Furthermore, two-way roads are represented as two edges, $e_1, e_2$ where $e_1 = (u, v)$ and $e_2=(v, u)$. Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to choose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}
-\\
-Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the cost function to represent differences between different types of roads. 
+Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$. That is:
+\begin{align*}
+  e \in E \text{ is a tuple } e=(n_o, n_t) \text{ where } n_o, n_t \in N
+\end{align*}
+Furthermore, two-way roads are represented as two edges,
+\begin{align*}
+  e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)
+\end{align*}
+Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to choose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til cost function} \par
+Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the cost function to represent differences between different types of roads.
 
 \subsection{Traffic representation}\label{KR:traffic}
 We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a seperate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.\\
@@ -20,7 +27,7 @@ Let an \emph{observation}, $o$, be:
 \begin{align*}
 o = (t, d, w, s, e)
 \end{align*}
-where 
+where
 \begin{align*}
 t \in T &\text{ is the time of day} \\
 d \in D &\text{ is a date} \\
