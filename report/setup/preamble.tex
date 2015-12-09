@@ -77,6 +77,29 @@
 \usepackage[framed,amsmath,thmmarks]{ntheorem}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Algorithms (including pseudocode)
+% https://en.wikibooks.org/wiki/LaTeX/Algorithms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Defines the environment algorithm
+% which should be used to show line numbers
+\usepackage{algorithm}
+
+% Defines the environment algorithmic
+% and the commands used herein
+\usepackage[noend]{algpseudocode}
+
+% Setup for algorithmic
+\algrenewcommand\alglinenumber[1]{\textit{\scriptsize #1.}}
+%\renewcommand{\COMMENT}[2][.5\linewidth]{%
+%  \leavevmode\hfill\makebox[#1][l]{//~#2}}
+\renewcommand{\algorithmiccomment}[1]{\leavevmode\hfill\makebox[.5\linewidth][l]{//~#1}}
+\algnewcommand\In{\textbf{in }}
+\algnewcommand\Where{\textbf{where }}
+\algnewcommand\Or{\textbf{or }}
+\algnewcommand\AND{\textbf{and }}
+\algnewcommand\True{\textbf{true }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Page Layout
 % http://en.wikibooks.org/wiki/LaTeX/Page_Layout
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
