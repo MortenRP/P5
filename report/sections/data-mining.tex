@@ -16,6 +16,7 @@ Performing some discrete classification could help to distinguish between differ
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
 To predict the traffic speed on a given road segment, at a given time we can consider a speed prediction a function:
+
 \begin{align}\label{eq:speed}
 speed: E \times T \times W \rightarrow \mathbb{R}
 \end{align}
@@ -87,7 +88,7 @@ While it makes sense to have equally sized partitions, it does not guarantee tha
 This leads us to a dynamic partitioning scheme, where the partitioning is based on the density of observations and how well the function fits the data. A measure to use for such a partitioning, could be the Sum of Squared Errors, which is a measure of how close a predicted value is to the real value. Partitioning is then done, based on minimizing the Sum of Squared Errors, as this yields more accurate regression models.
 
 \subsection{Quality measure}\label{quality-measure}
-Some of the observations might be based on a small number of GPS samples, or data that is mapmatched with a high error rate (accuracy of which road was best to mapmatch on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
+Some of the observations might be based on a small number of GPS samples, or data that is map-matched with a high error rate (accuracy of which road was best to map-match on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
 \begin{equation}
 Q(o) = \frac{|wp|}{|e|}+0.29
 \end{equation}
@@ -105,9 +106,9 @@ where $|e|$ is the length of a road segment $e$, and $|wp|$ is the number of way
 % What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
 % How do we use it? (M5p in weka)
-In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore intregrates well with our system.
+In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore integrates well with our system.
 
-We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3s internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
+We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
 
 \subsubsection{The M5P algorithm}
 \begin{itemize}

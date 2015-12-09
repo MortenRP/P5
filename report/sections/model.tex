@@ -1,13 +1,13 @@
 \section{Knowledge representation}
-In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More concretely, we consider how we model knowledg
-e about the road network and traffic in Beijing. We consider the knowledge representation for several reasons. First of all, the raw GPS samples and map data is not really useful to reason about, as there are a lot of unessary details included. Thus, we want to make sure that the model adequately portrays the real roads and traffic of Beijing only with the required level of detail. Secondly, we want to be able to reason about this knowledge to later be able to find patterns in the traffic.
+In this section we describe what we are going to consider knowledge in the system and how we are going to represent that knowledge. More specifically, we consider how we can model knowledge about the road network and traffic in Beijing. We consider the knowledge representation for several reasons. First of all, the raw GPS samples and map data is not really useful to reason about, as there are a lot of unnecessary details included. Thus, we want to make sure that the model adequately portrays the real roads and traffic of Beijing only with the required level of detail. Secondly, we want to be able to reason about this knowledge to later be able to find patterns in the traffic.
 % WHAT is going to be in this section
 % WHY are we bothering with this section?
 % HOW follows from the subsections.
 
 \subsection{Road network representation}\label{sec:road-network-rep}
 % Why and what?
-To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.\\
+To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.
+
 % How ?
 Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$. That is:
 \begin{align*}
@@ -19,12 +19,15 @@ Furthermore, two-way roads are represented as two edges,
 \end{align*}
 Each edge, $e$, also has an associated weight, $weight(e)$ where  $weight: E \times T \times W \rightarrow \mathbb R_+$ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
 
-Usually, the weight of an edge is used to choose between edges in search algorithms. Similarly, we construct our weight function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til weight function} \par
+Usually, the weight of an edge is used to choose between edges in search algorithms. Similarly, we construct our weight function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til weight function} 
+
 Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the weight function to represent differences between different types of roads.
 
 \subsection{Traffic representation}\label{KR:traffic}
-We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a seperate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.\\
-From the Bejing datset, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.\\
+We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a separate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.
+
+From the Beijing dataset, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.
+
 Let an \emph{observation}, $o$, be:
 \begin{align*}
 o = (t, d, w, s, e)
@@ -37,7 +40,8 @@ w \in W &\text{ is the day of the week} \\
 s \in \mathbb{R} &\text{ is the speed and}\\
 e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
-From the mapmatched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Furtunately, the time of day, segment indetifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed.
+
+From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed.
 
 \subsubsection{Estimating observation speed}\label{KR:speed}
 % How to estimate speed
