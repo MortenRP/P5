@@ -17,7 +17,11 @@ Furthermore, two-way roads are represented as two edges,
 \begin{align*}
   e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)
 \end{align*}
-Each edge, $e$, also has an associated weight, $weight(e)$ where  $weight: E \times T \times W \rightarrow \mathbb R_+$ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
+Each edge, $e$, also has an associated weight, $weight(e)$ where
+\begin{align}
+weight: E \times T \times W \rightarrow \mathbb R_+
+\end{align}
+ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
 
 Usually, the weight of an edge is used to choose between edges in search algorithms. Similarly, we construct our weight function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til weight function} 
 
