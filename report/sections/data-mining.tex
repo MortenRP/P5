@@ -11,7 +11,9 @@ From our knowledge representation of the road network and traffic, we want to pr
 \item \emph{speed}: we measure the traffic on a given road, by how fast you can drive on the road. In addition, one could measure the ratio between speed and speed limit.
 \end{itemize}
 The capacity of a road would be possible to estimate from the speed limit, length of a road, safety distances and number of cars. However, drivers do not always drive in a uniform manner, which makes it difficult to accurately estimate capacities.
-Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed. This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.
+Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed.
+
+This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
 To predict the traffic speed on a given road segment, at a given time we can consider a prediction a function:
@@ -45,7 +47,7 @@ where $f_1,...,f_n$ are linear regression functions for each partition over the 
 \end{figure}
 % Why use it?
 % - We want to predict impact of traffic on travel time.
-% - How do we measure traffic ? 
+% - How do we measure traffic ?
 % 	-	Capacity of roads?
 % 		- Difficult to determine accurately, people drive unsafe?
 % 	- 	Speeds on roads?
@@ -66,7 +68,7 @@ where $f_1,...,f_n$ are linear regression functions for each partition over the 
 % 			-	How do we segment days?
 % 			-	Residual sum
 % 			-	Algorithms, M5P automatically splits and generates linear functions
-% 
+%
 % What is it?
 % How did we use it?
 % Alternatives ?
@@ -113,14 +115,14 @@ We utilise a few filters for preprocessing our observations. Some observations a
 \item What it is?
 \item How does it work?
 \end{itemize}
-\todo{Write about the M5P algorithm and how it does what we want} 
+\todo{Write about the M5P algorithm and how it does what we want}
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
 	\node {t}
 	[level distance=3cm]
 	child { node {$f_1(e)$} edge from parent [->] node [left] {$ < 06:00 $} }
-	child { node {t} 
+	child { node {t}
 		child { node {$f_2(e)$} edge from parent [->] node [left] {$ < 18:00 $}}
 		child { node {$f_3(e)$} edge from parent [->] node [right] {$ 18:00 \le $} }
 		edge from parent [->] node [right] {$06:00 \le $}
@@ -129,6 +131,3 @@ We utilise a few filters for preprocessing our observations. Some observations a
 	\end{tikzpicture}
 	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
 \end{figure}
-
-
-
