@@ -4,22 +4,24 @@ In this section we describe what we are going to consider knowledge in the syste
 % WHY are we bothering with this section?
 % HOW follows from the subsections.
 
-\subsection{Road network representation}
+\subsection{Road network representation}\label{sec:road-network-rep}
 % Why and what?
 To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.
 
 % How ?
-Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each
+Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$. That is:
 \begin{align*}
-  e \in E \text{ is a tuple } e=(n_o, n_t, s) \text{ where } n_o, n_t \in N
+  e \in E \text{ is a tuple } e=(u, v) \text{ where } u, v \in N
 \end{align*}
-and represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$ and $s$ is the speed limit. The speed limit captures the most important difference between different types of roads, since we are only interested in \emph{how fast can i travel along this road}. Furthermore, two-way roads are represented as two edges,
+Furthermore, two-way roads are represented as two edges,
 \begin{align*}
   e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)
 \end{align*}
-Each edge, $e$, also has an associated cost, $c(e)$ where  $c: E \rightarrow \mathbb R_+$ is the cost function. Usually, the cost of an edge is used to choose between edges in search algorithms. Similarly, we construct our cost function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til cost function}
+Each edge, $e$, also has an associated weight, $w(e)$ where  $w: E \times T \times W \rightarrow \mathbb R_+$ is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
 
-Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the cost function to represent differences between different types of roads.
+Usually, the weight of an edge is used to choose between edges in search algorithms. Similarly, we construct our weight function for this purpose, as described in \ref{patterns:model-trees}\todo{Skal ref til weight function} 
+
+Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the weight function to represent differences between different types of roads.
 
 \subsection{Traffic representation}\label{KR:traffic}
 We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a separate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.
@@ -32,24 +34,24 @@ o = (t, d, w, s, e)
 \end{align*}
 where
 \begin{align*}
-t &\text{ is the time of day} \\
-d &\text{ is a date} \\
-w &\text{ is the day of the week} \\
+t \in T &\text{ is the time of day} \\
+d \in D &\text{ is a date} \\
+w \in W &\text{ is the day of the week} \\
 s \in \mathbb{R} &\text{ is the speed and}\\
 e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
 
 From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed.
 
-\subsubsection{Estimating observation speed}\label{KR:speed}
+\subsubsection{Estimating observation tspeed}\label{KR:speed}
 % How to estimate speed
-Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $w_i = (d_i, w_i, t1_i, t2_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
+Given a segment, $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t1_i, t2_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
 \begin{align*}
 o_e = (t_1, d_1, w_1, S, e)
 \end{align*}
 where
 \begin{align*}
-S = median(\{s_1,...s_i,...,s_n\})
+S = median(\{s_1,...,s_i,...,s_n\})
 \end{align*}
 and
 \begin{align*}
