@@ -45,7 +45,7 @@ s \in \mathbb{R} &\text{ is the speed and}\\
 e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
 
-From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed. Observations are generated on a link-to-link basis.\todo{Define link somewhere}
+From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed. Observations are generated on a link-to-link basis.
 
 We have encountered a number of problems when generating observations:
 
@@ -59,17 +59,30 @@ We have encountered a number of problems when generating observations:
 
 These problems are solved by skipping links where they occur. This increases the average quality of observations in exchange for a slight decrease in the quantity.
 
-\subsubsection{Estimating observation speed}\label{KR:speed}
+\subsubsection{Estimating observation speed}\label{KR:speed}\todo{Nyligt omskrevet. Læs og ret.}
 % How to estimate speed
-Given a road segment $e \in E$ and a sequence of GPS waypoints, $WP=(wp_1,...,wp_i,...,wp_n)$ where $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation, $o_e$, such that:
+Given a link that contains a set of road segment $E$, a sequence of coordinates $Coords = (c_1,...,c_i,...,c_n)$, and a sequence of GPS waypoints projected onto a road, $WP=(wp_1,...,wp_i,...,wp_n)$ where $c_i = (long_i, lat_i)$ $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation $o_e$ for each $e \in E$ such that:
 \begin{align*}
 o_e = (t_1, d_1, w_1, S, e)
 \end{align*}
+
 where
 \begin{align*}
 S = median(\{s_1,...,s_i,...,s_{n-1}\})
 \end{align*}
-and
+%
+The speeds in $S$ are calculated using:
 \begin{align*}
 s_i = \frac{dist(wp_i, wp_{i+1})}{t_{i+1} - t_i} \qquad \text{ for } 0 < i < n
 \end{align*}
+
+where
+\begin{align*}
+dist(wp_1, wp_2) = \begin{cases} 
+	gd(wp_1, wp_2) & |cbw| = 0 \\
+	gd(wp_1, c_1) + gd(c_1, c_2) + ... & |cbw| > 0 \\
+	 + gd(c_{m-1}, c_m) + gd(c_m, wp_2)
+\end{cases}
+\end{align*}
+
+and gd(a, b) is the geodetic distance between two points, and cbw is the sequence of all coordinates $(c_1,...,c_m)$ in Coords between $wp_1$ and $wp_2$ on road segment $e$.
