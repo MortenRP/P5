@@ -241,3 +241,11 @@
   literate={"}{\textquoteright\textquoteright}1
 }
 \usepackage{qtree}
+
+\makeatletter
+\newcommand{\thickhline}{%
+	\noalign {\ifnum 0=`}\fi \hrule height 1pt
+	\futurelet \reserved@a \@xhline
+}
+\newcolumntype{T}{|@{}|@{}|}
+\makeatother
