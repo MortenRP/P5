@@ -111,7 +111,7 @@ This leads us to a dynamic partitioning scheme, where the partitioning is based 
 In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore integrate well with our system.
 
 \subsubsection{Data filtering}
-Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering}, where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use.}
+Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering}, where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use.}
 
 %  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
 \begin{table}[H]
@@ -120,10 +120,14 @@ Some of the observations might have been matched to the wrong road, based on a s
 		\hline
 		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{Error} & \textbf{\#Wpts} & \textbf{Observations} \\ \hline
 		-                                                                                       & -                & -             & -              & -               & 4584306               \\ \hline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater 4  & 269527                \\ \hline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527                \\ \hline
 		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128                \\ \hline
 		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & -                & \textless= 20 & \textless 100  & -               & 878426                \\ \hline
 		\textless speed limit * 2                                                               & -                & \textless= 20 & \textless 100  & -               & 898774                \\ \hline
+		\textless= speed limit                                                                  & -                & \textless= 20 & \textless 100  & -               & 861766                \\ \hline
+		\textless= speed limit                                                                  & -                & \textless 300 & \textless 100  & -               & 2861949               \\ \hline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & -               & 1715070               \\ \hline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & \textgreater= 3 & 913779                \\ \hline
 	\end{tabular}
 	\caption{Observations remaining after using various filters. MSR = median sample rate of the link, \#Wpts = number of waypoints in the link.}
 	\label{tab:datafiltering}
@@ -151,12 +155,11 @@ Therefore, the algorithm detects partitions for the piecewise linear regresion m
 	\label{fig:model-tree}
 \end{figure}
 \subsection{Weight function}\label{sec:weight-function}
-As mentioned in Section \ref{}, we are interested in, given a road a road segment, time and day of the week, how fast you can travel through the road segment. This problem is solved, by the weight function.
-With the regression model for predicting speed on a road segment from time and day of the week, we can compute the prediction for the travel time. Let 
+As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let 
 \begin{align}
 weight: E \times T \times W \rightarrow \mathbb{R_+}
 \end{align}
-be the \emph{weight function} that maps an edge $e$, timestamp $t$ and day of the week $w$, to a real valued speed of traffic.
+be the \emph{weight function} that maps an edge $e$, timestamp $t$, and day of the week $w$, to a positive, real-valued travel time.
 
 The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
 \begin{align}
