@@ -243,3 +243,10 @@
 \usepackage{qtree}
 \theoremstyle{definition}
 \newtheorem{exmp}{Example}[section]
+\makeatletter
+\newcommand{\thickhline}{%
+	\noalign {\ifnum 0=`}\fi \hrule height 1pt
+	\futurelet \reserved@a \@xhline
+}
+\newcolumntype{T}{|@{}|@{}|}
+\makeatother
