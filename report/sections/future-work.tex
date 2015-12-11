@@ -7,9 +7,9 @@ In this section we will cover possibly area of (spændene) for this project. Thi
 The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
 
 \subsection{Map-matching}\label{sec:future:map-matching}
-Map-matching as describe in section \ref{map-matching} looks at the way this project have implemented this process, but this have highlighted some problems. Given a set of way-points the mapping function will give a route if one or more of these way-points are wrong the function will still make a route with them, never looking if this is possible.
+Map-matching as describe in section \ref{sec:mapmatching} looks at the way this project have implemented this process, but this have highlighted some problems. Given a set of way-points the mapping function will give a route if one or more of these way-points are wrong the function will still make a route with them, never looking if this is possible.
 
-This means that the map data need to look at again to fix these errors. A solution would be to build the map-matchere ourselves "it was out of this project scope". It would allow us the merge the mapping and error detection into one process.
+This means that the map data need to look at again to fix these errors. A solution would be to build the map-matchere ourselves "it was out of this project scope". It would allow us the merge the mapping and error detection into one process. Another possible solution could be to use another map-matching program, but more time would be need to make an informed decision on which of the service from section \ref{sec:mapmatching} to or if non of them are usable.
 
 \begin{itemize}
 	\item problems with mapmatching and alternative solutions
