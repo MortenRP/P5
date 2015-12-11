@@ -24,11 +24,11 @@ that maps a road segment, time of day and day of week to the a real valued speed
 Predicting the numeric value of some variable based on previous observations is typically associated with regression. Regression fits input and output pairs to a function, such that future values for input pairs can be predicted. Fitting a regression function on the observations for a particular road segment, provides a way to predict the traffic on the segment. However, since traffic varies over time, one could argue that a polynomial regression function would fit the observations better than a linear function as illustrated in figure \ref{fig:compare-regression}.
 \begin{figure}
 \includegraphics[width=\textwidth]{figures/compare-regression.pdf}
-\caption{Different regression fits on the same dataset.}
 \label{fig:compare-regression}
+\caption{Different regression fits on the same dataset.}
 \end{figure}
 Even though the higher order regression functions generally fits the training data better, such a fit might cause \emph{overfitting} observations, where the accuracy of future predictions decreases and the a linear fit might fit the future observations better. \par
-However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions by definition cannot model large fluctuations. For this reason, we instead utilise several linear regression models over the course of a day. More specifically, we split a day into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t_1,t_2)$ and $t_1,t_2$ are time-stamps. Thus, a partition is defined as a period of time between $t_1$ and $t_2$. For every $p_i$, we perform a linear regression fit, $f_i$, over the observations within that period of time where $f_i:T \rightarrow \mathbb{R}$. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
+However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions by definition cannot model large fluctuations. For this reason, we instead utilise several linear regression models over the course of a day. More specifically, we split a day into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t_1,...,t_j,...,t_k)$ and $t_1,t_2$ are time-stamps. Thus, a partition is defined as a period of time between $t_1$ and $t_2$ that contains every possible timestamp $t_j$ from $t_1$ to $t_k$. For every $p_i$, we perform a linear regression fit, $f_i$, over the observations within that period of time where $f_i:E \rightarrow \mathbb{R}$. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
 \begin{equation}\label{eq:speed-piecewise}
 speed(e,t, w) =
 \begin{cases}
@@ -39,7 +39,7 @@ f_n(e) & \quad \text{if } t \in p_n
 \end{cases}
 \end{equation}
 
-where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment $e$. The idea is illustrated in Figure \ref{fig:segmented-regression}
+where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment $e$. The idea is illustrated in Figure \ref{fig:segmented-regression}.
 \begin{figure}
 \centering
 \includegraphics[trim={0 9cm 0 9cm},clip, width=\textwidth]{figures/piecewise.pdf}
@@ -111,7 +111,8 @@ In our implementation of the regression model described in Section \ref{patterns
 We utilise a few filters for preprocessing our observations. Some observations are measured to drive faster than allowed on some roads, and as such, we normalise these observations speeds, to the speed limit. We do this, because we are not interested in getting speed predictions, that says you can drive faster than the allowed speed limit. Furthermore we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time. Also, we use the Weka3 implementation of the M5P algorithm.
 
 \subsubsection{The M5P algorithm}
-The M5P algorithm constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from learning examples with either regression models or constants at the leaves. It works by constructing a decision tree where splits are determined from a splitting criterion, and then pruning the tree and smoothing the regression models relative to eachother. Instead of chosing a feature from the lowest entropy, the algorithm choses features based on the expected variance from the observations used as training data.\todo{explain more in detail.} Thereforem, the algorithm detects partitions for the piecewise linear regresion mode that the model tree represents, which means that no explicit definition of partitions is required. 
+The M5P model tree induction algorithm in Weka, is an implementation of the M5' algorithm\cite{IMTCC96}. M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set of training examples, with either regression models or constants at the leaves. It works by recursively constructing a decision tree where splits are determined from a measure of reduction in standard deviation a given split provides. The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. Furthermore the resulting regression models at the leaves of the tree are mutually smoothed as to avoid having sharp transitions from model to model.
+Therefore, the algorithm detects partitions for the piecewise linear regresion mode that the model tree represents, which means that no explicit definition of partitions is required. 
 
 \begin{figure}
 	\centering
