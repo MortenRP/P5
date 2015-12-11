@@ -108,11 +108,10 @@ This leads us to a dynamic partitioning scheme, where the partitioning is based 
 % What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
 % How do we use it? (M5p in weka)
-For implementing regression models and data filters, we use the machine learning tools and algorithm implementations in Weka. Weka can be invoked directly from Java code, and therefore integrate well with our system.
+For implementing regression models and data filters, we use the machine learning tools and algorithm implementations in Weka. Weka can be invoked directly from Java code, and therefore integrates well with our system.
 
-The piecewise linear regression model described in Section \ref{patterns:regression-model} is implemented using the the M5P tree induction algorithm. M5P is an implementation of the M5' algorithm\cite{IMTCC96}. 
+The piecewise linear regression model described in Section \ref{patterns:regression-model} is implemented using the the M5P tree induction algorithm. M5P is an implementation of the M5' algorithm\cite{IMTCC96}. M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set $T$ of training examples, with regression models at the leaves that are either functions or constants.
 
-M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set, $T$ of training examples, with either regression models or constants at the leaves.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -126,13 +125,14 @@ M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-t
 	}
 	;
 	\end{tikzpicture}
-	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
+	\caption{Example of a simple model tree with three partitions and three linear regression models. The $t$ feature corresponds to the input time feature in equation \ref{eq:speed-piecewise}}
 	\label{fig:model-tree}
 \end{figure}
-It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by:
+
+It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by:\todo{Morten Trello: Fix}
 \begin{enumerate}
-\item chosing the attribute, $A$, that contains the the best split
-\item chosing the split in $A$, that yields the highest reduction in standard deviation.
+\item Choosing the attribute $A$ that contains the best split.
+\item Choosing the split in $A$ that yields the highest reduction in standard deviation.
 \end{enumerate}
 The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. This pruning makes sure the final model is not overfitting the training examples and can better be applied to unknown data. 
 
