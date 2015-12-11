@@ -108,7 +108,32 @@ This leads us to a dynamic partitioning scheme, where the partitioning is based 
 % What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
 % How do we use it? (M5p in weka)
-In our implementation of the regression model described in Section \ref{patterns:regression-model}, we use the machine learning tools and algorithm implementations in Weka3. Algorithms and tools of Weka3 can be invoked directly from Java code, and therefore integrate well with our system.
+For implementing regression models and data filters, we use the machine learning tools and algorithm implementations in Weka. Weka can be invoked directly from Java code, and therefore integrate well with our system.
+
+The piecewise linear regression model described in Section \ref{patterns:regression-model} is implemented using the the M5P tree induction algorithm. M5P is an implementation of the M5' algorithm\cite{IMTCC96}. 
+
+M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set of training examples, with either regression models or constants at the leaves. It works by recursively constructing a decision tree where splits are determined from a measure of reduction in standard deviation a given split provides. 
+
+
+
+The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. Furthermore the resulting regression models at the leaves of the tree are mutually smoothed as to avoid having sharp transitions from model to model.
+Therefore, the algorithm detects partitions for the piecewise linear regresion mode that the model tree represents, which means that no explicit definition of partitions is required. 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	\node {t}
+	[level distance=3cm]
+	child { node {$f_1(e)$} edge from parent [->] node [left] {$ < 06:00 $} }
+	child { node {t}
+		child { node {$f_2(e)$} edge from parent [->] node [left] {$ < 18:00 $}}
+		child { node {$f_3(e)$} edge from parent [->] node [right] {$ 18:00 \le $} }
+		edge from parent [->] node [right] {$06:00 \le $}
+	}
+	;
+	\end{tikzpicture}
+	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
+	\label{fig:model-tree}
+\end{figure}
 
 \subsubsection{Data filtering}
 Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering}, where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use.}
@@ -129,27 +154,11 @@ Some of the observations might have been matched to the wrong road, based on a s
 	\label{tab:datafiltering}
 \end{table}
 
-Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression. We use the Weka3 implementation of the M5P algorithm to generate the regression models.
+Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
 
 \subsubsection{The M5P algorithm}
-The M5P model tree induction algorithm in Weka, is an implementation of the M5' algorithm\cite{IMTCC96}. M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set of training examples, with either regression models or constants at the leaves. It works by recursively constructing a decision tree where splits are determined from a measure of reduction in standard deviation a given split provides. The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. Furthermore the resulting regression models at the leaves of the tree are mutually smoothed as to avoid having sharp transitions from model to model.
-Therefore, the algorithm detects partitions for the piecewise linear regresion mode that the model tree represents, which means that no explicit definition of partitions is required. 
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}
-	\node {t}
-	[level distance=3cm]
-	child { node {$f_1(e)$} edge from parent [->] node [left] {$ < 06:00 $} }
-	child { node {t}
-		child { node {$f_2(e)$} edge from parent [->] node [left] {$ < 18:00 $}}
-		child { node {$f_3(e)$} edge from parent [->] node [right] {$ 18:00 \le $} }
-		edge from parent [->] node [right] {$06:00 \le $}
-	}
-	;
-	\end{tikzpicture}
-	\caption{Example of a simple model tree with 3 partitions and 3 linear regression models. The $t$ feature coresponds to the input time feature in equation \ref{eq:speed-piecewise}}
-	\label{fig:model-tree}
-\end{figure}
+
+
 \subsection{Weight function}\label{sec:weight-function}
 As mentioned in Section \ref{}, we are interested in, given a road a road segment, time and day of the week, how fast you can travel through the road segment. This problem is solved, by the weight function.
 With the regression model for predicting speed on a road segment from time and day of the week, we can compute the prediction for the travel time. Let 
