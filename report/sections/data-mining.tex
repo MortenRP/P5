@@ -1,4 +1,4 @@
-\section{Finding traffic patterns}\label{traffic-patterns}
+\section{Learning traffic patterns}\label{traffic-patterns}
 % Why find traffic patterns?
 % What is this section for?
 % How? --> follows from the subsections.
@@ -105,13 +105,20 @@ This leads us to a dynamic partitioning scheme, where the partitioning is based 
 % Could also include error rate from mapmatching, but unsure what it means (probably means accuracy of which the mapmatching was done)
 
 \subsection{Model trees}\label{patterns:weka}
-% What is it? (M5P algorithm)
 % Why use it? (does exactly what we need)
+To implement the piecewise regression model described in Section \ref{patterns:regression-model}, we must either construct or apply an existing algorithm to the data. One could develop a partitioning scheme and then peform a linear regression on each partition. However, such an approach could potentially yield regression models that does not take into account the growth of predecessor and successor partitions' models. Furthermore, it is not clear how an effective partitioning scheme should be devised, to facilitate dynamic partitioning.
+
+% What is it? (M5P algorithm)
+Fortunately, existing work related to the piecewise linear regression model approach exists, in so called \emph{model trees} and \emph{regression trees}. As illustrated in Figure \ref{fig:model-tree}, a \emph{model tree} is a decision tree that has regression models that can either be functions or constants at the leaves. Hence, based on the value of the feature being decided on the model tree has a regression model for any possible world over the set of features. A regression tree is a specialization of a model tree, where the regression models at the leaves are constants.
+
+Several algorithms exists for inducing regression and model trees, (or achieving a piecewise linear regresssion) including \emph{CART}, \emph{M5}, \emph{M5'} - an improved version of M5 - and \emph{MARS} \todo{need refs for these algorithms}. Wang and Witten\cite{IMTCC96} argues, that M5' performs somewhat better than M5 and produces model trees that are more comprehensible due to the size of the trees. Furthermore, open-source implementations of M5' are available for use, wich provides a useful basis for inducing model trees for the traffic data.
+
 % How do we use it? (M5p in weka)
-For implementing regression models and data filters, we use the machine learning tools and algorithm implementations in Weka. Weka can be invoked directly from Java code, and therefore integrates well with our system.
+For implementing M5' model trees and data filters we use the machine learning tools and algorithm implementations in Weka\cite{Weka}. Weka contains an implementation of the M5' model tree induction algorithm (called M5P in Weka). Weka can be invoked directly from Java code, and therefore integrates well with the rest of the system.
 
-The piecewise linear regression model described in Section \ref{patterns:regression-model} is implemented using the the M5P tree induction algorithm. M5P is an implementation of the M5' algorithm\cite{IMTCC96}. M5P constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set $T$ of training examples, with regression models at the leaves that are either functions or constants.
-
+\subsubsection{M5' model tree induction}
+% How does it work?
+M5' constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set of training examples, $T$.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -128,42 +135,11 @@ The piecewise linear regression model described in Section \ref{patterns:regress
 	\caption{Example of a simple model tree with three partitions and three linear regression models. The $t$ feature corresponds to the input time feature in equation \ref{eq:speed-piecewise}}
 	\label{fig:model-tree}
 \end{figure}
-
-It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by:\todo{Morten Trello: Fix}
-\begin{enumerate}
-\item Choosing the attribute $A$ that contains the best split.
-\item Choosing the split in $A$ that yields the highest reduction in standard deviation.
-\end{enumerate}
-The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. This pruning makes sure the final model is not overfitting the training examples and can better be applied to unknown data. 
-
+It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by examining all possible splits over all non-class features and the domains of those features. The split that yields the highest reduction in standard deviation is chosen at each step.
+The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. This pruning process makes sure the final model is not overfitting the training examples and can better be applied to unseen data. 
 Finally, the resulting regression models at the leaves of the tree are mutually smoothed as to avoid having sharp transitions from model to model.
-Using this approach, the algorithm facilitates a dynamic partitioning scheme, based on the measure of standard deviation. 
 
-\subsubsection{Data filtering}
-Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering} (the green row is the one we use), where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use.}
-
-%  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
-\begin{table}[H]
-	\centering
-	\begin{tabular}{TlTlTlTlTlTlT}
-		\thickhline
-		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{Error} & \textbf{\#Wpts} & \textbf{Observations} \\ \thickhline
-		-                                                                                       & -                & -             & -              & -               & 4584306               \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527                \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128                \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & -                & \textless= 20 & \textless 100  & -               & 878426                \\ \thickhline
-		\textless speed limit * 2                                                               & -                & \textless= 20 & \textless 100  & -               & 898774                \\ \thickhline
-		\textless= speed limit                                                                  & -                & \textless= 20 & \textless 100  & -               & 861766                \\ \thickhline
-		\textless= speed limit                                                                  & -                & \textless 300 & \textless 100  & -               & 2861949               \\ \thickhline
-		\rowcolor[HTML]{34FF34}
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & -               & 1715070               \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & \textgreater= 3 & 913779                \\ \thickhline
-	\end{tabular}
-	\caption{Observations remaining after using various filters. MSR = median sample rate of the link, \#Wpts = number of waypoints in the link.}
-	\label{tab:datafiltering}
-\end{table}
-
-Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
+Using this approach, M5' facilitates a dynamic partitioning scheme, based on the measure of standard deviation and avoids sharp transitions between pre-and successor partitions.
 
 \subsection{Weight function}\label{sec:weight-function}
 As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let 

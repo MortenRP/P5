@@ -90,7 +90,7 @@ Segment{
 
 The relation between edges and segments is that each edge of a segment contains a reference to the segment that it is a part of, the same is true from the relation between ways and segments.
 
-\subsection{GPS sample cleaning}
+\subsection{Data filtering}
 % WHAT IS IT?
 % WHY DO WE DO IT?
 % HOW DO WE DO IT?
@@ -111,12 +111,12 @@ Generally, GPS coordinates measured are often imprecise due to external factors,
 
 The problem is illustrated in figure \ref{fig:mapmatching}. The orange-and-black colored GPS samples are imprecise in the sense that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates for roads, since the distance from the samples to the two roads might be equal.
 
-Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exist that perform this task, including TrackMatching, GraphHopper and N-Gemma.\todo{Consider adding a source for each tool.} Limited informal evaluations of these implementations showed that TrackMatching provided a more precise map-matching than GraphHopper, both of which work with GPX-formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the of use of N-Gemma, since TrackMatching was an adequate solution to our map-matching problem, despite it being a webservice.
+Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exist that perform this task, including TrackMatching, GraphHopper and N-Gemma.\todo{Consider adding a source for each tool.}  Limited informal evaluations of these implementations showed that TrackMatching provided a more precise map-matching than GraphHopper, both of which work with GPX-formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the use of N-Gemma, since TrackMatching was an adequate solution to the map-matching problem, despite it being a webservice.
 
 Alternatively, we considered implementing a map-matching algorithm ourselves, however given that the focus of the project is on constructing an intelligent routing agent; not an efficient map-matching algorithm, we decided that our time would be better spent elsewhere, and opted for utilising an existing implementation for map-matching.
 
 \subsubsection{TrackMatching input and output}
-We chose to use the GPX format for input and GeoJSON as the output of the map-matcher. The output is represented as a tree structure in \figref{fig:geojson}. The \emph{links} element of each \emph{route} is an array of link objects.
+We chose to use the GPX format for input and GeoJSON as the output of the map-matcher.\todo{why?} The output is represented as a tree structure in \figref{fig:geojson}. The \emph{links} element of each \emph{route} is an array of link objects.
 
 \begin{figure}[H]
 	\centering
@@ -163,7 +163,7 @@ We chose to use the GPX format for input and GeoJSON as the output of the map-ma
 	\label{fig:geojson}
 \end{figure}
 
-A simple example of a link object can be seen in \coderef{lst:geojson:link}. The \textbf{err} (error) attribute describes how accurately the waypoints were matched to a way; the lower the error, the more likely that the correct way was picked. The \textbf{src} (source) and \textbf{dst} (destination) attributes correspond to nodes in the map on the same way, which is identified through the \textbf{id} attribute (i.e., nodes \#src and \#dst are on way \#id). The source node in the next link is the destination node in the previous link, except for the first link. The coordinates in the \textbf{geometry} attribute contains the longitudes and latitudes for each node that is passed through in the link. The \textbf{wpts} (waypoints) attribute contains the coordinates, id (within the link) and timestamp for each waypoint matched to the link.
+A simple example of a link object can be seen in \coderef{lst:geojson:link}. The \textbf{err} (error) attribute describes how accurately the waypoints were matched to a way; the lower the error, the more likely that the correct way was picked. The \textbf{src} (source) and \textbf{dst} (destination) attributes correspond to nodes in the map on the same way, which is identified through the \textbf{id} attribute (i.e., nodes \#src and \#dst are on way \#id). The source node in the next link is the destination node in the previous link, except for the first link. The coordinates in the \textbf{geometry} attribute contains the longitudes and latitudes for each node that is passed through in the link. The \textbf{wpts} (waypoints) attribute contains the coordinates, id (within the link) and timestamp for each waypoint matched to the link. \todo{mangler noget her: hvorfor er det interessant? HVad bliver de forskellige dele brugt til?}
 
 \begin{lstlisting}[style=java, caption=Content of a simple link object., label=lst:geojson:link]
 {
