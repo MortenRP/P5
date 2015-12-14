@@ -59,9 +59,15 @@ We have encountered a number of problems when generating observations:
 
 These problems are solved by skipping links where they occur. This increases the average quality of observations in exchange for a slight decrease in the quantity.
 
-\subsection{Estimating observation speed}\label{KR:speed}\todo{Nyligt omskrevet. Læs og ret.} \todo{mangler hvorfor vi har valgt at gøre det sådan her}
+\subsection{Estimating observation speed}\label{KR:speed}\todo{Nyligt omskrevet. Læs og ret.} \todo{mangler hvorfor vi har valgt at gøre det sådan her (done?)}
+The speed of an observation is estimated based on the data in a single link. The average speed between each pair of waypoints in the link is calculated by 
+\begin{align*}
+\dfrac{od(wp_1, wp_2)}{t_2 - t_1}
+\end{align*}
+where $od(a, b)$ is the orthodromic distance (i.e., the distance along the surface of a sphere) between two points; $wp_1$ and $wp_2$ are waypoints, and $t_1$ and $t_2$ are their respective time in hours. We use the median of the speeds between each pair of waypoints as the speed of the observation, since it is more resistant to outliers than the mean.
+
 % How to estimate speed
-Given a link that contains a set of road segment $E$, a sequence of coordinates $Coords = (c_1,...,c_i,...,c_n)$, and a sequence of GPS waypoints $WP=(wp_1,...,wp_i,...,wp_n)$ projected onto a road, where $c_i = (long_i, lat_i)$ and $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation $o_e$ for each $e \in E$ such that:
+We generate observations for each link that is not skipped. Given a link that contains a set of road segment $E$, a sequence of coordinates $Coords = (c_1,...,c_i,...,c_n)$, and a sequence of GPS waypoints $WP=(wp_1,...,wp_i,...,wp_n)$ projected onto a road, where $c_i = (long_i, lat_i)$ and $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation $o_e$ for each $e \in E$ such that:
 \begin{align*}
 o_e = (t_1, d_1, w_1, S, e)
 \end{align*}
@@ -79,10 +85,10 @@ s_i = \frac{dist(wp_i, wp_{i+1})}{t_{i+1} - t_i} \qquad \text{ for } 0 < i < n
 where
 \begin{align*}
 dist(wp_1, wp_2) = \begin{cases} 
-gd(wp_1, wp_2) & \text{if}\ |cbw| = 0 \\
-gd(wp_1, c_1) + gd(c_1, c_2) + ... & \text{if}\ |cbw| > 0 \\
-+ gd(c_{m-1}, c_m) + gd(c_m, wp_2)
+od(wp_1, wp_2) & \text{if}\ |cbw| = 0 \\
+od(wp_1, c_1) + od(c_1, c_2) + ... & \text{if}\ |cbw| > 0 \\
++ od(c_{m-1}, c_m) + od(c_m, wp_2)
 \end{cases}
 \end{align*}
 
-and $gd(a, b)$ is the geodetic distance between two points, and $cbw$ is the sequence of all coordinates $(c_1,...,c_m)$ in Coords between $wp_1$ and $wp_2$ on the way.
+and $cbw$ is the sequence of all coordinates $(c_1,...,c_m)$ in Coords between $wp_1$ and $wp_2$ on the way.
