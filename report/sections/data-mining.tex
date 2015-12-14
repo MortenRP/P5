@@ -141,22 +141,26 @@ Finally, the resulting regression models at the leaves of the tree are mutually 
 
 Using this approach, M5' facilitates a dynamic partitioning scheme, based on the measure of standard deviation and smooths transitions between partitions.
 
-\subsection{Generating cost functions}
-Intro\todo{Introduction to Generating cost functions}\todo{Remember to state that we are using ideas from AAU study about policy of estimating speed from segments with few observations}
+\subsection{Generating speed functions}
+% Why ?
+Using the M5' implementation in Weka, we generate model trees for road segments on a day-by-day basis as described in Section \ref{traffic-patterns}. However several issues are raised about the data used for inducing the model trees:
+% What ?
+\begin{itemize}
+\item Noisy data can skewer the regression models to be inaccurate.
+\item Incorrectly mapmatched observations can skewer regression models.
+\item Observed speeds above the speed limit introduces the possibility that the system can suggest driving faster than allowed.
+\item A segment might not have enough observations to construct a (useful) regression model.
+\end{itemize}
+% How ?
+To minimize the effect of these issues, we perform filtering on the observations based on the \emph{Median Sample Rate} and mapmatching error. Furthermore observations speeds higher than two times the speed limit are filtered, because such high speeds are more likely to be noise data. Observations with speeds between 100\% to 200\% the speed limit are lowered to the max speed, since such observations might be realistic, but we still do not want them to affect the regression model.
 
-\subsubsection{Preprocessing}
-% Why ? --> Simple filtering of raw data, did not catch all noise data
-% FILL OUT CONTENT HERE
-% What ? --> We want to filter the knowledge base, specifically, the traffic knowledge, such that noise data is not considered in traffic patterns.
-% How ? --> We introduce a quality measaure over the GPS sample rate and the length of the road + mapmatching error rate.
-Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering} (the green row is the one we use), where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use. Explain why the filters we used were best given the data we have.}
-
+Additional thresholds for filters can be seen in \tabref{tab:datafiltering} (the green row is the one we use).
 %  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
 \begin{table}[H]
 	\centering
 	\begin{tabular}{TlTlTlTlTlTlT}
 		\thickhline
-		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{Error} & \textbf{\#Wpts} & \textbf{Observations} \\ \thickhline
+		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{MME} & \textbf{\#Wpts} & \textbf{Observations} \\ \thickhline
 		-                                                                                       & -                & -             & -              & -               & 4584306               \\ \thickhline
 		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527                \\ \thickhline
 		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128                \\ \thickhline
@@ -171,5 +175,7 @@ Some of the observations might have been matched to the wrong road, based on a s
 	\caption{Observations remaining after using various filters. MSR = median sample rate of the link, \#Wpts = number of waypoints in the link.}
 	\label{tab:datafiltering}
 \end{table}
-
+	\todo{make percent of how many observations (in table) are filtered. Benjamin }
+\emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.
+The tresholds are based on informal study of how high requirements of MSR and MME (mapmatching error) was possible, without discarded too much data.
 Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.

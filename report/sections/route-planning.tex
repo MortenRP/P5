@@ -7,23 +7,6 @@ The aim of this section is to give a clear overview of what elements the route p
 This process can be divided into sub process that are each responsible for an area of work.
 % evt. Main problems adressed in this section
 
-\subsection{Weight function}\label{sec:weight-function}
-As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let 
-\begin{align}
-weight: E \times T \times W \rightarrow \mathbb{R_+}
-\end{align}
-be the \emph{weight function} that maps an edge $e$, timestamp $t$, and day of the week $w$, to a positive, real-valued travel time.
-
-The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
-\begin{align}
-weight(e,t,w) = \frac{speed(e,t,w)}{len(e)}
-\end{align}
-where:
-\begin{align}
-len:E \rightarrow \mathbb{R_+}
-\end{align}
-is a length function, that maps edges to their length.
-
 \subsection{Bi-directional A*} \label{algorithms}
 
 In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.
@@ -40,7 +23,19 @@ By implementing the bi-directional search this way, the worst case running time 
 
 \input{sections/bi-astar}
 
-%\subsubsection{Cost function}
-% What is it?
-% Why use it?
-% How do we use it?
+\subsection{Weight function}\label{sec:weight-function}
+As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let 
+\begin{align}
+weight: E \times T \times W \rightarrow \mathbb{R_+}
+\end{align}
+be the \emph{weight function} that maps an edge $e$, timestamp $t$, and day of the week $w$, to a positive, real-valued travel time.
+
+The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
+\begin{align}
+weight(e,t,w) = \frac{speed(e,t,w)}{len(e)}
+\end{align}
+where:
+\begin{align}
+len:E \rightarrow \mathbb{R_+}
+\end{align}
+is a length function, that maps edges to their length.
