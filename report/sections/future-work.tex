@@ -13,7 +13,7 @@ This means that the map data need to look at again to fix these errors. A soluti
 \section{Data gathering}
 For this project to work properly, the data needed is a big part of it. Some of the problems with the data used in this project are described in section \ref{sec:datafiltering}. For the system to be able to make good decision a lot of data is needed and should be well distributed over all routs. It is hard to tell when there is enough data for each route.
 
-To collect this data a smart and easy way needs to be in play. In section \ref{sec:existingwork} some of the possible way of collecting data is analyse. The data should consist of location, time and speed, location and time is in the data we got now but we need to calculate the speed form the data we got now.
+To collect this data a smart and easy way needs to be in play. In section \ref{sec:existingwork} some of the possible way of collecting data is analyse. The data should consist of location, time and speed, location and time is in the data we got now but we need to calculate the speed form the data we got now. Since there can be some error with the location data then the speed calculation will yield a wrong result, and the cost function is depended on the correctness of the speed.
 
 \begin{itemize}
 	\item problems with mapmatching and alternative solutions
