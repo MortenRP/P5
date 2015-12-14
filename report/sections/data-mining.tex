@@ -141,6 +141,64 @@ Finally, the resulting regression models at the leaves of the tree are mutually 
 
 Using this approach, M5' facilitates a dynamic partitioning scheme, based on the measure of standard deviation and avoids sharp transitions between pre-and successor partitions.
 
+\subsection{Secondary preprocessing}
+% Why ? --> Simple filtering of raw data, did not catch all noise data
+% FILL OUT CONTENT HERE
+% What ? --> We want to filter the knowledge base, specifically, the traffic knowledge, such that noise data is not considered in traffic patterns.
+% How ? --> We introduce a quality measaure over the GPS sample rate and the length of the road + mapmatching error rate.
+Some of the observations might have been matched to the wrong road, based on a small number of GPS samples, etc. Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. To accomplish this we utilise a few filters for preprocessing the observations. Only speeds below two times the speed limit are used. The remaining speeds that exceed the speed limit are lowered to the speed limit so as to not encourage speeding. Additional filters can be seen in \tabref{tab:datafiltering} (the green row is the one we use), where \emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.\todo{Revise when we have decided exactly which filters to use.}
+
+%  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
+\begin{table}[H]
+	\centering
+	\begin{tabular}{TlTlTlTlTlTlT}
+		\thickhline
+		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{Error} & \textbf{\#Wpts} & \textbf{Observations} \\ \thickhline
+		-                                                                                       & -                & -             & -              & -               & 4584306               \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527                \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128                \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & -                & \textless= 20 & \textless 100  & -               & 878426                \\ \thickhline
+		\textless speed limit * 2                                                               & -                & \textless= 20 & \textless 100  & -               & 898774                \\ \thickhline
+		\textless= speed limit                                                                  & -                & \textless= 20 & \textless 100  & -               & 861766                \\ \thickhline
+		\textless= speed limit                                                                  & -                & \textless 300 & \textless 100  & -               & 2861949               \\ \thickhline
+		\rowcolor[HTML]{34FF34}
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & -               & 1715070               \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & \textgreater= 3 & 913779                \\ \thickhline
+	\end{tabular}
+	\caption{Observations remaining after using various filters. MSR = median sample rate of the link, \#Wpts = number of waypoints in the link.}
+	\label{tab:datafiltering}
+\end{table}
+
+Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
+
+\subsection{Estimating observation speed}\label{KR:speed}\todo{Nyligt omskrevet. Læs og ret.} \todo{mangler hvorfor vi har valgt at gøre det sådan her}\todo{Remember to state that we are using ideas from AAU study about policy of estimating speed from segments with few observations}
+% How to estimate speed
+Given a link that contains a set of road segment $E$, a sequence of coordinates $Coords = (c_1,...,c_i,...,c_n)$, and a sequence of GPS waypoints projected onto a road, $WP=(wp_1,...,wp_i,...,wp_n)$ where $c_i = (long_i, lat_i)$ $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation $o_e$ for each $e \in E$ such that:
+\begin{align*}
+o_e = (t_1, d_1, w_1, S, e)
+\end{align*}
+
+where
+\begin{align*}
+S = median(\{s_1,...,s_i,...,s_{n-1}\})
+\end{align*}
+%
+The speeds in $S$ are calculated using:
+\begin{align*}
+s_i = \frac{dist(wp_i, wp_{i+1})}{t_{i+1} - t_i} \qquad \text{ for } 0 < i < n
+\end{align*}
+
+where
+\begin{align*}
+dist(wp_1, wp_2) = \begin{cases} 
+	gd(wp_1, wp_2) & |cbw| = 0 \\
+	gd(wp_1, c_1) + gd(c_1, c_2) + ... & |cbw| > 0 \\
+	 + gd(c_{m-1}, c_m) + gd(c_m, wp_2)
+\end{cases}
+\end{align*}
+
+and gd(a, b) is the geodetic distance between two points, and cbw is the sequence of all coordinates $(c_1,...,c_m)$ in Coords between $wp_1$ and $wp_2$ on road segment $e$.
+
 \subsection{Weight function}\label{sec:weight-function}
 As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let 
 \begin{align}
