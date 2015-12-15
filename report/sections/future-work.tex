@@ -14,6 +14,7 @@ This means that the map data need to look at again to fix these errors. A soluti
 For this project to work properly, the data needed is a big part of it. Some of the problems with the data used in this project are described in section \ref{sec:datafiltering}. For the system to be able to make good decision a lot of data is needed and should be well distributed over all routs. It is hard to tell when there is enough data for each route.
 
 To collect this data a smart and easy way needs to be in play. In section \ref{sec:existingwork} some of the possible way of collecting data is analyse. The data should consist of location, time and speed, location and time is in the data we got now but we need to calculate the speed form the data we got now. Since there can be some error with the location data then the speed calculation will yield a wrong result, and the cost function is depended on the correctness of the speed.
+The client-server solution we proposed is set up to collect the data needed, if we had more time for this project we could have collected data on our own and had a lot better data to work with, since the data we can collect through the client would be the GPS coordinates, time and speed, where speed has been a huge issue for us because it was not given in the dataset we worked with.
 
 \section{Bi-directional A*} \label{algorithms}
 The path finding algorithm describe in section \ref{sec:pathfinding} is a sub optimal for finding a path through a graph. In this section another version of an A* will be looked at, the bi-directional A* algorithm.
