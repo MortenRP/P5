@@ -1,7 +1,7 @@
 \section{Client-server communication} 
 \label{chap:clientserver}
 As mentioned in the former section, we will be using a client-server structure.
-The reason behind this choice, is the need to be able to send information back and forth.
+The reason behind this choice, is the need to be able to send information back and forth. Without a client server solution we would not be able to collect data, nor be able to communicate between different devices.
 Smartphones used by drivers will be acting as clients,
 where they need to be able to send information such as location and speed to the server in some given time interval.
 The server will handle this information and send it further for analyzing,
@@ -49,7 +49,7 @@ that is split into 2 or more files has ended.
     \label{fig:bytesclientserver}
 \end{figure}\todo{det der vi snakkede om med striberne}
 
-The client will ask for a GPS update every 5 seconds, this is done to be able to maintain a precise location of the client. This information, plus the speed, is sent to the server.
+The client will ask for a GPS update every 5 seconds, this is done to be able to maintain a precise location of the client. This information, plus the speed and time is sent to the server.
 When a message is sent either from the client or the server,
 they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the message is discarded. We could have continued to try and resend the message several times, but a lost GPS coordinate from a user is not a critical problem for our system and will not have any major effect on our calculations.
 
