@@ -11,7 +11,6 @@ To make sure that the client(s) can connect to our server we have tested it in t
     \caption{Server running and accepting connection}
     \label{fig:serverrunning}
 \end{figure}
-	\item From seperate clients, we started the server as with the local host testing, but to test the targetted device, e.g smartphones, we downloaded the application to 7 smartphones and connected them to the server. It showed in IntelliJ's prompt window that the connections from each smartphone were successful.
 \end{itemize}
 
 \subsection{Message received matches the message sent}
@@ -24,11 +23,10 @@ To be certain the longitude, latitude and speed that is sent is received correct
     \caption{Data received on the server from the client}
     \label{fig:datasentfromclienttoserver}
 \end{figure}
-	\item \todo{Use mortens phone to get a proper speed test instead of the 0.0 from the emulator}
 \end{itemize}
 
-\subsection{Is the three-way handshake condition met }
-To be sure that if some message is lost or connection between the client and server is not stable, which we also described in \autoref{chap:clientserver}, we are sending acknowledgements between client server. As  \figref{fig:datasentfromclienttoserver} illustrates when the server receives data from the client the server responds with an acknowledgement message to the client, that it has received the data, the client then again responds with it's own acknowledgement message to tell the server, that it knows that the data it sent has been received.
+\subsection{If a message is lost}
+To be sure that if some message is lost or connection between the client and server is not stable, which we also described in \autoref{chap:clientserver}, we are sending acknowledgements between client server. As  \figref{fig:datasentfromclienttoserver} illustrates when the server receives data from the client the server responds with an acknowledgement message to the client, that it has received the data.
 
 \subsection{If server is down}
 The user of the application has to be notified if they cant receive or send their data to the server. This is handled by giving a pop-up message to the user of the application that there is no connection to the server.

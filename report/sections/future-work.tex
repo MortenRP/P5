@@ -46,4 +46,6 @@ As for the client a specific route option, where you would be able to plot in yo
 Another thing would be live updates, as in if the traffic conditions have changed which would make the server send a new route to the client. When given a route the server could also give 2 alternative routes with the time differences and distance, like Google Maps does. 
 When the client asks for a route the server could respond with 3 routes, which ordinary GPS does, the fastest, the shortest and the cheapest regarding  mileage.
 
+At the moment if a message is lost the message is just discarded, which does not have any impact if it is just a few messages, but if there are a lot of messages lost this could potentially become a problem. Therefore it could be an idea to handle lost messages more appropriate, like cashing all the lost messages and then send them all together at some point.
+
 At the moment the client only works on Android version 5 and above, it would of course be advantageously to have the client working on lower Android versions, IOS and Microsoft smartphones.
