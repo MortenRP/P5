@@ -15,6 +15,18 @@ For this project to work properly, the data needed is a big part of it. Some of 
 
 To collect this data a smart and easy way needs to be in play. In section \ref{sec:existingwork} some of the possible way of collecting data is analyse. The data should consist of location, time and speed, location and time is in the data we got now but we need to calculate the speed form the data we got now. Since there can be some error with the location data then the speed calculation will yield a wrong result, and the cost function is depended on the correctness of the speed.
 
+\section{Bi-directional A*} \label{algorithms}
+The path finding algorithm describe in section \ref{sec:pathfinding} is a sub optimal for finding a path through a graph. In this section another version of an A* will be looked at, the bi-directional A* algorithm.
+
+Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
+% Why use it?
+The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
+
+The problem with using this algorithm with our cost function is that it is time depended and we have no way of making a good estimation of the when the driver will be at the goal node. This means that only the search from the start node will be correct with the time for the cost function.
+
+This means that to implement a more efficient algorithm for finding a path through the graph, a way to estimate the time for when the goal node will be reach is needed.
+
+
 \begin{itemize}
 	\item problems with mapmatching and alternative solutions
 	\item smoothing of piecewise functions.

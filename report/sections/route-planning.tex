@@ -7,24 +7,10 @@ The aim of this section is to give a clear overview of what elements the route p
 This process can be divided into sub process that are each responsible for an area of work.
 % evt. Main problems adressed in this section
 
-\subsection{Path finding / A*}
+\subsection{Path finding / A*} \label{sec:pathfinding}
 An A* is used to finding a path through the graph. There are other versions of a A* search that are faster then a normal A*, but these do not work with the weight function that are being used. The time complexity of this search is $O(b^n)$ where $b$ is the branching factor and $n$ is the number of nodes in the graph.
 
 The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at. The time will charge as the A* is adding segments to the path, this is don to make sure the the cost of travailing a segment in the graph match up with when the driver will be driving on the road.
-
-\subsection{Bi-directional A*} \label{algorithms}
-
-In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.
-% What is it?
-Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
-% Why use it?
-The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
-
-
-% How do we use it?
-By using bi-directional search there is one problem that needs to be address, this is will the search meet op before the whole graph is search. There are more then one way of solving this problem, in this project A* have been chosen for solving this problem. The A* makes sure that the search from the start node wakes a path towards the end node and the other way around for the search that starts from end node.
-
-By implementing the bi-directional search this way, the worst case running time becomes $O(b^{n})$. The reason for this is that each search is going towards the other search's start node and not it's frontier. The search will stop if one of the two searches hits a node that the other search have visited.
 
 \input{sections/bi-astar}
 
