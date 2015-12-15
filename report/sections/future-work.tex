@@ -35,3 +35,12 @@ This means that to implement a more efficient algorithm for finding a path throu
 	\item better cleaning of GPX files (some problems with a LOT of inferred roads with no waypoints)
 	\item include more features in the prediction. Min/max speed, number of vehicles on road etc....
 \end{itemize}
+
+\section{Client-Server}
+There are several things that could be added to the client and server as future work, things that we would have done if we had more time. 
+As for the client a specific route option, where you would be able to plot in your position, where you want to go and get a time estimate of your travelling time. A voice like there exists on other GPS, which tells you what direction to turn and if you have made a wrong turn.
+
+Another thing would be live updates, as in if the traffic conditions have changed which would make the server send a new route to the client. When given a route the server could also give 2 alternative routes with the time differences and distance, like Google Maps does. 
+When the client asks for a route the server could respond with 3 routes, which ordinary GPS does, the fastest, the shortest and the cheapest regarding  mileage.
+
+At the moment the client only works on Android version 5 and above, it would of course be advantageously to have the client working on lower Android versions, IOS and Microsoft smartphones.
