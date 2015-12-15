@@ -13,7 +13,6 @@ An A* is used to finding a path through the graph. There are other versions of a
 The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at. The time will charge as the A* is adding segments to the path, this is don to make sure the the cost of travailing a segment in the graph match up with when the driver will be driving on the road.
 
 \subsection{Bi-directional A*} \label{algorithms}
-
 In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.
 % What is it?
 Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
