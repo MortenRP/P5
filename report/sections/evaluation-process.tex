@@ -1,17 +1,37 @@
 \section{Evaluation process}
 % Why this evaluation?
-In order to evaluate the solution to the problem formulation, we define some criterion for the system to fulfil and how we are going to evaluate these criteria against the system. First, we define the overall characteristics that the system must possess in order to be acceptable. Then, we describe how we will test for these characteristics.
-\\
-% What is this evaluation of?
-
-
-
+In order to evaluate the properties of the routing and regression models compared to the problem formulation, we carry out a simulation of routing. More specifically, we want to evaluate:
+% What do we look at to evaluate?
+\begin{itemize}
+\item How close does the regression models reflect reality?
+\item Does the routes found based on the weight function reflect reality?
+\item Will routes found based on the weight function be faster than original route?
+\end{itemize}
 % How do we evaluate?
-First, we consider how to 
+To investigate the above questions, we take the following approach:
+First, we consider how to
 \begin{enumerate}
 \item First, we select a route $R_{uninformed}=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$, through a congested area. We then, directly from the data, determine how long it took to drive this particular route.
-\item Secondly, we compute a new cost, $cost(s, t)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the cost function described in section \todo{indsæt ref til cost function afsnit.}. Let this route with the adjusted costs be $R_{adjusted}$.
+\item Secondly, we compute a new cost, $cost(s, t)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the cost function described in section \ref{sec:weight-function}. Let this route with the adjusted costs be $R_{adjusted}$.
 \item Here, we compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route.
+>>>>>>> 9ee4f321aba7509999979acd83b2f25af4ff037c
 \item Now, we traverse the graph to find a new route, $R_{informed}$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path from $n_1$ to $n_m$ by using the cost of each segment determined by our cost function.
+\item We compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route, and what the difference in the predicted and actual time is.
 \item Finally, we compare $R_{informed}$ with $R_{adjusted}$ and see if $R_{informed}$ has chosen a route, that saves time in going from $n_1$ to $n_m$.
 \end{enumerate}
+We follow the above method for \todo{x number of routes} to see any common patterns. The findings are summarized in Table \ref{tab:eval-results}
+\begin{table}[]
+\centering
+\begin{tabular}{lllll}
+\textbf{Route} & \textbf{$T_{uninformed}$} & \textbf{$T_{informed}$} & \textbf{$T_{adj}$} & \textbf{Difference} \\ \hline
+$r_1$          & 1234                      & 1234                    & 123                & 3                   \\
+$r_2$          & 1234                      & 1234                    & 13123              & 22                  \\
+$r_3$          & 1234                      & 12333                   & 1212               & 3                   \\
+$r_4$          & 1234                      & 123                     & 22                 & 44                  \\
+$r_5$          & 1234                      & 123                     & 13                 & 44                 
+\end{tabular}
+\caption{Results of the simulation}
+\label{tab:eval-results}
+\end{table}
+Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum v
+Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum 

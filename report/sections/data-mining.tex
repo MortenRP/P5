@@ -177,7 +177,7 @@ Additional thresholds for filters can be seen in \tabref{tab:datafiltering} (the
 	\label{tab:datafiltering}
 \end{table}
 	\todo{make percent of how many observations (in table) are filtered. Benjamin }
-\emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart, \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.
+\emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart to avoid having , \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.
 The tresholds are based on informal study of how high requirements of MSR and MME (mapmatching error) was possible, without discarded too much data.
 Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
 
