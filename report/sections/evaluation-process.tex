@@ -9,9 +9,12 @@ In order to evaluate the properties of the routing and regression models compare
 \end{itemize}
 % How do we evaluate?
 To investigate the above questions, we take the following approach:
+First, we consider how to
 \begin{enumerate}
 \item First, we select a route $R_{uninformed}=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$, through a congested area. We then, directly from the data, determine how long it took to drive this particular route.
-\item Secondly, we compute a new cost, $cost(s, t)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the cost function described in section \todo{indsæt ref til cost function afsnit.}. Let this route with the adjusted costs be $R_{adjusted}$.
+\item Secondly, we compute a new cost, $cost(s, t)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the cost function described in section \ref{sec:weight-function}. Let this route with the adjusted costs be $R_{adjusted}$.
+\item Here, we compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route.
+>>>>>>> 9ee4f321aba7509999979acd83b2f25af4ff037c
 \item Now, we traverse the graph to find a new route, $R_{informed}$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path from $n_1$ to $n_m$ by using the cost of each segment determined by our cost function.
 \item We compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route, and what the difference in the predicted and actual time is.
 \item Finally, we compare $R_{informed}$ with $R_{adjusted}$ and see if $R_{informed}$ has chosen a route, that saves time in going from $n_1$ to $n_m$.
