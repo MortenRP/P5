@@ -181,7 +181,7 @@ Additional thresholds for filters can be seen in \tabref{tab:datafiltering} (the
 The tresholds are based on informal study of how high requirements of MSR and MME (mapmatching error) was possible, without discarded too much data.
 Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
 
-\subsubsection{Distribution of data}
+\subsubsection{Distribution of data}\label{datadistibution}
 With the filtered observations we are creating speed functions for every day of the week for all the segments. But since the remaining dataset of observations covers just a little percentage of the segments on all days, there will be some segements that wont have enough observations to create a solid foundation to run the M5P algorithm. Because of this shortage of observations we have decided to use two ways of adding observations to a given segment. The first is to look at the segments neighbours, that have the same roadtype on the same day, the reason that we are looking to neighbouring segmens are that they often reflect the traffical situation of the given segment. If neighbouring segments do not have additional information to add to a segment, then we are looking at the observations for the segment on other days. Here we are differentiating between weekdays, and weekends, which we have classified as weekdays beeing monday, tuesday, wednesday and thursday, weekends are therefore the rest. The reason for this distinction is that we argue that some traffical patterns can be devided into these groups, such as weekday traffic when going to and from work.
 
 \begin{figure}
