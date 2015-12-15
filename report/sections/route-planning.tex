@@ -1,31 +1,35 @@
 \section{Route planning}
-% What is this section?
-In this section the process of finding a route will be describe.
-% Why is this section here?
-The aim of this section is to give a clear overview of what elements the route planning consist of.
-% How follows from the subsections....
-This process can be divided into sub process that are each responsible for an area of work.
-% evt. Main problems adressed in this section
+In order to be able to suggest routes to motorists, the system must find the best route available given at a given time and day of the week. One could define several quality measures of a good route, but in this case we consider the best route in terms of time, that is, the shortest travel time. The process of is known as finding shortest paths in a directed weighted graph, and existing algorithms solve this problem well. In this section we discuss the methods used for finding such shortest paths.
 
-\subsection{Path finding / A*} \label{sec:pathfinding}
-An A* is used to finding a path through the graph. There are other versions of a A* search that are faster then a normal A*, but these do not work with the weight function that are being used. The time complexity of this search is $O(b^n)$ where $b$ is the branching factor and $n$ is the number of nodes in the graph.
+\subsection{A* Heuristic Search}\label{sec:pathfinding}
+We use the heuristic search algorithm A* since it is a widely used approach for finding shortest path routes in graphs and can be improved by further preprocessing of the graph as discussed in Section \ref{sec:future-work}.
+We design the heuristic as an underestimate of the real travel time from a start node to target node. Let 
+\begin{align*}
+h(v) = &\frac{avg(s_1,…,s_n)}{dist(u,v)} \\
+&\text{where } s_1,…,s_n \text{ are speeds of all observations},\\
+&u,v \in E
+\end{align*}
+where $h(n)$ is the heuristic function that computes and underestimate of the travel time from $u$ to $v$, to ensure the graph search proceedes in the correct direction in the graph.
+At every expansion of a node, the weights of the frontier is computed by the respective weight functions for the given time, to determine the best next step in the path. The idea is illustrated in Figure \ref{fig:timed-graph} 
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{figures/timed-graph}
+\caption{Relative times in pathfinding - Numbers on edges are costs in time. Relative time is indicated next to nodes. The green arrows indicate the shortest path found. Each time is used as argument to the weight function for a segment.}
+\label{fig:timed-graph}
+\end{figure}
 
-The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at. The time will charge as the A* is adding segments to the path, this is don to make sure the the cost of travailing a segment in the graph match up with when the driver will be driving on the road.
+Whenever a road segment edge is chosen, the weight of the segment is added to the time, to make sure the next weight function is correctly selected. 
+%An A* is used to finding a path through the graph. There are other versions of a A* search that are faster then a normal A*, but these do not work with the weight function that are being used. The time complexity of this search is $O(b^n)$ where $b$ is the branching factor and $n$ is the number of nodes in the graph.
 
-\subsection{A*} \label{algorithms}
-In the coming section the math and algorithms used will be look at. Why they where chosen over other algorithms of there kinde.
-% What is it?
-Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
-% Why use it?
-The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
+%The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at. 
+
+%The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
 
 
 % How do we use it?
-By using bi-directional search there is one problem that needs to be address, this is will the search meet op before the whole graph is search. There are more then one way of solving this problem, in this project A* have been chosen for solving this problem. The A* makes sure that the search from the start node wakes a path towards the end node and the other way around for the search that starts from end node.
+%By using bi-directional search there is one problem that needs to be address, this is will the search meet op before the whole graph is search. There are more then one way of solving this problem, in this project A* have been chosen for solving this problem. The A* makes sure that the search from the start node wakes a path towards the end node and the other way around for the search that starts from end node.
 
-By implementing the bi-directional search this way, the worst case running time becomes $O(b^{n})$. The reason for this is that each search is going towards the other search's start node and not it's frontier. The search will stop if one of the two searches hits a node that the other search have visited.
-
-\input{sections/bi-astar}
+%By implementing the bi-directional search this way, the worst case running time becomes $O(b^{n})$. The reason for this is that each search is going towards the other search's start node and not it's frontier. The search will stop if one of the two searches hits a node that the other search have visited.
 
 \subsection{Weight function}\label{sec:weight-function}
 As mentioned in Section \ref{}, we are interested in calculating how fast one can travel along the road segment (i.e. the travel time), given a road a road segment, time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. Let
