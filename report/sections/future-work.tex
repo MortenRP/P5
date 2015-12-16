@@ -27,36 +27,27 @@ More closely evaluating alternative map-matching tools or implementing a map-mat
 %This means that the map data need to look at again to fix these errors. A solution would be to build the map-matchere ourselves "it was out of this project scope". It would allow us the merge the mapping and error detection into one process. Another possible solution could be to use another map-matching program, but more time would be need to make an informed decision on which of the service from section \ref{sec:mapmatching} to or if non of them are usable.
 
 \section{Regression model}
+The current regression models includes only the time as the feature to predict speed on. It would be interesting to explore how other features of traffic could be used to predict the speed. Features such as the day and minimum and maximum speed driven could be used, which would lead to the system learning patterns across days in the models e.g.  that traffic might be similar in work-days, and therefore is no reason to have seperate regression models for these days. 
 
+As the current dataset used for learning the regression models are collected over 7 days, the data is fairly recent and reliable. However if the system was taken into use, the data collected by clients would be used to continiously learn the regression models. This raises the issue of which data should be considered more reliable and how much it should weigh in predicting traffic patterns. It seems most reasonable that the most recent data is more reliable than older data. This means that some measure of decay of the data must be introduced, to distinguish between recent and older data weights in the regression models.
 \section{Routing}
+%The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
+The current graph traversal running time can be improved in several ways. By using the techniques bi-directional search and Contraction Hierarchies it would improve the query time for route finding.
 
-\subsection{Contraction hierarchies}\label{sec:future:contraction-hierarchies}
-% What is it?
+Preprocessing the road network graph using contraction hierarchies, a new contracted graph is created. The edges of the original graph is contracted into so called “shortcut” edges, that are aggregate edges of  several other edges. The weight of a shortcut is the sum of its constituent edges. This contraction process reduces the number of nodes a graph search algorithm has to traverse during a query, which in turn improves the query time by spending time to preprocess the graph. 
+
+Originally, contraction hierarchies are used for static graph networks, where the edges do not change. However, in the knowledge representation in this project, the edges change based on the day and time of day. Existing work on  contraction hierarchies in dynamic road networks exists,  such as \emph{KaTCH} \cite{KaTCH}\cite{KaTCHi} and would be possible to implement in the project in the future since this implementation assumes exactly a piecewise function as weight functions for edges.
+
+As the name implies, bi-directional search, traverses the graph concurrently (or in parallel) in a forward direction from start-to-goal node, and in the backward direction from goal-to-start node. By using bi-directional search the query time can in theory be decreased by half, which is certainly an improvement.
+%The path finding algorithm describe in section \ref{sec:pathfinding} is a sub optimal for finding a path through a graph. In this section another version of an A* will be looked at, the bi-directional A* algorithm.
+
+%Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
 % Why use it?
-% How do we use it?
-The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
+%The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
 
+%The problem with using this algorithm with our cost function is that it is time depended and we have no way of making a good estimation of the when the driver will be at the goal node. This means that only the search from the start node will be correct with the time for the cost function.
 
-\subsection{Bi-directional A*} \label{algorithms}
-The path finding algorithm describe in section \ref{sec:pathfinding} is a sub optimal for finding a path through a graph. In this section another version of an A* will be looked at, the bi-directional A* algorithm.
-
-Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
-% Why use it?
-The reason for using this algorithm over other graph search is that the the time for finding a path is $O(b^{(n/2)})$ where a normal Dijkstra’s takes $O(b^{n})$, where $b$ is the branching factor and $n$ is the number of nodes in the direct graph. Bi-directional also have the benefit of working well when running in paralleled.
-
-The problem with using this algorithm with our cost function is that it is time depended and we have no way of making a good estimation of the when the driver will be at the goal node. This means that only the search from the start node will be correct with the time for the cost function.
-
-This means that to implement a more efficient algorithm for finding a path through the graph, a way to estimate the time for when the goal node will be reach is needed.
-
-
-\begin{itemize}
-	\item problems with mapmatching and alternative solutions
-	\item smoothing of piecewise functions.
-	\item Contraction hierarhies in dynamic road networks
-	\item Utility/decay på kilder til observationer under regression generation
-	\item better cleaning of GPX files (some problems with a LOT of inferred roads with no waypoints)
-	\item include more features in the prediction. Min/max speed, number of vehicles on road etc....
-\end{itemize}
+%This means that to implement a more efficient algorithm for finding a path through the graph, a way to estimate the time for when the goal node will be reach is needed.
 
 \section{Client-Server features}
 There are several things that could be added to the client and server as future work, things that we would have done if we had more time. 
