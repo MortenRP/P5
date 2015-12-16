@@ -11,12 +11,11 @@ In order to evaluate the properties of the routing and regression models compare
 To investigate the above questions, we take the following approach:
 First, we consider how to
 \begin{enumerate}
-\item First, we select a route $R_{uninformed}=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$, through a congested area. We then, directly from the data, determine how long it took to drive this particular route.
-\item Secondly, we compute a new weight, $weight(s, t, w)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the weight function described in Section \ref{sec:weight-function}. Let this route with the adjusted costs be $R_{adjusted}$.
-\item Here, we compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route.
->>>>>>> 9ee4f321aba7509999979acd83b2f25af4ff037c
-\item Now, we traverse the graph to find a new route, $R_{informed}$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path from $n_1$ to $n_m$ by using the cost of each segment determined by our cost function.
-\item We compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total cost of this route, and what the difference in the predicted and actual time is.
+\item First, we select a route $R_{uninformed}=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine how long it took to drive this particular route.
+\item Secondly, we compute a new weight, $weight(s, t, w)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the weight function described in Section \ref{sec:weight-function}. Let this route, $R_{adjusted}$, be the same route as $R_{uninformed}$ but with the adjusted weights.
+\item Here, we compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total weight of this route.
+\item Now, we traverse the graph to find a new route, $R_{informed}$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path from $n_1$ to $n_m$ by using the weight of each segment determined by our weight function.
+\item We compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total weight of this route, and what the difference in the predicted and actual time is.
 \item Finally, we compare $R_{informed}$ with $R_{adjusted}$ and see if $R_{informed}$ has chosen a route, that saves time in going from $n_1$ to $n_m$.
 \end{enumerate}
 We follow the above method for \todo{x number of routes} to see any common patterns. The findings are summarized in Table \ref{tab:eval-results}
