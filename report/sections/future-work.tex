@@ -1,4 +1,10 @@
-In this section we will cover possibly area of (spændene) for this project. This is don to highlight topics discover during the project where there wasn't time to implement.
+Several issues exists with the current state of the system and there are therefore many interesting areas of improvement to investigate further. In this section we discuss issues and improvements that can be made to the system, in order to alleviate the issues about the data, preprocessing, regression model, routing and client server features.
+
+\section{Data acquisition}
+The current speed of observations are an estimate based on changes locations and time over a GPS trajectory. This estimate is not really precise, which can affect the final traffic predictions. A direct measurement of the speed traveled in the dataset would be very useful and improve the accuracy of the prediction model. Unfortunately, the dataset used contained only timestamped GPS coordinates, which in turn also had a high variance in sampling rate. In GPS samples with high sampling rate, the accuracy of the speed predictions suffered even more because of the uncertainty of the speed.
+By collecting a dataset through the client of the system, we can include the speed directly from sensors in the android devices as well as set a more useful sampling rate, which would yield a more useful dataset.
+
+
 \section{Contraction hierarchies}\label{sec:future:contraction-hierarchies}
 % What is it?
 % Why use it?
