@@ -12,6 +12,9 @@ To make sure that the client(s) can connect to our server we have tested it in t
     \label{fig:serverrunning}
 \end{figure}
 \end{itemize}
+\begin{itemize}
+	\item We downloaded the application to five smartphones and connected to the server, which the server handled correctly. We also requested a route on each smartphone and all of the smartphones received the same route. The time we had to wait for all of the smartphones to get the routes was between 19-24 minutes, which of course is not acceptable, but performance has not been a concern in this project.
+\end{itemize}
 
 \subsection{Message received matches the message sent}
 To be certain the longitude, latitude and speed that is sent is received correctly on the server. We did the following test:
@@ -33,5 +36,3 @@ The user of the application has to be notified if they cant receive or send thei
 
 \subsection{GPS location and speed}
 The location of the client and the speed it is moving at has been tested in a car with one person driving the car and another using a smartphone, where the smartphone displays the current speed and the location after a click on a button. The speed was compared to the car's speedometer which matched and the GPS location that was shown was later checked on a map, where the locations given by the smartphone also were correct.
-
-\todo{Add more tests to client-server! Dont know if all of these "tests" are needed}
