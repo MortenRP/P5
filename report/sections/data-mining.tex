@@ -15,7 +15,7 @@ Performing some discrete classification could help to distinguish between differ
 
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
-To predict the traffic speed on a given road segment, at a given time we can consider a speed prediction a function:
+To predict the traffic speed on a given road segment, at a given time we can consider a speed prediction as a function:
 
 \begin{align}\label{eq:speed}
 speed: E \times T \times W \rightarrow \mathbb{R}
@@ -77,7 +77,7 @@ where $f_1,...,f_n$ are linear regression functions for each partition over the 
 \subsection{Partitioning scheme}\label{patterns:segmentation}
 % Why do it?
 %	Want: piecewise linear functions, but how should we partition the days?
-In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in Figure \label{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
+In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in Figure \ref{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
 \begin{itemize}
 	\item Where should we split the day, such that important changes in traffic are captured?
 	\item How many observations is required to perform regression?
@@ -88,7 +88,7 @@ While it makes sense to have equally sized partitions, it does not guarantee tha
 This leads us to a dynamic partitioning scheme, where the partitioning is based on the density of observations and how well the function fits the data. A measure to use for such a partitioning, could be the Sum of Squared Errors, which is a measure of how close a predicted value is to the real value. Partitioning is then done, based on minimizing the Sum of Squared Errors, as this yields more accurate regression models.
 
 %\subsection{Quality measure}\label{quality-measure}
-%Some of the observations might be based on a small number of GPS samples, or data that is map-matched with a high error rate (accuracy of which road was best to map-match on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees. 
+%Some of the observations might be based on a small number of GPS samples, or data that is map-matched with a high error rate (accuracy of which road was best to map-match on). Such observations could potentially introduce noise into the regression model and must therefore be taken into account when we construct the model trees.
 
 %Furthermore, we are interested in weighing the most accurate data higher than data with worse quality, since more accurate data tells us more about the traffic on a given segment. To do that, we introduce a quality measure of observations. The quality measure describes the ratio between the number of GPS samples used to create an observations, and the length of the road segment where the observation was made. That is, the quality measure, $Q$ of an observation, $o$ is given by:
 %\begin{equation}
@@ -136,7 +136,7 @@ M5' constructs a model tree, like the one illustrated in Figure \ref{fig:model-t
 	\label{fig:model-tree}
 \end{figure}
 It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by examining all possible splits over all non-class features and the domains of those features. The split that yields the highest reduction in standard deviation is chosen at each step.
-The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. This pruning process makes sure the final model is not overfitting the training examples and can better be applied to unseen data. 
+The resulting tree is then pruned for nodes and leaves that yield a worse standard deviation reduction than parent nodes. This pruning process makes sure the final model is not overfitting the training examples and can better be applied to unseen data.
 Finally, the resulting regression models at the leaves of the tree are mutually smoothed as to minimizes sharp transitions from model to model.
 
 Using this approach, M5' facilitates a dynamic partitioning scheme, based on the measure of standard deviation and smooths transitions between partitions.
