@@ -2,14 +2,14 @@ Several issues exists with the current state of the system and there are therefo
 
 \section{Data acquisition}
 The current speed of observations are an estimate based on changes locations and time over a GPS trajectory. This estimate is not really precise, which can affect the final traffic predictions. Furthermore errors in GPS samplings propagates through to the speed estimation, resulting in worse estimations. A direct measurement of the speed traveled in the dataset would be very useful and improve the accuracy of the prediction model.
- 
+
 Unfortunately, the dataset used contained only timestamped GPS coordinates, which in turn also had a high variance in sampling rate. In GPS samples with high sampling rate, the accuracy of the speed predictions suffered even more because of the uncertainty of the speed.
 
 By collecting a dataset through the client of the system, we can include the speed directly from sensors in the android devices as well as set a more useful sampling rate, which would yield a more useful dataset.
 
 Instead of checking the distribution of data as explained in \ref{datadistibution}, we could also have been working on this data set by running multi pass over it. This could have been done such that in the first pass only processed segments that contained enough observations, and which were to some degree uniformly distributed over the whole day. Then for the second pass process the segments which now also had neighbours of the same roadtype, that now had speed functions, and then use these as a part of determining the speed functions of these segments. Then at the last pass, if any segments were left then we could have used the median speed of all segments of the same roadtype to determine those speed functions.\todo{ref til aau artikel}
 %\section{Data gathering}
-%For this project to work properly, the data needed is a big part of it. Some of the problems with the data used in this project are described in section \ref{sec:datafiltering}. For the system to be able to make good decision a lot of data is needed and should be well distributed over all routes. It is hard to tell when there is enough data for each route. 
+%For this project to work properly, the data needed is a big part of it. Some of the problems with the data used in this project are described in section \ref{sec:datafiltering}. For the system to be able to make good decision a lot of data is needed and should be well distributed over all routes. It is hard to tell when there is enough data for each route.
 
 %To collect this data a smart and easy way needs to be in play. In section \ref{sec:existingwork} some of the possible way of collecting data is analyse. The data should consist of location, time and speed, location and time is in the data we got now but we need to calculate the speed form the data we got now. Since there can be some error with the location data then the speed calculation will yield a wrong result, and the cost function is depended on the correctness of the speed.
 %The client-server solution we proposed is set up to collect the data needed, if we had more time for this project we could have collected data on our own and had a lot better data to work with, since the data we can collect through the client would be the GPS coordinates, time and speed, where speed has been a huge issue for us because it was not given in the dataset we worked with.
@@ -21,7 +21,7 @@ The current approach for data filtering seems ad-hoc. Many of the difficulties w
 
 Likewise, the map-matching process we have left to an external service (TrackMatching) to focus on the prediction of traffic. Although the TrackMatching API yields matches that seem reasonable, it is not clear how the algorithms for mapmatching in this service work, which could provide information about the performance of the algorithms. The only measurement of accuracy for a given match has been an error measurement. Unfortunately the meaning of the error measure is not documented, and so we can only guess about the impact of the different values it takes. Furthermore, it was discovered that TrackMatching makes heavy use of inference of roads, if GPS sample rate is very low. In some cases, this inference yielded matches to many road segments that actually had been no GPS-samples on. One could argue that this is not the best approach, since inferring so many roads just to be able to give results is not justifiable.
 
-More closely evaluating alternative map-matching tools or implementing a map-matching algorithm ourselves would not only give more control of the map-matching process, but also give more insight into accuracy of matches to reason about the quality of GPS-samples. 
+More closely evaluating alternative map-matching tools or implementing a map-matching algorithm ourselves would not only give more control of the map-matching process, but also give more insight into accuracy of matches to reason about the quality of GPS-samples.
 %Map-matching as describe in section \ref{sec:mapmatching} looks at the way this project have implemented this process, but this have highlighted some problems. Given a set of way-points the mapping function will give a route if one or more of these way-points are wrong the function will still make a route with them, never looking if this is possible.
 
 %This means that the map data need to look at again to fix these errors. A solution would be to build the map-matchere ourselves "it was out of this project scope". It would allow us the merge the mapping and error detection into one process. Another possible solution could be to use another map-matching program, but more time would be need to make an informed decision on which of the service from section \ref{sec:mapmatching} to or if non of them are usable.
@@ -30,14 +30,16 @@ More closely evaluating alternative map-matching tools or implementing a map-mat
 
 \section{Routing}
 
-\subsection{Contraction hierarchies}\label{sec:future:contraction-hierarchies}
+\subsection*{Contraction hierarchies}\label{sec:future:contraction-hierarchies}
 % What is it?
 % Why use it?
 % How do we use it?
-The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through.
+The map is represented as a graph as this makes it a lot easier to work with path finding problems. The problem with representing a map this way is that the graph gits so big and there is a lot of unnecessary points for finding a route from A to B. To minimise the amount of data the graph consist of, shortcut have been introduce. These shortcuts are called segments, and they go from intersection to intersection, so all intermediate points on the original map is then ignored. This makes the graph a lot smaller and faster to search through. The hierarchies makes multithreaded searchs a lot easier to preform on the graph because of hierarchies value, then each thread just works towards the other.
+
+A problem is the make the contractions with a cost function that is time depending. This can mean that a lot of re-contracting of the graph.
 
 
-\subsection{Bi-directional A*} \label{algorithms}
+\subsection*{Bi-directional A*} \label{algorithms}
 The path finding algorithm describe in section \ref{sec:pathfinding} is a sub optimal for finding a path through a graph. In this section another version of an A* will be looked at, the bi-directional A* algorithm.
 
 Bi-directional graph search is in it's simplest form just a two normal Dijkstra’s where one starts from the start node and the other starts from the goal node.
@@ -59,12 +61,12 @@ This means that to implement a more efficient algorithm for finding a path throu
 \end{itemize}
 
 \section{Client-Server features}
-There are several things that could be added to the client and server as future work, things that we would have done if we had more time. 
+There are several things that could be added to the client and server as future work, things that we would have done if we had more time.
 As for the client a specific route option, where you would be able to plot in your position, where you want to go and get a time estimate of your travelling time. A voice like there exists on other GPS, which tells you what direction to turn and if you have made a wrong turn.
 
-Another thing would be live updates, as in if the traffic conditions have changed which would make the server send a new route to the client. When given a route the server could also give 2 alternative routes with the time differences and distance, like Google Maps does. 
+Another thing would be live updates, as in if the traffic conditions have changed which would make the server send a new route to the client. When given a route the server could also give 2 alternative routes with the time differences and distance, like Google Maps does.
 When the client asks for a route the server could respond with 3 routes, which ordinary GPS does, the fastest, the shortest and the cheapest regarding  mileage.
 
 At the moment if a message is lost the message is just discarded, which does not have any impact if it is just a few messages, but if there are a lot of messages lost this could potentially become a problem. Therefore it could be an idea to handle lost messages more appropriate, like cashing all the lost messages and then send them all together at some point.
 
-At the moment the client only works on Android, it would of course be advantageously to have the client working on IOS and Microsoft smartphones.
+At the moment the client only works on Android, it would of course be advantageous to have the client working on IOS and Microsoft smartphones.
