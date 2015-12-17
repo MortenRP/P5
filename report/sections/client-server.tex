@@ -1,4 +1,4 @@
-\section{Client-server communication} 
+\section{Client-server communication}
 \label{chap:clientserver}
 As mentioned in the former section, we will be using a client-server structure.
 The reason behind this choice, is to seperate the client application from the back end. Without a client server solution we would not be able to collect data from a client, nor be able to communicate between different devices.
@@ -8,13 +8,13 @@ The server will handle this information and send it further for analyzing,
 the server will also send updates regarding the route back to the clients.
 
 The client server interface is built upon the Java ServerSocket and the Java Socket,
-which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. 
+which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
 We chose TCP because it is a stream oriented protocol,
 which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput.
 The other option would have been UDP, which is a message oriented protocol.
 UDP is often used for sending messages from one point to many points,
 which minimizes the time it takes for a message to be sent and received.
-UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer. 
+UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer.
 
 \begin{figure}[h!]
   \centering
@@ -52,7 +52,7 @@ The client will ask for a GPS update every 5 seconds, this is done to be able to
 %When a message is sent either from the client or the server,
 %they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the message is discarded. We could have continued to try and resend the message several times, but a lost GPS coordinate from a user is not a critical problem for our system and will not have any major effect on our calculations.
 
-As just explained the client harvests data from the user, this data can be used as historical data and is something that we would have used, but because of our limited time for this project we, as explained earlier, are using a data set from Beijing.
+As just explained the client harvests data from the user, this data can be used as historical data and is something that we would have used, but because of our limited time for this project we, as explained earlier, are using a training set from Beijing.
 
 On the client we have implemented an OpenStreetMap viewer and a getRoute method where the client asks for a route between two points, this is done by sending 2 node ids, node ids are explained in \ref{chap:FormatPre-processing}, to the server where then the fastest path is calculated between the 2 points. The server then sends GPS locations of the route which then is shown in the OpenStreetMap on the client. An illustration of this can be seen in \figref{fig:routeonmap}.
 
@@ -62,4 +62,3 @@ On the client we have implemented an OpenStreetMap viewer and a getRoute method 
     \caption{Illustration of a route sent from the server to the client shown on an android device}
     \label{fig:routeonmap}
 \end{figure}
-
