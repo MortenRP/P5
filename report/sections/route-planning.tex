@@ -5,7 +5,7 @@ In order to be able to suggest routes to motorists, the system must find the bes
 We use the heuristic search algorithm A* since it is a widely used approach for finding shortest path routes in graphs and can be improved by further preprocessing of the graph as discussed in Chapter \ref{ch:future-work}.
 We design the heuristic as an underestimate of the real travel time from a start node to target node, by letting the heuristic be the travel time of traveling the eucledian distance from the start node to the target node when traveling with the average speed of observations. 
 
-Let $h(n)$ be the heuristic function:
+Let $h(v)$ be the heuristic function:
 \begin{align*}
 h(v) = &\frac{avg(s_1,…,s_n)}{dist(u,v)} \qquad u,v \in E
 \end{align*}

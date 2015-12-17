@@ -43,7 +43,7 @@ f_n(e) & \quad \text{if } t \in p_n
 where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment $e$. The idea is illustrated in Figure \ref{fig:segmented-regression}.
 \begin{figure}
 \centering
-\includegraphics[trim={0 9cm 0 9cm},clip, width=\textwidth]{figures/piecewise.pdf}
+\includegraphics[trim={0 8cm 0 9cm},clip, width=\textwidth]{figures/piecewise.pdf}
 \caption{Example of piecewise linear regression - day of 24 hours are partitioned into 4 parts. Every partition has a linear function describing traffic in this time period.}
 \label{fig:segmented-regression}
 \end{figure}
@@ -153,13 +153,19 @@ Using the M5' implementation in Weka, we generate model trees for road segments 
 \item Observed speeds above the speed limit introduces the possibility that the system can suggest driving faster than allowed.
 \item A segment might not have enough observations to construct a (useful) regression model.
 \end{itemize}
-% How ?
+To minimize the effect of these issues we perform filtering on the observations and take measures to ensure the distribution of observations are fair, that is, before building model trees for a road segment, the distribution of observations throughout the day is somewhat balanced.
 \subsubsection{Filtering the data}
-To minimize the effect of these issues, we perform filtering on the observations based on the \emph{Median Sample Rate} and mapmatching error. Furthermore observations speeds higher than two times the speed limit are filtered, because such high speeds are more likely to be noise data. Observations with speeds between 100\% to 200\% the speed limit are lowered to the max speed, since such observations might be realistic, but we still do not want them to affect the regression model.
-
-Additional thresholds for filters can be seen in \tabref{tab:datafiltering} (the green row is the one we use).
+The primary filtering is based on two quality measures called \emph{Median Sample rate} (MSR) and \emph{Map-matching Error} (MME). MME is the error returned from the map-matching service, and MSR is computed when observations are created. The idea behind MSR is illustrated Figure \ref{fig:MSR}. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/MSR.pdf}
+\caption{Median Sample Rate usage - The samples s1,s2,s3 are mapmatched to the road segment between u,v. MSR is calculated as the median of r1, r2 which represents the difference in time between samples.}
+\label{fig:MSR}
+\end{figure}
+The median sample rate represents the median of the change in time between the GPS samples a given observation is based on. 
+In order to use MSR and MME to filter observations treshholds for these quality measures are required to be met by observations in order for them to be used in the regression models. The tresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. Table \ref{tab:datafiltering} shows different results for different thresholds.
 %  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
-\begin{table}[H]
+\begin{table}[h]
 	\centering
 	\begin{tabular}{TlTlTlTlTlTlT}
 		\thickhline
@@ -179,9 +185,9 @@ Additional thresholds for filters can be seen in \tabref{tab:datafiltering} (the
 	\label{tab:datafiltering}
 \end{table}
 	\todo{make percent of how many observations (in table) are filtered. Benjamin }
-\emph{MSR} is the median sample rate calculated using only waypoints that are at least 1.4 metres apart to avoid having , \emph{\#Wpts} is the total number of waypoints on the link, \emph{Length} is the distance driven between the first and the last waypoint in the link, and \emph{Observations} is the number of observations remaining after applying the filters.
-The tresholds are based on informal study of how high requirements of MSR and MME (mapmatching error) was possible, without discarded too much data.
-Additionally, we perform normalisation of the timestamps of observations, due to Weka3's internal representation of time being problematic when doing regression.
+\textbf{MSR} is the median sample rate. \textbf{\#Wpts} is the total number of waypoints on the link (recall that a link is the entity to which a set of GPS sample is matched), \textbf{Length} is the distance driven between the first and the last waypoint in the link, and \textbf{Observations} is the number of observations remaining after applying the filters.
+The chosen treshhold combination is highlighted with green. This combination strikes a fair balance between MSR and MME and amount of filtered observations.
+Furthermore observations with speeds higher than two times the speed limit are filtered, because such high speeds are likely to be noise data. Such speeds are possible, since the speeds of observations are estimates based on changes in time and location. Observations with speeds between 100\% to 200\% the speed limit are lowered to the given segments speed limit, since such observations might be realistic driving, but we do not want speeding drivers to affect the resulting regression model.
 
 \subsubsection{Distribution of data}\label{datadistibution}
 With the filtered observations we are creating speed functions for every day of the week for all the segments. But since the remaining dataset of observations covers just a little percentage of the segments on all days, there will be some segements that wont have enough observations to create a solid foundation to run the M5P algorithm. Because of this shortage of observations we have decided to use two ways of adding observations to a given segment.
