@@ -21,7 +21,7 @@ Each edge, $e$, also has an associated weight, $weight(e)$ where
 \begin{align}
 weight: E \times T \times W \rightarrow \mathbb R_+
 \end{align}
- is the weight function as defined more precisely in Section \ref{sec:weight-function}. 
+ is the weight function as defined more precisely in Section \ref{sec:weight-function}.
 
 Usually, the weight of an edge is used to choose between edges in search algorithms.
 
@@ -30,7 +30,7 @@ Representing the road network as a graph is sufficient to capture the important 
 \subsection{Traffic representation}\label{KR:traffic}
 We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a separate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.
 
-From the Beijing dataset, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.
+From the training set, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.
 
 Let an \emph{observation}, $o$, be:
 \begin{align*}
@@ -53,14 +53,14 @@ We have encountered a number of problems when generating observations:
 	\item Speeds cannot be accurately calculated when there are fewer than two waypoints on a link.
 	\item Sometimes, a few consecutive waypoints are identical. This is only a problem when all the waypoints are identical, as that is effectively equivalent to having only a single waypoint.
 	\item The map used by TrackMatching may differ from the one used locally. In one case, a way in the TrackMatching map was represented as two separate ways in the map we used. In another, a node in the map used by TrackMatching did not exist in ours.
-	\item Some of the drivers in the Beijing dataset drove in the wrong direction on a one-way road. This is either due to an error in the map (i.e. wrong classification of the road) or reckless driving.
+	\item Some of the drivers in the training set drove in the wrong direction on a one-way road. This is either due to an error in the map (i.e. wrong classification of the road) or reckless driving.
 	\item Due to the inaccuracies in GPS technology, someone staying in the same place will appear to move back and forth on a way. The same will happen in a few cases when the map-matcher includes waypoints that should have been pruned.
 \end{enumerate}
 
 These problems are solved by skipping links where they occur. This increases the average quality of observations in exchange for a slight decrease in the quantity.
 
 \subsection{Estimating observation speed}\label{KR:speed}\todo{Nyligt omskrevet. Læs og ret.} \todo{mangler hvorfor vi har valgt at gøre det sådan her (done?)}
-The speed of an observation is estimated based on the data in a single link. The average speed between each pair of waypoints in the link is calculated by 
+The speed of an observation is estimated based on the data in a single link. The average speed between each pair of waypoints in the link is calculated by
 \begin{align*}
 \dfrac{od(wp_1, wp_2)}{t_2 - t_1}
 \end{align*}
@@ -84,7 +84,7 @@ s_i = \frac{dist(wp_i, wp_{i+1})}{t_{i+1} - t_i} \qquad \text{ for } 0 < i < n
 
 where
 \begin{align*}
-dist(wp_1, wp_2) = \begin{cases} 
+dist(wp_1, wp_2) = \begin{cases}
 od(wp_1, wp_2) & \text{if}\ |cbw| = 0 \\
 od(wp_1, c_1) + od(c_1, c_2) + ... & \text{if}\ |cbw| > 0 \\
 + od(c_{m-1}, c_m) + od(c_m, wp_2)
