@@ -1,5 +1,5 @@
 \section{Data preprocessing}
-Here we discuss how to process the Beijing dataset. The overall process is illustrated in \ref{fig:data-processing}.
+Here we discuss how to process the Beijing training set. The overall process is illustrated in \ref{fig:data-processing}.
 
 \begin{figure}[h!]
   \centering
@@ -102,7 +102,7 @@ Furthermore, some GPS samples are of very bad quality. Some routes are (accordin
 GPS samples that is shown to have completely unrealistic properties is also cleaned from the dataset. An example would be the speed driven between two samples relative to the change in distance between the sampling timestamps. If the speed required to move the physical distance in that time is unrealistic (say, well above what a car can actually drive), we filter these "bad" observations. Note that we actually postpone the filtering of these samples, as it is easier to take into account after map-matching of the GPS samples has been completed.
 
 \subsection{Map matching}\label{sec:mapmatching}
-Generally, GPS coordinates measured are often imprecise due to external factors, and do therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the Beijing dataset must be treated as approximations of GPS locations. This causes some problems in terms of how we should decide which road the vehicle was traveling on and what its speed was.
+Generally, GPS coordinates measured are often imprecise due to external factors, and do therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the traning set must be treated as approximations of GPS locations. This causes some problems in terms of how we should decide which road the vehicle was traveling on and what its speed was.
 
 \begin{figure}
 \includegraphics[scale=1]{figures/mapmatching.png}
