@@ -164,27 +164,28 @@ The primary filtering is based on two quality measures called \emph{Median Sampl
 \end{figure}
 The median sample rate represents the median of the change in time between the GPS samples a given observation is based on. 
 In order to use MSR and MME to filter observations treshholds for these quality measures are required to be met by observations in order for them to be used in the regression models. The tresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. Table \ref{tab:datafiltering} shows different results for different thresholds.
+
 %  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
 \begin{table}[h]
 	\centering
-	\begin{tabular}{TlTlTlTlTlTlT}
+	\begin{tabular}{TlTlTlTlTlTlTlT}
 		\thickhline
-		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{MME} & \textbf{\#Wpts} & \textbf{Observations} \\ \thickhline
-		-                                                                                       & -                & -             & -              & -               & 4584306               \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527                \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128                \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & -                & \textless= 20 & \textless 100  & -               & 878426                \\ \thickhline
-		\textless speed limit * 2                                                               & -                & \textless= 20 & \textless 100  & -               & 898774                \\ \thickhline
-		\textless= speed limit                                                                  & -                & \textless= 20 & \textless 100  & -               & 861766                \\ \thickhline
-		\textless= speed limit                                                                  & -                & \textless 300 & \textless 100  & -               & 2861949               \\ \thickhline
+		\textbf{Speed}                                                                          & \textbf{Length}  & \textbf{MSR}  & \textbf{MME} & \textbf{\#Wpts} & \textbf{Observations} & \textbf{\%} \\ \thickhline
+		-                                                                                       & -                & -             & -              & -               & 4584306             & 100 \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & \textgreater= 5 & 269527              & 5.88 \\ \thickhline
+		\textless= speed limit                                                                  & -                & \textless= 20 & \textless 100  & -               & 861766              & 18.8 \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5 m & \textless= 20 & \textless 100  & -               & 867128              & 18.9 \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & -                & \textless= 20 & \textless 100  & -               & 878426              & 19.2 \\ \thickhline
+		\textless speed limit * 2                                                               & -                & \textless= 20 & \textless 100  & -               & 898774              & 19.6 \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & \textgreater= 3 & 913779              & 19.9 \\ \thickhline
 		\rowcolor[HTML]{34FF34}
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & -               & 1715070               \\ \thickhline
-		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & \textgreater= 3 & 913779                \\ \thickhline
+		\begin{tabular}[c]{@{}l@{}}\textgreater 1 km/h\\ \textless speed limit * 2\end{tabular} & \textgreater 5m  & \textless= 60 & \textless 100  & -               & 1715070             & 37.4 \\ \thickhline
+		\textless= speed limit                                                                  & -                & \textless 300 & \textless 100  & -               & 2861949             & 62.4 \\ \thickhline
 	\end{tabular}
 	\caption{Observations remaining after using various filters. MSR = median sample rate of the link, \#Wpts = number of waypoints in the link.}
 	\label{tab:datafiltering}
 \end{table}
-	\todo{make percent of how many observations (in table) are filtered. Benjamin }
+
 \textbf{MSR} is the median sample rate. \textbf{\#Wpts} is the total number of waypoints on the link (recall that a link is the entity to which a set of GPS sample is matched), \textbf{Length} is the distance driven between the first and the last waypoint in the link, and \textbf{Observations} is the number of observations remaining after applying the filters.
 The chosen treshhold combination is highlighted with green. This combination strikes a fair balance between MSR and MME and amount of filtered observations.
 Furthermore observations with speeds higher than two times the speed limit are filtered, because such high speeds are likely to be noise data. Such speeds are possible, since the speeds of observations are estimates based on changes in time and location. Observations with speeds between 100\% to 200\% the speed limit are lowered to the given segments speed limit, since such observations might be realistic driving, but we do not want speeding drivers to affect the resulting regression model.
