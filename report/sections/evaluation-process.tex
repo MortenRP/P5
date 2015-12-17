@@ -21,16 +21,24 @@ First, we consider how to
 We follow the above method for \todo{x number of routes} to see any common patterns. The findings are summarized in Table \ref{tab:eval-results}
 \begin{table}[]
 \centering
-\begin{tabular}{lllll}
-\textbf{Route} & \textbf{$T_{uninformed}$} & \textbf{$T_{informed}$} & \textbf{$T_{adj}$} & \textbf{Difference} \\ \hline
-$r_1$          & 1234                      & 1234                    & 123                & 3                   \\
-$r_2$          & 1234                      & 1234                    & 13123              & 22                  \\
-$r_3$          & 1234                      & 12333                   & 1212               & 3                   \\
-$r_4$          & 1234                      & 123                     & 22                 & 44                  \\
-$r_5$          & 1234                      & 123                     & 13                 & 44                 
+\begin{tabular}{llllll}
+\textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{Model accuracy (\%)} & \textbf{Time saved (\%)} \\ \hline
+$r_1$          & 1767              & 2572               & 1726               & 68.7                         & 32.9 \\
+$r_2$          & 7023              & 4183               & 2574               & 59.6                         & 38.5 \\
+$r_3$          & 2735              & 1793               & 1425               & 65.6                         & 20.5 \\
+$r_4$          & 873               & 1010               & 855                & 86.4                         & 15.3 \\
+$r_5$          & 5144              & 4915               & 2803               & 95.5                         & 43.0 \\
+$r_6$          & 476               & 903                & 620                & 52.7                         & 31.3 \\
+$r_7$          & 2432              & 2368               & 1770               & 97.3                         & 25.2 \\
+$r_8$          & 2227              & 1431               & 1153               & 64.3                         & 19.4 \\
+$r_9$          & 2991              & 13565              & 3250               & 22.0                         & 76.0 \\
+$r_{10}$       & 1158              & 1153               & 1101               & 99.6                         & 4.51
 \end{tabular}
-\caption{Results of the simulation}
+\caption{Model accuracy = $100 * \frac{min(W_o(R), W_a(R))}{max(W_o(R), W_a(R))}$\\
+	     Time saved = $100 * \frac{W_a(R) - W_a(R')}{W_a(R)}$}
 \label{tab:eval-results}
 \end{table}
+
+\todo{Explain why model accuracy is a bit shitty}
 Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum v
 Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum 
