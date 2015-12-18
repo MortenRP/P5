@@ -2,9 +2,9 @@
 % Why find traffic patterns?
 % What is this section for?
 % How? --> follows from the subsections.
-In order to reason about the traffic in Beijing, and provide some measure of how the previous traffic possibly affects our belief in how the future traffic situation will be in the road network, we analyse the preprocessed data to look for patterns. In this section, we consider methods for extracting such patterns and propose how to apply them on the Bejing dataset.
+In order to reason about the traffic in Beijing, and provide some measure of how the previous traffic possibly affects our belief in how the future traffic situation will be in the road network, we analyse the preprocessed data to look for patterns. In this section, we consider methods for extracting such patterns and propose how to apply them on the Beijing dataset.
 \subsection{Methods}\label{patterns:methods}
-From our knowledge representation of the road network and traffic, we want to predict how traffic affects the travel time of roads in the road network. In order to do this, we need a measure of the traffic on roads. There are several ways one could construct such a measure, incuding
+From our knowledge representation of the road network and traffic, we want to predict how traffic affects the travel time of roads in the road network. In order to do this, we need a measure of the traffic on roads. There are several ways one could construct such a measure, including
 \begin{itemize}
 \item \emph{capacity}: How many vehicles can travel on a road, safely, while not negatively affecting the speed driven on the road?
 \item \emph{classification}: Define a class feature of a road, that defines the state of the road. An example could be $Traffic \in \{free, light, medium, heavy\}$. A given road then has a classification based on the observations of speed within some time period.
@@ -12,7 +12,7 @@ From our knowledge representation of the road network and traffic, we want to pr
 \end{itemize}
 The capacity of a road would be possible to estimate from the speed limit, length of a road, safety distances and number of cars. However, drivers do not always drive in a similar manner, which makes it difficult to accurately estimate capacities. Furthermore, one has to consider that different types of roads has different capacities based on number of lanes, differences in road material or other properties.
 
-Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildy congested or heavyily congested. Such information could be captured by classifying roads by a roatio between speed limit and actual speed. This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.\par
+Performing some discrete classification could help to distinguish between different traffic states. Intuitively, a person might be interested in knowing if a road is clear, mildly congested or heavily congested. Such information could be captured by classifying roads by a ratio between speed limit and actual speed. This raises the questions of which classes should be used and how many. If there are not enough classes, it might be difficult to choose which road to take if both are congested more or less equally.\par
 
 To more easily be able to evaluate roads where traffic is similar, we must use a measure that has a finer granularity. By looking directly at the actual speed driven on roads, we can determine more precisely the costs of taken a particular road. The actual speed, together with the length of a road is also the most important factors in in evaluating the travel time for a road. Therefore, we take a regression approach for predicting traffic.
 \subsection{Regression model}\label{patterns:regression-model}
@@ -21,15 +21,16 @@ To predict the traffic speed on a given road segment, at a given time we can con
 \begin{align}\label{eq:speed}
 speed: E \times T \times W \rightarrow \mathbb{R}
 \end{align}
-that maps a road segment, time of day and day of week to the a real valued speed prediction. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time. \par
+that maps a road segment, time of day and day of week to a real valued speed prediction. The remaining question is then, how to actually perform the prediction of traffic on a segment given a specific time. \par
 Predicting the numeric value of some variable based on previous observations is typically associated with regression. Regression fits input and output pairs to a function, such that future values for input pairs can be predicted. Fitting a regression function on the observations for a particular road segment, provides a way to predict the traffic on the segment. However, since traffic varies over time, one could argue that a polynomial regression function would fit the observations better than a linear function as illustrated in \figref{fig:compare-regression}.
 \begin{figure}
 \includegraphics[width=\textwidth]{figures/compare-regression.pdf}
 \caption{Different regression fits on the same dataset.}
 \label{fig:compare-regression}
 \end{figure}
-Even though the higher order regression functions generally fits the training data better, such a fit might cause \emph{overfitting} observations, where the accuracy of future predictions decreases and the a linear fit might fit the future observations better. \par
-However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions by definition cannot model large fluctuations. For this reason, we instead utilise several linear regression models over the course of a day. More specifically, we split a day into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t_1,...,t_j,...,t_k)$ and $t_1,t_2$ are time-stamps. Thus, a partition is defined as a period of time between $t_1$ and $t_2$ that contains every possible timestamp $t_j$ from $t_1$ to $t_k$. For every $p_i$, we perform a linear regression fit, $f_i$, over the observations within that period of time where $f_i:E \rightarrow \mathbb{R}$. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
+Even though the higher order regression functions generally fits the training data better, such a fit might result in \emph{overfitting}, where the accuracy of future predictions decreases and the linear regression might fit the future observations better.
+
+However, a linear regression over the observations for a whole day is not as useful for predicting the fluctuations in traffic during the day, because linear functions by definition cannot model large fluctuations. For this reason, we instead utilise several linear regression models over the course of a day. More specifically, we split a day into partitions $p_1,...,p_i,...,p_n$ where $p_i = (t_i,...,t_j,...,t_k)$ and $t_j$ are timestamps. Thus, a partition is defined as a period of time between $t_i$ and $t_k$ that contains every possible timestamp $t_j$ from $t_i$ to $t_k$. For every $p_i$, we perform a linear regression fit, $f_i$, over the observations within that period of time where $f_i:E \rightarrow \mathbb{R}$. In practice, the overall regression function, $speed$, for a road segment becomes a piecewise linear function:
 \begin{equation}\label{eq:speed-piecewise}
 speed(e,t, w) =
 \begin{cases}
@@ -143,7 +144,7 @@ Finally, the resulting regression models at the leaves of the tree are mutually 
 
 Using this approach, M5' facilitates a dynamic partitioning scheme, based on the measure of standard deviation and smooths transitions between partitions.
 
-\subsection{Generating speed functions}
+\subsection{Generating speed functions}\label{sec:speedfunctiongen}
 % Why ?
 Using the M5' implementation in Weka, we generate model trees for road segments on a day-by-day basis as described in Section \ref{traffic-patterns}. However several issues are raised about the data used for inducing the model trees:
 % What ?
@@ -159,11 +160,11 @@ The primary filtering is based on two quality measures called \emph{Median Sampl
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/MSR.pdf}
-\caption{Median Sample Rate usage - The samples s1,s2,s3 are mapmatched to the road segment between u,v. MSR is calculated as the median of r1, r2 which represents the difference in time between samples.}
+\caption{Median Sample Rate usage - The samples s1,s2,s3 are map-matched to the road segment between u,v. MSR is calculated as the median of r1, r2 which represents the difference in time between samples.}
 \label{fig:MSR}
 \end{figure}
 The median sample rate represents the median of the change in time between the GPS samples a given observation is based on. 
-In order to use MSR and MME to filter observations treshholds for these quality measures are required to be met by observations in order for them to be used in the regression models. The tresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. Table \ref{tab:datafiltering} shows different results for different thresholds.
+In order to use MSR and MME to filter observations thresholds for these quality measures are required to be met by observations in order for them to be used in the regression models. The thresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. Table \ref{tab:datafiltering} shows different results for different thresholds.
 
 %  SELECT COUNT(o.*) FROM Observations o, Segments s, Ways w, Roadtypes t WHERE o.speed > 1 AND o.speed < t.speedlimit * 2 AND o.length > 0.005 AND o.mediansamplerate <= 20 AND o.error < 100 AND numwaypoints > 4 AND o.segment = s.id AND s.way = w.id AND w.type = t.id;
 \begin{table}[h]
@@ -187,13 +188,13 @@ In order to use MSR and MME to filter observations treshholds for these quality 
 \end{table}
 
 \textbf{MSR} is the median sample rate. \textbf{\#Wpts} is the total number of waypoints on the link (recall that a link is the entity to which a set of GPS sample is matched), \textbf{Length} is the distance driven between the first and the last waypoint in the link, and \textbf{Observations} is the number of observations remaining after applying the filters.
-The chosen treshhold combination is highlighted with green. This combination strikes a fair balance between MSR and MME and amount of filtered observations.
+The chosen threshold combination is highlighted with green. This combination strikes a fair balance between MSR and MME and amount of filtered observations.
 Furthermore observations with speeds higher than two times the speed limit are filtered, because such high speeds are likely to be noise data. Such speeds are possible, since the speeds of observations are estimates based on changes in time and location. Observations with speeds between 100\% to 200\% the speed limit are lowered to the given segments speed limit, since such observations might be realistic driving, but we do not want speeding drivers to affect the resulting regression model.
 
 \subsubsection{Distribution of data}\label{datadistibution}
-With the filtered observations we are creating speed functions for every day of the week for all the segments. But since the remaining dataset of observations covers just a little percentage of the segments on all days, there will be some segements that wont have enough observations to create a solid foundation to run the M5P algorithm. Because of this shortage of observations we have decided to use two ways of adding observations to a given segment.
+With the filtered observations we are creating speed functions for every day of the week for all the segments. But since the remaining dataset of observations covers just a little percentage of the segments on all days, there will be some segments that wont have enough observations to create a solid foundation to run the M5P algorithm. Because of this shortage of observations we have decided to use two ways of adding observations to a given segment.
 
-The first is to look at the segments neighbours, that have the same roadtype on the same day, the reason that we are looking to neighbouring segmens are that they often reflect the traffical situation of the given segment. If neighbouring segments do not have additional information to add to a segment, then we are looking at the observations for the segment on other days. Here we are differentiating between weekdays, and weekends, which we have classified as weekdays beeing monday, tuesday, wednesday and thursday, weekends are therefore the rest. The reason for this distinction is that we argue that some traffical patterns can be devided into these groups, such as weekday traffic when going to and from work.
+The first is to look at the segments neighbours, that have the same road type on the same day, the reason that we are looking to neighbouring segments are that they often reflect the traffic situation of the given segment. If neighbouring segments do not have additional information to add to a segment, then we are looking at the observations for the segment on other days. Here we are differentiating between weekdays, and weekends, which we have classified as weekdays being Monday, Tuesday, Wednesday, Thursday, and Friday; weekends are the rest. The reason for this distinction is that we argue that some traffic patterns can be divided into these groups, such as weekday traffic when going to and from work.
 
 \begin{figure}
 \centering
@@ -202,10 +203,10 @@ The first is to look at the segments neighbours, that have the same roadtype on 
 \label{fig:intervals}
 \end{figure}
 
-Besides looking for more observations we are also figuring out which of these observations to add to ensure that most of the day is covered by observations. The way that we check if there are enough observations, are by splitting the observations into intervals of 6 hours, as seen in \figref{fig:intervals}, for each of these intevals we check that there are at least k observations. We have not yet found the best k value, but this is one area that are possible to look at in the future work.
+Besides looking for more observations we are also figuring out which of these observations to add to ensure that most of the day is covered by observations. The way that we check if there are enough observations, are by splitting the observations into intervals of 6 hours, as seen in \figref{fig:intervals}, for each of these intervals we check that there are at least k observations. We have not yet found the best k value, but this is one area that are possible to look at in the future work.
 
 Then to check that the observations are split evenly over the whole day. To do this a look a the 25, 50 and 75 percentile is made, if each interval have the same number over observations then the 25 percentile will be at 6 o'clock, 50 at 12 o'clock and 75 at 18 o'clock.
 
-The reasoning for using this way to ensure that the data is uniformly distributed, have shown not to be the best idea since we will accept a segment to be proccessed by M5P if it just have k observations en each interval, and the 25, 50 and 75 percentile is to some point satisfied. This does not hinder that observations can just clutter at some points, and therefore they are not uniformly distributed.
+The reasoning for using this way to ensure that the data is uniformly distributed, have shown not to be the best idea since we will accept a segment to be processed by M5P if it just have k observations en each interval, and the 25, 50 and 75 percentile is to some point satisfied. This does not hinder that observations can just clutter at some points, and therefore they are not uniformly distributed.
 
 %We are also looking at the 25, 50 and 75 percentile if these values are laying in between a treshold of 6, 12 and 18. If this is not the case additional observations are added to move these points towards the values. The reasoning for using this way to ensure that the data is uniformly distributed, have shown not to be the best idea since we will accept a segment to be proccessed by M5P if it just have k observations en each interval, and the 25, 50 and 75 percentile is to some point satisfied. This does not hinder that observations can just clutter at some points, and therefore they are not uniformly distributed.
