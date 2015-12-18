@@ -1,21 +1,20 @@
 \section{Solution criteria}\label{chap:solutioncriteria}
 %This section describes how we evaluate the developed solution for the problem formulation. The solution criteria will be the basis of the conclusion in \secref{ch:conclusion}.
-We propose the following criteria that the agent must fulfil to be considered an acceptable solution to the problem:
+We propose the following criteria that the system must fulfil to be considered an acceptable solution to the problem:
 
 \begin{enumerate}
-\item The agent must provide time-wise equivalent or better routes than those routes from the test set.\label{crit:timesaving}
-\item The cost function must give a cost the reflect the real world situation.\label{crit:cost}
-%\item The agent must avoid planning routes through congested areas, even if doing so increases the overall distance.
-%\item The agent must not choose routes that are disproportionately longer than a shortest path to obtain minuscule time-savings.\label{crit:distance}
-%\item The agent must avoid adding traffic to congested areas, that is, it must avoid planning routes that either go through existing congestions or create a congestion by overloading the capacity of other roads. \label{crit:overload}
-%\item Realistic usage of the agent must alleviate congestion, that is, a reasonable fraction of motorists using the agent should mitigate congestion.\label{crit:congestion}
-\item The client has to be able to send GPS location, speed and time to the server.\label{crit:sendmessages}
-\item The server has to be able to handle connections from several clients and be able to send a route which the clients have requested.\label{crit:severalconnections}
+	\item The system must provide time-wise equivalent or better routes than routes from the test set.\label{crit:timesaving}
+	\item The learned traffic patterns must reasonably reflect the actual traffic situation.\label{crit:cost}
+	%\item The agent must avoid planning routes through congested areas, even if doing so increases the overall distance.
+	%\item The agent must not choose routes that are disproportionately longer than a shortest path to obtain minuscule time-savings.\label{crit:distance}
+	%\item The agent must avoid adding traffic to congested areas, that is, it must avoid planning routes that either go through existing congestions or create a congestion by overloading the capacity of other roads. \label{crit:overload}
+	%\item Realistic usage of the agent must alleviate congestion, that is, a reasonable fraction of motorists using the agent should mitigate congestion.\label{crit:congestion}
+	\item The system must retrieve relevant data for learning traffic patterns and provide route directions to users.\label{crit:sendmessages}
+	\item The system must be scalable for usage by a large number of users. \label{crit:severalconnections}
 \end{enumerate}
 
-To evaluate the agent against criteria \ref{crit:timesaving} and \ref{crit:cost}, we simulate several individuals wanting to travel through the road network. We have from the data set put aside som routes to use for testing. These test routes will be run though the system and a total cost for taking this route will be compared to the route our system finde useing start and goal node. There is the posibilaty that route from the test case is the fastes, so the system need to finde a route that at least take the same time or is faster.
+\todo{out deep criteria}
 
-To be able to test criteria \ref{crit:sendmessages} and \ref{crit:severalconnections} we will construct a client server solution and do several tests on them.
 
 %We set up the simulation with a route that is the shortest path between two nodes, such that the route goes through an area that is known by the agent to be congested in a specific time interval. We then calculate a route with Google Maps and with the agent respectively and compare the properties of these routes. If the route calculated by the agent is equally fast or faster than the route calculated by Google Maps, we consider criterion \ref{crit:timesaving} met. If the distance travelled is not disproportionally longer than that of the Google Maps route, criterion \ref{crit:distance} is also met.%
 
