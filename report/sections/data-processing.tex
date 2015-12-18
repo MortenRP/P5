@@ -8,7 +8,7 @@ Here we discuss how to process the Beijing training set. The overall process is 
     \label{fig:data-processing}
 \end{figure}
 
-The gps dataset is converted into the GPX format which is subsequently map-matched to the road network of Beijing. The map-matched data is then converted into the model objects of the system, and are then stored in the respective tables of the database. Likewise, the map of the Beijing road network is converted to model objects and stored in the database. By doing so, we have a knowledge base of the road network of Beijing and data about vehicle movements in a unified format. \todo{maybe we should perform some data cleaning}
+The gps dataset is converted into the GPX format which is subsequently map-matched to the road network of Beijing. The map-matched data is then converted into the model objects of the system, and are then stored in the respective tables of the database. Likewise, the map of the Beijing road network is converted to model objects and stored in the database. By doing so, we have a knowledge base of the road network of Beijing and data about vehicle movements in a unified format.
 
 \subsection{Map generation}\label{sec:mapgeneration}
 To model the road network of Beijing we need to have the specific information about all the roads in the road network. This information is available several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an open source map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possibility of wrong data, limited data, since that the map is updated by users, so it's is possible for at user to make erroneous updates. But because this service was the only free service that we could find, we see no other option than having in mind that these problems can occur. We have also found that the OpenStreetMap site cannot export large areas of a map, such as the whole city of Beijing. Therefore we have chosen to use one of its mirror sites, Geofabrik\cite{geofabrik}, which provides map extracts of the world, segmented into countries and these are updated daily. This makes it possible for us to extract the whole map for China.
@@ -17,7 +17,7 @@ To model the road network of Beijing we need to have the specific information ab
 \label{chap:FormatPre-processing}
 The maps from Geofabrik comes in a compressed format called pbf. To extract the relevant data from this format we are using a tool called Osmosis, to query the file using several filters to be able to extract only the information relevant.
 
-We are using two types of filters with Osmosis, the first is used to set bounds on the area that we want to extract information from, these bounds are set as north, west, south and east in logitude and latitude. This filter is used since the map we are using is all of China and we are only interested in the road network of Beijing. The second filter is used to extract only roads from the previous bounded area. With this filter we have the possibility to specify which roads we want to get in the output. Because all paths are marked in OpenStreetMap as ways, we want to filter these in order to remove side-walks, bicycle ways, and other ways that are not possible use by car or other motorized vehicles.
+We are using two types of filters with Osmosis, the first is used to set bounds on the area that we want to extract information from, these bounds are set as north, west, south and east in longitude and latitude. This filter is used since the map we are using is all of China and we are only interested in the road network of Beijing. The second filter is used to extract only roads from the previous bounded area. With this filter we have the possibility to specify which roads we want to get in the output. Because all paths are marked in OpenStreetMap as ways, we want to filter these in order to remove side-walks, bicycle ways, and other ways that are not possible use by car or other motorized vehicles.
 
 The extracted data from the Osmosis query is then exported to a file in XML format. There are two types left in the export, which are nodes and ways, as shown in the example \figref{wayexample}. Nodes represent road intersections and are also used to indicate points along a road if the road is not straight. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a traffic light is present at a given node. Ways also contain a ng tag, with id, for every node it consists of.
 
@@ -60,7 +60,7 @@ We have illustrated the representation of nodes, ways, edges and segments in \fi
 \end{figure}
 
 \subsubsection{Generation}
-An XML parser is used to extract the information from the Osmosis export that is needed to model the road network. When a node or way tag is read a equivalent data structure is created and stored.
+An XML parser is used to extract the information from the Osmosis export that is needed to model the road network. When a node or way tag is read an equivalent data structure is created and stored.
 
 \begin{lstlisting}[style=java, caption=Datastructure for a node]
 Node{
@@ -110,14 +110,12 @@ The relation between edges and segments is that each edge of a segment contains 
 % WHAT IS IT?
 % WHY DO WE DO IT?
 % HOW DO WE DO IT?
-We perform a simple spatial and temporal filtering the GPS data, by filtering GPS samples from outside the physical city limits. The limits are given by a bounding box defined by the coordinates \todo{insert coordinates}. Cleaning the data before further processing is key, since not all of the data is accurate or even useful for reasoning about the traffic. We Even though of the data that is filtered is reliable enough, we delimit our focus on congestion in the city center, so we chose to look aside this data. Since most of the data is clustered in the city center anyway, we do not lose significant parts of the dataset by filtering these samples.
+We perform a simple spatial and temporal filtering on the GPS data to remove GPS samples outside the physical city limits. Filtering the data before further processing is key, since not all of the data is accurate or even useful for reasoning about the traffic. Even though the data that is filtered is reliable enough, we delimit our focus on congestion to the city center. Since most of the data is clustered in the city center anyway, we do not lose significant parts of the dataset by filtering these samples.
 
-Furthermore, some GPS samples are of very bad quality. Some routes are (according to the GPS samples) at one moment driving through Bejing, and the next moment suddenly driving in Africa or Europe. This phenomenon could be caused by weak connection to the GPS satelites e.g. when driving through are tunnel. The inacuraries these corrupt samples introduce, are taken care of as well by filtering samples outside of the city limits. Fortunately, we do not lose all of the samples associated with the rest of the route involved - just the corrupted sample.
-
-GPS samples that is shown to have completely unrealistic properties is also cleaned from the dataset. An example would be the speed driven between two samples relative to the change in distance between the sampling timestamps. If the speed required to move the physical distance in that time is unrealistic (say, well above what a car can actually drive), we filter these "bad" observations. Note that we actually postpone the filtering of these samples, as it is easier to take into account after map-matching of the GPS samples has been completed.
+Furthermore, some GPS samples are of very bad quality. Some routes are (according to the GPS samples) at one moment driving through Beijing, and the next moment suddenly driving in Africa or Europe. This phenomenon could be caused by weak connection to the GPS satellites e.g. when driving through a tunnel. The inaccuracies these corrupt samples introduce, are taken care of as well by filtering samples outside of the city limits. Fortunately, we do not lose all of the samples associated with the rest of the route involved - just the corrupted sample.
 
 \subsection{Map matching}\label{sec:mapmatching}
-Generally, GPS coordinates measured are often imprecise due to external factors, and do therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the traning set must be treated as approximations of GPS locations. This causes some problems in terms of how we should decide which road the vehicle was traveling on and what its speed was.
+Generally, GPS coordinates measured are often imprecise due to external factors, and do therefore not reflect the precise location of, in this case, a vehicle. Consequently, the samples of the training set must be treated as approximations of GPS locations. This causes some problems in terms of how we should decide which road the vehicle was traveling on and what its speed was.
 
 \begin{figure}
 \includegraphics[scale=1]{figures/mapmatching.png}
@@ -125,14 +123,14 @@ Generally, GPS coordinates measured are often imprecise due to external factors,
 \label{fig:mapmatching}
 \end{figure}
 
-The problem is illustrated in figure \ref{fig:mapmatching}. The orange-and-black colored GPS samples are imprecise in the sense that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates for roads, since the distance from the samples to the two roads might be equal.
+The problem is illustrated in \figref{fig:mapmatching}. The orange-and-black colored GPS samples are imprecise in the sense that they are not mapped directly onto the blue road. The straightforward solution would just be to map the samples to the road closest to the collection of samples. However if the road network is dense, we can have multiple candidates for roads, since the distance from the samples to the two roads might be equal.
 
-Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exist that perform this task, including TrackMatching, GraphHopper and N-Gemma.\todo{Consider adding a source for each tool.}  Limited informal evaluations of these implementations showed that TrackMatching provided a more precise map-matching than GraphHopper, both of which work with GPX-formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the use of N-Gemma, since TrackMatching was an adequate solution to the map-matching problem, despite it being a webservice.
+Consequently, we must perform the process of \emph{map-matching} the dataset of GPS samples to the most likely roads that vehicles was traveling on. Several algorithms and implementations exist that perform this task, including TrackMatching\cite{TrackMatching}, GraphHopper\cite{GraphHopper} and N-Gemma\cite{NGemma}. Limited informal evaluations of these implementations showed that TrackMatching provided a more precise map-matching than GraphHopper, both of which work with GPX-formatted GPS samples. Unfortunately, the documentation for N-Gemma was incomplete, and as such, we decided to not investigate further the use of N-Gemma, since TrackMatching was an adequate solution to the map-matching problem, despite it being a webservice.
 
 Alternatively, we considered implementing a map-matching algorithm ourselves, however given that the focus of the project is on constructing an intelligent routing agent; not an efficient map-matching algorithm, we decided that our time would be better spent elsewhere, and opted for utilising an existing implementation for map-matching.
 
 \subsubsection{TrackMatching input and output}
-We chose to use the GPX format for input and GeoJSON as the output of the map-matcher.\todo{why?} The output is represented as a tree structure in \figref{fig:geojson}. The \emph{links} element of each \emph{route} is an array of link objects.
+We chose to use the GPX format for input and GeoJSON as the output of the map-matcher. The output is represented as a tree structure in \figref{fig:geojson}. The \emph{links} element of each \emph{route} is an array of link objects.
 
 \begin{figure}[H]
 	\centering
