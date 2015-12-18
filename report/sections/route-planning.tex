@@ -3,24 +3,23 @@ In order to be able to suggest routes to motorists, the system must find the bes
 
 \subsection{A* Heuristic Search}\label{sec:pathfinding}
 We use the heuristic search algorithm A* since it is a widely used approach for finding shortest path routes in graphs and can be improved by further preprocessing of the graph as discussed in Chapter \ref{ch:future-work}.
-We design the heuristic as an underestimate of the real travel time from a start node to target node, by letting the heuristic be the travel time of traveling the eucledian distance from the start node to the target node when traveling with the average speed of observations. 
+We design the heuristic as an underestimate of the real travel time from a start node to target node, by letting the heuristic be the travel time of traveling the Euclidean distance at 120 km/h (i.e. the highest speed limit in Beijing) from the start node to the target node when traveling with the average speed of observations. 
 
 Let $h(v)$ be the heuristic function:
 \begin{align*}
-h(v) = &\frac{avg(s_1,…,s_n)}{dist(u,v)} \qquad u,v \in E
+h(v) = &\frac{dist(u,v)}{120 km/h} \qquad u,v \in E
 \end{align*}
-where $s_1,...,s_n$ are speeds of observations.
 that computes an underestimate of the travel time from $u$ to $v$ to ensure the graph search proceeds in the correct direction in the graph.
 
-At every expansion of a node, the weights of the frontier is computed by the respective weight functions for the given time, to determine the best next step in the path. The idea is illustrated in Figure \ref{fig:timed-graph} 
+At every expansion of a node, the weights of the neighbouring nodes are computed by the respective weight functions for the respective time at the given time, to determine the best next step in the path. The idea is illustrated in \figref{fig:timed-graph} 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/timed-graph}
-\caption{Relative times in path-finding - Numbers on edges are costs in time. Relative time is indicated next to nodes. The green arrows indicate the shortest path found. Each time is used as argument to the weight function for a segment.}
+\caption{Relative times in path-finding - Numbers on edges are weights in time. Relative time is indicated next to nodes. The green arrows indicate the shortest path found. The weight of each segment is calculated based on the time of the origin node.}
 \label{fig:timed-graph}
 \end{figure}
 
-Whenever a road segment edge is chosen, the next node is expanded to get the available edges and their weght functions. The previous weight is added to the time, to make sure the next weight function is correctly selected. 
+Whenever an edge is chosen, the next node is expanded to get the available edges and their weight functions. The previous weight is added to the time, to make sure the next weight function is correctly selected. 
 %An A* is used to finding a path through the graph. There are other versions of a A* search that are faster then a normal A*, but these do not work with the weight function that are being used. The time complexity of this search is $O(b^n)$ where $b$ is the branching factor and $n$ is the number of nodes in the graph.
 
 %The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at. 
@@ -34,7 +33,7 @@ Whenever a road segment edge is chosen, the next node is expanded to get the ava
 %By implementing the bi-directional search this way, the worst case running time becomes $O(b^{n})$. The reason for this is that each search is going towards the other search's start node and not it's frontier. The search will stop if one of the two searches hits a node that the other search have visited.
 
 \subsection{Weight function}\label{sec:weight-function}
-The weight of road segments is the travel time required to travel along a road segment at a specific time and day of the week. With the regression model for predicting speed on a road segment from time and day of the week, we can compute a prediction for the travel time. 
+The weight of road segments is the travel time required to travel along a road segment at a specific time and day of the week. With the regression model for predicting speed on a road segment based on the time and day of the week, we can compute a prediction for the travel time. 
 
 Let
 \begin{align}
@@ -51,4 +50,3 @@ where:
 len:E \rightarrow \mathbb{R_+}
 \end{align}
 is a length function, that maps edges to their length.
-Using the travel time as the weight for edges are more interesting in terms of time savings, than using directly the distance of the road.
