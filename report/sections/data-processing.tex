@@ -19,22 +19,21 @@ The maps from Geofabrik comes in a compressed format called pbf. To extract the 
 
 We are using two types of filters with Osmosis, the first is used to set bounds on the area that we want to extract information from, these bounds are set as north, west, south and east in logitude and latitude. This filter is used since the map we are using is all of China and we are only interested in the road network of Beijing. The second filter is used to extract only roads from the previous bounded area. With this filter we have the possibility to specify which roads we want to get in the output. Because all paths are marked in OpenStreetMap as ways, we want to filter these in order to remove side-walks, bicycle ways, and other ways that are not possible use by car or other motorized vehicles.
 
-The extracted data from the Osmosis query is then exported to a file in XML format. There are two types left in the export, which are nodes and ways. Nodes represent road intersections and are also used to indicate points along a road if the road is curved. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a intersection have a traffic light, ect\todo{igen, er etc godt nok at skrive?}.
-Ways are almost similar structured, but they also contain a nd tag which contCains a value the id of a node related to the way.\todo{Forstår ikke den sidste sætning her}
+The extracted data from the Osmosis query is then exported to a file in XML format. There are two types left in the export, which are nodes and ways, as shown in the example \figref{wayexample}. Nodes represent road intersections and are also used to indicate points along a road if the road is not straight. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a traffic light is present at a given node. Ways also contain a ng tag, with id, for every node it consists of.
 
-\begin{lstlisting}[style=XML, caption=Node representation]
-<node id="388002830" lat="39.9931617" lon="116.4469860" version="2" timestamp="2009-05-01T06:11:56Z" changeset="1032633" uid="114770" user="MrBoot"/>
-<node id="388002831" lat="39.9947705" lon="116.4468913" version="2" timestamp="2012-07-29T03:45:44Z" changeset="12530294" uid="114770" user="MrBoot"/>
-<node id="388003082" lat="39.9954892" lon="116.4469707" version="2" timestamp="2009-05-06T23:40:08Z" changeset="1102486" uid="114770" user="MrBoot"/>
-<node id="822458510" lat="39.9893342" lon="116.4477929" version="2" timestamp="2013-07-21T11:32:09Z" changeset="17034535" uid="114770" user="MrBoot"/>
-<node id="822458512" lat="39.9901233" lon="116.4476014" version="2" timestamp="2013-07-21T11:32:09Z" changeset="17034535" uid="114770" user="MrBoot"/>
-<node id="822458513" lat="39.9883905" lon="116.4481454" version="2" timestamp="2013-07-21T11:32:09Z" changeset="17034535" uid="114770" user="MrBoot"/>
-<node id="822458514" lat="39.9877410" lon="116.4491191" version="1" timestamp="2010-07-18T04:00:21Z" changeset="5247694" uid="114770" user="MrBoot"/>
-<node id="822458515" lat="39.9876340" lon="116.4493937" version="2" timestamp="2013-07-21T11:32:09Z" changeset="17034535" uid="114770" user="MrBoot"/>
-<node id="1836104818" lat="39.9953871" lon="116.4469694" version="1" timestamp="2012-07-24T03:36:05Z" changeset="12459778" uid="114770" user="MrBoot"/>
-<node id="1842175791" lat="39.9937764" lon="116.4468907" version="1" timestamp="2012-07-29T03:45:44Z" changeset="12530294" uid="114770" user="MrBoot"/>
-<node id="2391519066" lat="39.9922187" lon="116.4471224" version="1" timestamp="2013-07-21T11:32:08Z" changeset="17034535" uid="114770" user="MrBoot"/>
-<way id="230684654" version="1" timestamp="2013-07-21T11:32:08Z" changeset="17034535" uid="114770" user="MrBoot">
+\begin{lstlisting}[style=Java, caption=An example of a road and its related nodes in XML, label=wayexample]
+<node id="388002830" lat="39.9931617" lon="116.4469860"/>
+<node id="388002831" lat="39.9947705" lon="116.4468913"/>
+<node id="388003082" lat="39.9954892" lon="116.4469707"/>
+<node id="822458510" lat="39.9893342" lon="116.4477929"/>
+<node id="822458512" lat="39.9901233" lon="116.4476014"/>
+<node id="822458513" lat="39.9883905" lon="116.4481454"/>
+<node id="822458514" lat="39.9877410" lon="116.4491191"/>
+<node id="822458515" lat="39.9876340" lon="116.4493937"/>
+<node id="1836104818" lat="39.9953871" lon="116.4469694"/>
+<node id="1842175791" lat="39.9937764" lon="116.4468907"/>
+<node id="2391519066" lat="39.9922187" lon="116.4471224"/>
+<way id="230684654">
     <nd ref="388003082"/>
     <nd ref="1836104818"/>
     <nd ref="388002831"/>
@@ -50,25 +49,12 @@ Ways are almost similar structured, but they also contain a nd tag which contCai
 </way>
 \end{lstlisting}
 
-
-\begin{lstlisting}[style=XML, caption=Node representation]
-<node id, version, timestamp, uid, user, changeset, longitude, latitude >
-	<tag key, value />
-</node>
-\end{lstlisting}
-
-\begin{lstlisting}[style=XML, caption=Way representation]
-<Way id, version, timestamp, uid, user, changeset >
-	<nd ref />
-	<tag key, value />
-</way>
-\end{lstlisting}
-
+In \figref{fig:waywithnodes} we have illustrated the way from \figref{wayexample}. The orange line 
 We have illustrated the representation of nodes, ways, edges and segments in \figref{fig:waywithnodes}. The red nodes represent intersections, the green nodes are points along a way, edges are the black lines between every node, the way is the entire black line, and segments are represented by the blue lines between intersection nodes.
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.8\textwidth]{figures/way-w-nodes.png}
+    \includegraphics[width=0.8\textwidth]{figures/way-w-nodes2.png}
     \caption{A way with nodes}
     \label{fig:waywithnodes}
 \end{figure}
