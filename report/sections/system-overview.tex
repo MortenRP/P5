@@ -8,7 +8,7 @@
     \label{fig:systemoverview}
 \end{figure}
 
-The system has been designed as a combination of a client-server and a repository "blackboard" pattern. \figref{fig:systemoverview} shows the overview of the system. The main server module encapsulates most of the processing of the system. The clients represent the GPS-enabled devices that communicates live GPS data through an internet connection to the server, which in turn processes and analyses the data in different subsystems. We use two the external services: TrackMatching to map-match, and OpenStreetMap to obtain map information. They are described in \secref{sec:mapmatching} and Section \secref{sec:mapgeneration}, respectively.
+The system has been designed as a combination of a client-server and a repository "blackboard" pattern. \figref{fig:systemoverview} shows the overview of the system. The main server module encapsulates most of the processing of the system. The clients represent the GPS-enabled devices that communicates live GPS data through an internet connection to the server, which in turn processes and analyses the data in different subsystems. We use two the external services: TrackMatching to map-match, and OpenStreetMap to obtain map information. They are described in sections \ref{sec:mapmatching} and \ref{sec:mapgeneration}, respectively.
 
 The server architecture is designed as a repository structure, where the solution repository is the shared medium of the subsystems. This architecture is often used when working with artificial intelligence, where the solution is gradually built from different contributing systems, which is why we have chosen this structure of the system.
 
