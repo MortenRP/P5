@@ -9,30 +9,14 @@ In this section we describe what we are going to consider knowledge in the syste
 To represent the road network, we must model what the road network consists of. A road network generally consists of roads and intersections of roads. Obviously there are many different types of roads, such as bridges, boulevards and one-way roads, which all have different properties related to how you can travel on them. Instead of differentiating between types of roads, we can see them as a single type of road, having attributes with different values. As such, to represent the road network we use a weighted, directed graph.
 
 % How ?
-Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$. That is:
-\begin{align*}
-  e \in E \text{ is a tuple } e=(u, v) \text{ where } u, v \in V
-\end{align*}
-Furthermore, two-way roads are represented as two edges,
-\begin{align*}
-  e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)
-\end{align*}
-Each edge, $e$, also has an associated weight, $weight(e)$ where
-\begin{align}
-weight: E \times T \times W \rightarrow \mathbb R_+
-\end{align}
- is the weight function as defined more precisely in Section \ref{sec:weight-function}.
+Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set of edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $u$ to the target intersection $v$. That is, $e \in E \text{ is a tuple } e=(u, v) \text{ where } u, v \in V$. Furthermore, two-way roads are represented as two edges, $e_1, e_2 \text{ where } e_1 = (u, v) \text{ and } e_2=(v, u)$. Each edge also has an associated weight as defined in \secref{sec:weight-function}.
 
-Usually, the weight of an edge is used to choose between edges in search algorithms.
-
-Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since the these attributes can be taken account for by adjusting the weight function to represent differences between different types of roads.
+Representing the road network as a graph is sufficient to capture the important attributes of roads and intersections, since these attributes can be taken account for by adjusting the weight function to represent differences between different types of roads.
 
 \subsection{Traffic representation}\label{KR:traffic}
-We must also consider how to represent knowledge about previous traffic in the Road Network. Since traffic changes over time, we consider this a separate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas model of the road network represents the static properties.
+We must also consider how to represent knowledge about previous traffic in the road network. Since traffic changes over time, we consider this a separate model than the model for the road network, as the traffic describes dynamic properties of the road network, whereas the model of the road network represents the static properties.
 
-From the training set, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define a set of \emph{observations} on road segments.
-
-Let an \emph{observation}, $o$, be:
+From the dataset, we can find many useful properties about the traffic. More specifically, we wish to capture the notion of a person observing the state of traffic when driving on a road at a specific time. An example would be, that a driver could observe that the traffic flows at a lower speed than the speed limit on the road to work in the morning. By collecting many of such \emph{observations} of drivers at different times, we build a large set of observations that can be used to reason about how the traffic situation is at certain time periods. To capture these properties, we define an \emph{observation}, $o$, for a road segment, $e$, as:
 \begin{align*}
 o = (t, d, w, s, e)
 \end{align*}
@@ -41,11 +25,12 @@ where
 t \in T &\text{ is the time of day} \\
 d \in D &\text{ is a date} \\
 w \in W &\text{ is the day of the week} \\
-s \in \mathbb{R} &\text{ is the speed and}\\
+s \in \mathbb{R}_{\ge0} &\text{ is the speed and}\\
+msr \in \mathbb{R}_{\ge0} &\text{ is the median sample rate and}\\
 e \in E &\text{ is road segment where the observation was made.}
 \end{align*}
 
-From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problem is then to estimate the observed speed. Observations are generated on a link-to-link basis.
+From the map-matched dataset, we obtain the set of all observations on the segments in the road network, by constructing a new observation every time a vehicle is driving on the segment. Fortunately, the time of day, segment identifier, date and week of the day can directly be found in the data. The remaining problems are then to estimate the observed speed and calculate the median sample rate (see \secref{sec:speedfunctiongen}). Observations are generated on a link-to-link basis.
 
 We have encountered a number of problems when generating observations:
 
@@ -53,7 +38,7 @@ We have encountered a number of problems when generating observations:
 	\item Speeds cannot be accurately calculated when there are fewer than two waypoints on a link.
 	\item Sometimes, a few consecutive waypoints are identical. This is only a problem when all the waypoints are identical, as that is effectively equivalent to having only a single waypoint.
 	\item The map used by TrackMatching may differ from the one used locally. In one case, a way in the TrackMatching map was represented as two separate ways in the map we used. In another, a node in the map used by TrackMatching did not exist in ours.
-	\item Some of the drivers in the training set drove in the wrong direction on a one-way road. This is either due to an error in the map (i.e. wrong classification of the road) or reckless driving.
+	\item Some of the drivers in the dataset drove in the wrong direction on a one-way road. This is either due to an error in the map (i.e. wrong classification of the road) or reckless driving.
 	\item Due to the inaccuracies in GPS technology, someone staying in the same place will appear to move back and forth on a way. The same will happen in a few cases when the map-matcher includes waypoints that should have been pruned.
 \end{enumerate}
 
@@ -69,7 +54,7 @@ where $od(a, b)$ is the orthodromic distance (i.e., the distance along the surfa
 % How to estimate speed
 We generate observations for each link that is not skipped. Given a link that contains a set of road segment $E$, a sequence of coordinates $Coords = (c_1,...,c_i,...,c_n)$, and a sequence of GPS waypoints $WP=(wp_1,...,wp_i,...,wp_n)$ projected onto a road, where $c_i = (long_i, lat_i)$ and $wp_i = (d_i, w_i, t_i, x_i, y_i)$, we construct a new observation $o_e$ for each $e \in E$ such that:
 \begin{align*}
-o_e = (t_1, d_1, w_1, S, e)
+o_e = (t_1, d_1, w_1, S, msr, e)
 \end{align*}
 
 where
