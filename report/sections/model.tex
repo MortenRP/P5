@@ -11,7 +11,7 @@ To represent the road network, we must model what the road network consists of. 
 % How ?
 Let G be a weighted directed graph $G(V,E)$, where $V$ is the set of nodes corresponding to intersections, $E$ is the set edges corresponding to road-segments between nodes. Each edge represents the direction of a road from the origin intersection, $n_o$ to the target intersection $n_t$. That is:
 \begin{align*}
-  e \in E \text{ is a tuple } e=(u, v) \text{ where } u, v \in N
+  e \in E \text{ is a tuple } e=(u, v) \text{ where } u, v \in V
 \end{align*}
 Furthermore, two-way roads are represented as two edges,
 \begin{align*}
