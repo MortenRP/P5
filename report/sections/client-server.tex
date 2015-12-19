@@ -6,14 +6,18 @@ Smartphones used by drivers will be acting as clients,
 where they need to be able to send information such as location and speed to the server in some given time interval.
 The server will handle this information and send it further for analysing, the server will also send updates regarding the route back to the clients.
 
-The client server interface is built upon the Java ServerSocket and the Java Socket,
+The server and the client communicates through an interface, on the application layer, of the Internet protocol suite.
+The interface allows an application to set up a connection, and read and write strings.
+
+The interface is implemented as a protocol, that is built upon the Java ServerSocket and the Java Socket,
 which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
-We chose TCP\todo{Why: practical example} because it is a stream oriented protocol,
-which is ideal for transferring a lot of sequential data from one point to another, which increases the throughput.
+We chose TCP because it is a stream oriented protocol,
+which is ideal for transferring a lot of sequential data from one point to another,
+such as a large route planned by the system agent, without corrupting data in the transfer.
 The other option would have been UDP, which is a message oriented protocol.
 UDP is often used for sending messages from one point to many points,
 which minimizes the time it takes for a message to be sent and received.
-UDP does not remember the sequence of what you are sending, but TCP does, which of course in our need is what we prefer.
+UDP does not remember the sequence of what it is sending, but TCP does, which is prefered in this case.
 
 \begin{figure}[h!]
   \centering
@@ -22,21 +26,48 @@ UDP does not remember the sequence of what you are sending, but TCP does, which 
     \label{fig:clientserver}
 \end{figure}
 
-\figref{fig:clientserver} illustrates how our client-server structure works.
-The client sends a RequestID command to the server.
-The server responds with an ID, which is an integer that increases every time a RequestID command is received.
-The reason the server provides the ID is to prevent clashes, which might occur if the clients generated the IDs.
-The client sends back an acknowledgement to the server when it has received the ID.
-When the client has received the ID, it then acknowledges the ID received.
-The client sends the data to the server that is needed to create a new route, or gives information about the route it is following.
+\figref{fig:clientserver} illustrates how our protocol works.
+The client sends a \textit{REQUEST\_ID} package to the server.
+The server responds with a \textit{RETURN\_ID} package,
+which contains an integer representing the client ID.
+The server picks the ID, based on a local counter, which increases every time a new client connects to the server.
+The reason the server provides the ID is to prevent clashes between two client IDs,
+which might occur if the clients generated the IDs.
+The client sends back an \textit{ACK} package to the server when it has received the ID.
+When the client has received the ID, and then acknowledged the ID received,
+the client can then send data to the server that is needed to create a new route,
+or give information about the route it is following.
 The server then sends an acknowledgement that it has received the data.
 
+\begin{table}
+\centering
+\begin{tabular}{l|p{.6\textwidth}}
+\textbf{Type}              & \textbf{Description} \\
+\hline
+\textit{REQUEST\_ID}       & Package sent to server, requesting a new ID \\
+\hline
+\textit{RETURN\_ID}        & Response package to a \textit{REQUEST\_ID} \\
+\hline
+\textit{ACK}               & Sent as acknowledgement that another package was received \\
+\hline
+\textit{SEND\_DATA}        & Package which includes additional data \\
+\hline
+\textit{CLOSE\_CONNECTION} & Package sent telling the other side that the connection is closing \\
+\hline
+\textit{ERROR}             & Error package. Sent when a package could not be processed \\
+\end{tabular}
+\caption{Types of packages}
+\label{tab:package_types}
+\end{table}
+
+Table \ref{tab:package_types} describes the different types of packages in the protocol.
+A package consists of a package header, optionally followed by data.
 
 The messages that are sent back and forth are converted into bytes.
-In \figref{fig:bytesclientserver} it is illustrated how the bytes are packed.
+In \figref{fig:bytesclientserver} it is illustrated how the bytes in the package header are packed.
 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID.
-Next we have our RequestID command which takes 16 bits and for the other commands\todo{List/table of commands} there is 8 bits.
-We have reserved one bit as a Last message ID\todo{Layers, splitting, blabla. Skriv det, Andreas!}, which is used to be able to tell if a big message,
+Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits.
+We have reserved one bit as a Last message ID, which is used to be able to tell if a big message,
 that is split into 2 or more files has ended.
 
 \begin{figure}[h!]
