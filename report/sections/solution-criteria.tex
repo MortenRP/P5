@@ -1,6 +1,6 @@
 \section{Solution criteria}\label{chap:solutioncriteria}
 %This section describes how we evaluate the developed solution for the problem formulation. The solution criteria will be the basis of the conclusion in \secref{ch:conclusion}.
-We propose the following criteria that the system must fulfil to be considered an acceptable solution to the problem:
+We propose the following criteria that a system must fulfil to be considered an acceptable solution to the problem:
 
 \begin{enumerate}
 	\item The system must provide time-wise equivalent or better routes than routes from the test set.\label{crit:timesaving}
@@ -12,10 +12,13 @@ We propose the following criteria that the system must fulfil to be considered a
 	\item The system must retrieve relevant data for learning traffic patterns and provide route directions to users.\label{crit:sendmessages}
 	\item The system must be scalable for usage by a large number of users. \label{crit:severalconnections}
 \end{enumerate}
+Criterion \ref{crit:timesaving} implies that a system must find the fastest route depending on the knowledge about traffic. However, some drivers can possibly already have chosen the fastest route, which is why the system must find equivalent or faster routes.
 
-\todo{out deep criteria}
+Criteron \ref{crit:cost} ensures that the traffic patterns learned should be as close to the actual traffic as possible. Accurate models of the traffic patterns ensures that route predictions are accurate. 
 
+Criteron \ref{crit:sendmessages} ensures that a system must be able to communicate relevant data, from the users, for learning traffic patterns and provide the routes to users of the system.
 
+Criteron \ref{crit:severalconnections} ensures that a system must be able to be used simultanously by a large number of users. This is to ensure that the system can help many users avoid traffic, even when driving at the same time.
 %We set up the simulation with a route that is the shortest path between two nodes, such that the route goes through an area that is known by the agent to be congested in a specific time interval. We then calculate a route with Google Maps and with the agent respectively and compare the properties of these routes. If the route calculated by the agent is equally fast or faster than the route calculated by Google Maps, we consider criterion \ref{crit:timesaving} met. If the distance travelled is not disproportionally longer than that of the Google Maps route, criterion \ref{crit:distance} is also met.%
 
 %To check whether the agent meets criteria \ref{crit:overload} and \ref{crit:congestion} we consider how the number of users of the agent affects the severity of congestions. To do this, we simulate travels of motorists on the Beijing road network and estimate the capacity of congested roads. Then we increase the number of users of the agent incrementally by recalculating their routes. By doing so, we can estimate the correlation between the number of users of the agent and congestion. Consequently, we can approximate how many users of the agent there must be to best alleviate congestion problems. If something\todo{Find out exactly how to evaluate this.} then criterion \ref{crit:overload} is met. If this amount of users does not exceed the number of users that utilize their smart-phones or tablets for directions,\todo{Mention that this is what we meant by "realistic usage" in criterion \ref{crit:congestion}} we consider criterion \ref{crit:congestion} met.

@@ -1,26 +1,32 @@
 \section{Evaluation process}
-To see how the system complies with the specified solution criteria and how the system can alleviate the problem statement, we carry out an evaluation process. More specifically, we want to evaluate the following:
+To see how the system complies with the specified solution criteria in \secref{chap:solutioncriteria} and how the system can alleviate the problem statement, we carry out an evaluation process. More specifically, we want to evaluate the following:
 % What do we look at to evaluate?
 \begin{itemize}
-\item How close does the regression models reflect reality?
-\item Does the routes found based on the weight function reflect reality?
-\item Will routes found based on the weight function be faster than original route?
+\item How accurately does the regression models reflect the actual traffic?
+\item Does the routes found based on the regression models reflect reality?
+\item Are routes found by the system, based on the regression models be faster than route chosen by drivers?
 \end{itemize}
 % How do we evaluate?
-To investigate the above questions, we take the following approach:
+To answer the above questions, we consider the model accuracy and time savings of the routes. 
+
+The model accuracy is the difference between the predicted traffic of the regression model and the actual traffic. In order to find the model accuracy we consider both the accuracy on a route basis as well as on an edge basis.
+
+Time savings represents how much faster a found route is than an actual route. This is found by comparing actual routes from a test set of routes and routes found by querying the system the same start and destination.
+
+\subsubsection{Route evaluation}
+The following method is used to find the differences between real routes driven as given by the test-set and the routes found by the system.
 \begin{enumerate}
-\item First, we select a route $R_{uninformed}=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine how long it took to drive this particular route.
-\item Secondly, we compute a new weight, $weight(s, t, w)$ for every segment $s=(n_i,n_{i+1}) for 1 \leq i \leq m$ with the weight function described in Section \ref{sec:weight-function}. Let this route, $R_{adjusted}$, be the same route as $R_{uninformed}$ but with the adjusted weights.
-\item Here, we compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total weight of this route.
-\item Now, we traverse the graph to find a new route, $R_{informed}$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path from $n_1$ to $n_m$ by using the weight of each segment determined by our weight function.
-\item We compare $R_{uninformed}$ and $R_{adjusted}$ to see if there are any significant changes in the total weight of this route, and what the difference in the predicted and actual time is.
-\item Finally, we compare $R_{informed}$ with $R_{adjusted}$ and see if $R_{informed}$ has chosen a route, that saves time in going from $n_1$ to $n_m$.
+\item First, we select a route $R=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine weight of the route, $W_o(R)$.
+\item Secondly, we compute a new weight, $W_{a}(R)$ for every edge $(n_i,n_{i+1}) \  for \  1 \leq i \leq m$ with the weight function described in Section \ref{sec:weight-function}.
+\item Now, we traverse the road network to find a new route, $R'$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path (in time) from $n_1$ to $n_m$ by using the weight of each edge determined by the weight function.
+\item We compare $W_o(R)$ and $W_a(R)$ to see differeces. This is the route model accuracy.
+\item Finally, we compare $W_a(R')$ with $W_a(R)$ and find the difference. This is the saved time.
 \end{enumerate}
-The process is illustrated in the graphs in Figure \todo{proc}. Blue nodes represent start nodes, green nodes represent goal nodes where the number in goal nodes are the aggregate weight of all the edges in the route. 
+The process is illustrated in the graphs in \figref{fig:eval}. Blue nodes represent start nodes, green nodes represent goal nodes where the number in goal nodes are the aggregate weight of all the edges in the route. 
 
-Red arrows represents the uninformed route, where the uninformed route has a weight of 7. The uninformed route with adjusted weights, has a weight of 8. This means that the regression models for the segments has a model accuracy of $\frac{7}{8}=0.875=87.5\%$. 
+Red arrows represents the uninformed route, where the uninformed route has a weight of 7. The uninformed route with adjusted weights, has a weight of 8. This means that the regression models for the segments has an aggregate route model accuracy of $\frac{7}{8}=0.875=87.5\%$. 
 
-By computing the informed route based on the regression model weights, the route marked with yellow arrows are found. This informed route has a lower weight than the uninformed route, which means that there can be saved time by 1. T
+By computing the informed route based on the regression model weights, the route marked with yellow arrows are found. This informed route has a lower weight than the uninformed route, which means that there can be saved time by 1.
 
 \begin{figure}
 \centering
@@ -34,7 +40,7 @@ We follow the approach on a set of 10 fairly small routes that has no signs of i
 \begin{table}[H]
 \centering
 \begin{tabular}{llllll}
-\textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{Model accuracy (\%)} & \textbf{Time saved (\%)} \\ \hline
+\textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{Route model accuracy (\%)} & \textbf{Time saved (\%)} \\ \hline
 $r_1$          & 353               & 393                & 263                & 89.8                         & 38.5 \\
 $r_2$          & 1822              & 2016               & 1552               & 90.4                         & 20.5 \\
 $r_3$          & 1012              & 551                & 250                & 54.4                         & 15.3 \\
@@ -51,9 +57,17 @@ mean       	   &                   &                    &                    & 8
 
 \tabref{tab:eval-results} shows the time in seconds, $W_0(R)$, for the uninformed route $R$, the adjusted time, $W_a(R)$, for route $R$, and the informed time $W_a(R')$ for the new (informed) route $R'$.
 
-\textbf{Model accuracy} represents the difference between the uninformed weight and the adjusted weight. The closer the model accuracy for a route is to 100, the better the regression models represents the actual traffic.
+\textbf{Route Model accuracy} represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100, the better the regression models represents the actual traffic.
 
 \textbf{Time saved} represents the time saved for route $r_i$ by traveling the informed route $R'$ instead of the uninformed route $R$. The higher the time saved the better the informed routing is.
+
+The mean route model accuracy of 71.17\%, shows that the predicted speed for a given route is within 71.17\% of the actual time it took\todo{kunne være rart at vide om det var underestimate / overestimate}. 
+
+The mean value for time saved shows that for the tested routes, there are on average 30.661\% time saved by using the routes used by the route finding. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems.
+
+However, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on an edge basis.
+
+\subsubsection{Edge regression model}
 
 \begin{table}[H]
 	\centering
@@ -71,7 +85,3 @@ mean       	   &                   &                    &                    & 8
 	\caption{Mean \% is the mean of the percent errors of each consecutive waypoint pair.}
 	\label{tab:eval-results-2}
 \end{table}
-
-The mean values for model accuracy and time saved shows a mean model accuracy of 83.2\%, which means that the regression models generally underestimates\todo{Not true} the actual traffic. The mean value for time saved shows that for the tested routes, there is on average a time saving of 27.6\% by using the system's route finding.\todo{talk about \tabref{tab:eval-results-2}}
-
-The raw data for Tables \ref{tab:eval-results} and \ref{tab:eval-results-2} can be found in \appref{app:rawevaldata}.
