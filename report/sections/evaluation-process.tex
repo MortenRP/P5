@@ -7,16 +7,16 @@ We wish to determine how well the system complies with criteria \ref{crit:timesa
 \item Are routes found by the system faster than routes chosen by drivers?
 \end{itemize}
 % How do we evaluate?
-To answer the above questions, we consider the model accuracy and time savings of the routes. 
+To answer the above questions, we consider the model accuracies and time improvements of the routes. 
 
 The model accuracy is the difference between the predicted traffic of the regression model and the actual traffic. In order to find the model accuracy we consider both the accuracy on a route basis as well as on an waypoint-to-waypoint basis.
 
-Time savings represent how much faster a found route is than an actual route. This is found by comparing actual routes from a test set of routes and routes found by querying the system the same start and destination.
+Time improvement represent how much faster a found route is than an actual route. This is found by comparing actual routes from a test set of routes and routes found by querying the system the same start and destination.
 
 \subsubsection{Route evaluation}
 The following method is used to find the differences between real routes driven as given by the test-set and the routes found by the system.
 \begin{enumerate}
-\item First, we select a route $R=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine weight of the route, $W_o(R)$.
+\item First, we select a route $R=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine the weight (i.e. the travel time) of the route, $W_o(R)$.
 \item Secondly, we compute a new weight, $W_{a}(R)$ for every edge $(n_i,n_{i+1}) \  for \  1 \leq i < m$ with the weight function described in Section \ref{sec:weight-function}.
 \item Now, we traverse the road network to find a new route, $R'$ originating in $n_1$ and ending in $n_m$ such that the route is the shortest path (in time) from $n_1$ to $n_m$ by using the weight of each edge determined by the weight function.
 \item We compare $W_o(R)$ and $W_a(R)$ to see the total weight difference. This is the \emph{route model accuracy}.
@@ -56,7 +56,7 @@ mean       	   &                   &                    &                    & 8
 
 \tabref{tab:eval-results} shows the time in seconds, $W_0(R)$, for the uninformed route $R$, the adjusted time, $W_a(R)$, for route $R$, and the informed time $W_a(R')$ for the new (informed) route $R'$.
 
-\emph{Route Model Accuracy } (\textbf{RMA}) represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100, closer the regression models are to represent the actual traffic.
+\emph{Route Model Accuracy } (\textbf{RMA}) represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100\%, the closer the regression models are to represent the actual traffic.
  
 \emph{Time Improvement} (\textbf{TI}) represents the time saved for route $r_i$ by traveling the informed route instead of the uninformed route. The higher the time improvement, the better the informed routing is.
 
@@ -70,7 +70,7 @@ The smallest part of a route we can observe is a waypoint. The shortest travel t
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
-		\textbf{Route} & \textbf{Mean waypoint-to-waypoint error (s)}    & \textbf{Mean error \%} \\ \hline
+		\textbf{Route} & \textbf{Mean error (s)}                          & \textbf{Mean error (\%)} \\ \hline
 		$r_1$          & 3.66                                             & 60.2 \\
 		$r_2$          & 0.722                                            & 31.9 \\
 		$r_3$          & 1.61                                             & 50.0 \\
