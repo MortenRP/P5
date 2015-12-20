@@ -26,7 +26,7 @@ UDP does not remember the sequence of what it is sending, but TCP does, which is
     \label{fig:clientserver}
 \end{figure}
 
-\figref{fig:clientserver} illustrates how our protocol works.
+\figref{fig:clientserver} illustrates how the protocol behave.
 The client sends a \textit{REQUEST\_ID} package to the server.
 The server responds with a \textit{RETURN\_ID} package,
 which contains an integer representing the client ID.
@@ -60,7 +60,7 @@ The server then sends an acknowledgement that it has received the data.
 \label{tab:package_types}
 \end{table}
 
-Table \ref{tab:package_types} describes the different types of packages in the protocol.
+\tabref{tab:package_types} describes the different types of packages in the protocol.
 A package consists of a package header, optionally followed by data.
 
 The messages that are sent back and forth are converted into bytes.
