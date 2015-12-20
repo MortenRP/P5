@@ -1,8 +1,8 @@
-This project presented an approach for modeling road network and traffic as weighted directed graphs with weight functions as time-based piecewise linear regression models over traffic observations of speed derived from GPS samples.
+This project presented an approach for modeling road networks and traffic as weighted directed graphs with weight functions as time-based piecewise linear regression models over traffic observations of speed estimated from GPS samples.
 
-The piecewise linear regression models was found to have an average predictive accuracy of NUMBER\% of actual observed travel time on routes. This follows from several issues still present in the regression models such as limited data and improvable filtering, and could futher be improved by gathering a more useful dataset where speed is directly measured.
+The piecewise linear regression models was found to have a mean predictive accuracy of 83.2\% of actual observed travel time on a route-basis and 51.7\% on a sample-to-sample basis. This follows from several issues still present in the regression models such as limited data, improvable filtering and the speed estimation approach. A further improvement could also be to acquire a more useful dataset where speed is directly measured.
 
-Furthermore the system was found to, in certain cases, be able to find alternative routes avoiding traffic congestion thus potentially provide time-savings for users of the system. By providing such a feature the system can help motorists avoid heavy traffic and be more evenly distributed on the road network.
+Furthermore the system was found to, in certain cases, be able to find alternative routes avoiding traffic congestion thus potentially provide time savings for users of the system. By providing such a feature the system can help motorists avoid heavy traffic and be more evenly distributed on the road network.
 
 There are many interesting areas for future work including gathering better GPS data, more accurate map-matching , optimizations in terms of utilizing advanced graph methods such as contraction hierarchies to speed up query time. Furthermore, we find it important to perform field-testing in the future, to get a much better perspective of the accuracy of the system as a whole.
 
