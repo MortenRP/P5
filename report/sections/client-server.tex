@@ -66,9 +66,12 @@ A package consists of a package header, optionally followed by data.
 The messages that are sent back and forth are converted into bytes.
 In \figref{fig:bytesclientserver} it is illustrated how the bytes in the package header are packed.
 32 bits are reserved for our ClientID, which is empty when the first message is sent to request an ID.
-Next we have our RequestID command which takes 16 bits and for the other commands there is 8 bits.
-We have reserved one bit as a Last message ID, which is used to be able to tell if a big message,
+Next we have our RequestID which is a 16 bit integer denoting the ID of the package,
+and for identifying the type of package there are 7 bits.
+We have reserved one bit as a Last message bit, which is used to be able to tell if a big message,
 that is split into 2 or more files has ended.
+Lastly there are 8 bits for an integer which is used in case a \textit{SEND\_DATA} request i too large for a single package,
+and has to be split into several packages.
 
 \begin{figure}[h!]
   \centering
@@ -81,8 +84,7 @@ The client updates its GPS location every 5 seconds, so as to be able to maintai
 %When a message is sent either from the client or the server,
 %they are both set to wait for 5 seconds to receive the acknowledgement message, if no such message is received the message is discarded. We could have continued to try and resend the message several times, but a lost GPS coordinate from a user is not a critical problem for our system and will not have any major effect on our calculations.
 
-
-On the client we have implemented an OpenStreetMap viewer and a getRoute method where the client asks for a route between two points, this is done by sending 2 node ids, node ids are explained in \secref{chap:FormatPre-processing}, to the server where then the fastest path is calculated between the 2 points. The server then sends GPS locations of the route which then is shown in the OpenStreetMap on the client. An illustration of this can be seen in \figref{fig:routeonmap}.
+To be able to show the fastest route a person should drive we have chosen to implement a map on the client. We have implemented an OpenStreetMap viewer and a getRoute method where the client asks for a route between two points, this is done by sending 2 node ids, node ids are explained in \secref{chap:FormatPre-processing}, to the server where then the fastest path is calculated between the 2 points. The server then sends GPS locations of the route which then is shown in the OpenStreetMap on the client. An illustration of this can be seen in \figref{fig:routeonmap}.
 
 \begin{figure}[H]
   \centering
