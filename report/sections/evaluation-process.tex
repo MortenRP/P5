@@ -1,17 +1,17 @@
 \section{Evaluation}
-To determine how well the system complies with criterion \ref{crit:cost} and \ref{crit:timesaving} of the solution criteria in \secref{chap:solutioncriteria} and how the system can alleviate the problem statement, we carry out an evaluation process. More specifically, we want to evaluate the following:
+We wish to determine how well the system complies with criteria \ref{crit:timesaving} and \ref{crit:cost} of the solution criteria in \secref{chap:solutioncriteria} and how the system can alleviate the problem described in the problem statement. To achieve this, we need to evaluate the following:
 % What do we look at to evaluate?
 \begin{itemize}
 \item How accurately does the regression models reflect the actual traffic?
-\item Does the routes found based on the regression models reflect reality?
-\item Are routes found by the system, based on the regression models be faster than route chosen by drivers?
+\item Do the routes found based on the regression models reflect reality?
+\item Are routes found by the system faster than routes chosen by drivers?
 \end{itemize}
 % How do we evaluate?
 To answer the above questions, we consider the model accuracy and time savings of the routes. 
 
-The model accuracy is the difference between the predicted traffic of the regression model and the actual traffic. In order to find the model accuracy we consider both the accuracy on a route basis as well as on an edge basis.
+The model accuracy is the difference between the predicted traffic of the regression model and the actual traffic. In order to find the model accuracy we consider both the accuracy on a route basis as well as on an waypoint-to-waypoint basis.
 
-Time savings represents how much faster a found route is than an actual route. This is found by comparing actual routes from a test set of routes and routes found by querying the system the same start and destination.
+Time savings represent how much faster a found route is than an actual route. This is found by comparing actual routes from a test set of routes and routes found by querying the system the same start and destination.
 
 \subsubsection{Route evaluation}
 The following method is used to find the differences between real routes driven as given by the test-set and the routes found by the system.
@@ -35,7 +35,7 @@ By computing the informed route $R'$, based on the regression model weights, the
 \label{fig:eval}
 \end{figure}
 
-We follow the approach on a set of 7 fairly small routes that has no signs of intermediate stops, since intermediate stops in the route, without further measuers taken, would skewer the travel time in favor of our system. 
+We follow the approach on a set of 7 fairly small routes that has no signs of intermediate stops, since intermediate stops in the route, without further measures taken, would skewer the travel time in favour of our system. 
 \begin{table}[]
 \centering
 \begin{tabular}{llllll}
@@ -62,14 +62,15 @@ mean       	   &                   &                    &                    & 8
 
 The mean route model accuracy, shows that the regression models predicts the traffic within 83.2\% of the actual traffic. 
 
-The mean time improved value shows that for the tested routes, there are on an average time improvement 27.6\% by following the routes used by the system. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems. Likewise, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on an edge basis.
+The mean time improved value shows that for the tested routes, there are on an average time improvement 27.6\% by following the routes used by the system. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems. Likewise, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on a smaller basis.
 
-\subsubsection{Edge regression model}
+\subsubsection{Waypoint-to-waypoint accuracy}
+The smallest part of a route we can observe is a waypoint. The shortest travel times we can find are those between consecutive waypoint pairs. Consequently, the smallest part of a route we can evaluate is travel time on a waypoint-to-waypoint basis. The result is presented in \tabref{tab:eval-results-2}.
 
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
-		\textbf{Route} & \textbf{Mean waypoints-to-waypoint error (s)}    & \textbf{Mean \%} \\ \hline
+		\textbf{Route} & \textbf{Mean waypoint-to-waypoint error (s)}    & \textbf{Mean \%} \\ \hline
 		$r_1$          & 3.66                                             & 60.2 \\
 		$r_2$          & 0.722                                            & 31.9 \\
 		$r_3$          & 1.61                                             & 50.0 \\
@@ -82,3 +83,9 @@ The mean time improved value shows that for the tested routes, there are on an a
 	\caption{Mean \% is the mean of the percent errors of each consecutive waypoint pair.}
 	\label{tab:eval-results-2}
 \end{table}
+
+We start by extracting all the waypoints from each link in the route. As described in \secref{sec:mapmatching}, a link contains zero or more waypoints. We only consider waypoint pairs within each link, i.e. we do not consider inter-link waypoint pairs. Inter-link waypoints are sometimes several ways apart, which means some of the edges between them have to be predicted by the map-matcher, so including them in the evaluation could skew the result.
+
+When we have the waypoints, we go through them one link at a time. For each consecutive waypoint pair, we can find the actual time travelled by looking at the difference in time between them. We then calculate the travel time using our weights by summing the distance travelled on each edge divided it by the weight of the edge. The time used in the weight functions is the start time in the actual route for the first node, and the start time plus the travel time so far for the rest.
+
+The error in seconds for each consecutive waypoint pair can now be calculated as $error = |T_a - T_w|$, where $T_a$ is the actual time travelled, and $T_w$ is the travel time with out weights. The error percentage is calculated as $\frac{error}{max(T_a, T_w)}$. The raw evaluation data for the first route can be seen in \appref{app:rawevaldata}.
