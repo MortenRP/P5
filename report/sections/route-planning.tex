@@ -1,17 +1,18 @@
 \section{Route planning}
-In order to be able to suggest routes to motorists\todo{maget gentagene MP}, the system must find the best route available given at a given time and day of the week. One could define several quality measures of a good route, but in this case we consider the best route in terms of time, that is, the shortest travel time. The process is known as finding shortest paths in a directed weighted graph, and existing algorithms solve this problem well. In this section we discuss the methods used for finding such shortest paths.
+In order to be able to suggest routes to motorists, the system must find the best route available at a given time and day of the week. One could define several quality measures of a good route, but in this case we consider the best route in terms of time, that is, the shortest travel time. The process is known as finding shortest paths in a directed weighted graph, and existing algorithms solve this problem well. In this section we discuss the methods used for finding such shortest paths.
 
 \subsection{A* Heuristic Search}\label{sec:pathfinding}
-We use the heuristic search algorithm A* since it is a widely used approach for finding shortest path routes in graphs and can be improved by further preprocessing of the graph as discussed in Chapter \ref{ch:future-work}.
-We design the heuristic as an underestimate of the real travel time from a start node to target node, by letting the heuristic be the travel time of traveling the Euclidean distance at 120 km/h (i.e. the highest speed limit in Beijing) from the start node to the target node when traveling with the average speed of observations.
+We use the heuristic search algorithm A* since it is a widely used approach for finding shortest path routes in graphs and can be improved by further preprocessing of the graph as discussed in \chapref{ch:future-work}.
+
+We design the heuristic as an underestimate of the real travel time from a given node to the target node, by letting the heuristic be the travel time of traveling the Euclidean distance at 120 km/h (i.e. the highest speed limit in Beijing) from a given node to the target node.
 
 Let $h(v)$ be the heuristic function:
 \begin{align*}
-h(v) = &\frac{dist(u,v)}{120 km/h} \qquad u,v \in E
+h(v) = &\frac{dist(u,v)}{120 km/h} \qquad u,v \in V
 \end{align*}
 that computes an underestimate of the travel time from $u$ to $v$ to ensure the graph search proceeds in the correct direction in the graph.
 
-At every expansion of a node, the weights of the neighbouring nodes are computed by the respective weight functions for the respective time at the given time, to determine the best next step in the path. The idea is illustrated in \figref{fig:timed-graph}
+At every expansion of a node, the weights of the neighbouring nodes are computed by the respective weight functions for the respective time at the given time, to determine the best next step in the path. The idea is illustrated in \figref{fig:timed-graph}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/timed-graph}
