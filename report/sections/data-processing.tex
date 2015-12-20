@@ -1,5 +1,5 @@
 \section{Data preprocessing}
-Here we discuss how to process the traffic dataset. The overall process is illustrated in \ref{fig:data-processing}.
+Here we discuss how to process the traffic datasets. The overall process is illustrated in \figref{fig:data-processing}.
 
 \begin{figure}[h!]
   \centering
@@ -8,8 +8,8 @@ Here we discuss how to process the traffic dataset. The overall process is illus
     \label{fig:data-processing}
 \end{figure}
 
-The gps dataset is converted into the GPX format which is filtered to remove noise data and is then subsequently map-matched to the map of Beijing. The map-matched data and Beijing map is then converted into their respective knowledge representations, as described in \secref{sec:knowledge-representation}, of the system. Finally, the knowledge representation is stored in tables in the database.
-By doing so, we have a knowledge base of the road network of Beijing and traffic data about vehicle movements which we can learn traffic patterns from, and find shortest paths for routes.
+The GPS dataset is converted into the GPX format, which is then filtered to remove noise data. It is subsequently map-matched to the map of Beijing. The map-matched data and the Beijing map are then converted into their respective knowledge representations of the system, as described in \secref{sec:knowledge-representation}. Finally, the knowledge representation is stored in tables in the database.
+By doing so, we have a knowledge base of the road network of Beijing and traffic data about vehicle movements, which we can learn traffic patterns from and find shortest paths for routes.
 
 \subsection{Map generation}\label{sec:mapgeneration}
 To model the road network of Beijing we need to have the specific information about all the roads in the road network. This information is available several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an open source map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possibility of wrong data, limited data, since that\todo{skal væk MP} the map is updated by users, so it is is\todo{kan man da ikke sige MP} possible for a user to make erroneous updates. Another problem that are related to the limited info, is that it is illegal for unauthorized persons to collect geographical data in China\cite{chinamapillegal}. But because this service was the only free service that we could find, we see no other option than having in mind that these problems can occur.
