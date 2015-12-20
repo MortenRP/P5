@@ -12,7 +12,7 @@ h(v) = &\frac{dist(u,v)}{120 km/h} \qquad u,v \in V
 \end{align*}
 that computes an underestimate of the travel time from $u$ to $v$ to ensure the graph search proceeds in the correct direction in the graph.
 
-At every expansion of a node, each of the weights of the neighbouring nodes are computed using the cost of the segment that leads from the node being expanded to the neighbour at a particular time of a given day. The idea is illustrated in \figref{fig:timed-graph}.
+At every expansion of a node, each of the weights of the neighbouring nodes are computed using the cost of the segment that leads from the node being expanded to the neighbour at a particular time of a given day. Each time a node is explored the cost of the current node will be used as the time when calculating the cost of each of the neighbouring nodes. The idea is illustrated in \todo{AAAAAAAAAAAAAAAAAAAARRRRRRHHHHHHHH} \figref{fig:timed-graph}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/timed-graph}

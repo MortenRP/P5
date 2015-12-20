@@ -1,11 +1,11 @@
-This project presented an approach for modeling road networks and traffic as weighted directed graphs with weight functions as time-based piecewise linear regression models over traffic observations of speed estimated from GPS samples.
+This project presented an approach for modelling road networks and traffic as weighted directed graphs with weight functions as time-based piecewise linear regression models over traffic observations of speed estimated from GPS samples.
 
-The piecewise linear regression models was found to have a mean predictive accuracy of 83.2\% of actual observed travel time on a route-basis and 51.7\% on a sample-to-sample basis. This follows from several issues still present in the regression models such as limited data, improvable filtering and the speed estimation approach. A further improvement could also be to acquire a more useful dataset where speed is directly measured.
+The piecewise linear regression models were found to have a mean predictive accuracy of 83.2\% of actual observed travel time on a route-basis and 51.7\% on a sample-to-sample basis. This follows from several issues still present in the regression models such as limited data, improvable filtering, and the speed estimation approach. A further improvement could also be to acquire a more useful dataset where speed is directly measured.
 
 Furthermore the system was able to find routes with a mean time improvement of 27.6\% compared to actual traveled routes from test data. These improved routes can potentially provide time savings for users of the system, but it is difficult to determine due to the low accuracy of the regression models. 
 
 There are many interesting areas for future work, including gathering better GPS data, more accurate map-matching, optimizations in terms of utilizing advanced graph methods such as contraction hierarchies to speed up query time. Furthermore, we find it important to perform field-testing in the future to get a much better perspective of the accuracy of the system as a whole.
 
-To be able to collect the data needed to predict traffic patterns which our agent needs, we have constructed a client-server architecture, which is described in \secref{chap:clientserver}. The client collects data, speed, time and GPS locations, and sends that to our server where we can store the information.
+To be able to collect the data needed to predict traffic patterns which the agent needs, we have constructed a client-server architecture, which is described in \secref{chap:clientserver}. The client collects speed, time, and GPS locations, and sends them to the server where we can store the information.
 \\\\
 We believe that by implementing the improvements described in \chapref{ch:future-work}, the system could improve road network utilisation by directing vehicles to less congested roads. 
