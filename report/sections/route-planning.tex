@@ -12,7 +12,7 @@ h(v) = &\frac{dist(u,v)}{120 km/h} \qquad u,v \in V
 \end{align*}
 that computes an underestimate of the travel time from $u$ to $v$ to ensure the graph search proceeds in the correct direction in the graph.
 
-At every expansion of a node, the weights of the neighbouring nodes are computed by the respective weight functions for the respective time at the given time, to determine the best next step in the path. The idea is illustrated in \figref{fig:timed-graph}.\todo{KRISTIAN}
+At every expansion of a node, each of the weights of the neighbouring nodes are computed using the cost of the segment that leads from the node being expanded to the neighbour at a particular time of a given day. The idea is illustrated in \figref{fig:timed-graph}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/timed-graph}
@@ -20,7 +20,6 @@ At every expansion of a node, the weights of the neighbouring nodes are computed
 \label{fig:timed-graph}
 \end{figure}
 
-Whenever an edge is chosen, the next node is expanded to get the available edges and their weight functions. The previous weight is added to the time, to make sure the next weight function is correctly selected.
 %An A* is used to finding a path through the graph. There are other versions of a A* search that are faster then a normal A*, but these do not work with the weight function that are being used. The time complexity of this search is $O(b^n)$ where $b$ is the branching factor and $n$ is the number of nodes in the graph.
 
 %The function is given a start and a goal node, the A* utilise the physical destined between these point as a heuristic to make sure the path it takes goes in the right direction. Then it finds the time and ask the database for the cost of the segments it can travel from the node it's at.
@@ -42,9 +41,9 @@ weight: E \times T \times W \rightarrow \mathbb{R_+}
 \end{align}
 be the \emph{weight function} that maps an edge $e$, timestamp $t$, and day of the week $w$, to a positive, real-valued travel time.
 
-The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the predicted speed by the length of the given road segment. That is, given $e \in E$, $t \in T$, $w \in W$:
+The weight function works, by calculating the $speed$ function described in Equation \ref{eq:speed-piecewise} and dividing the length of the given road segment by the predicted speed. That is, given $e \in E$, $t \in T$, $w \in W$:
 \begin{align}
-weight(e,t,w) = \frac{speed(e,t,w)}{len(e)}
+weight(e,t,w) = \frac{len(e)}{speed(e,t,w)}
 \end{align}
 where:
 \begin{align}
