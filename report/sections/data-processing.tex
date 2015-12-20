@@ -12,19 +12,19 @@ The GPS dataset is converted into the GPX format, which is then filtered to remo
 By doing so, we have a knowledge base of the road network of Beijing and traffic data about vehicle movements, which we can learn traffic patterns from and find shortest paths for routes.
 
 \subsection{Map generation}\label{sec:mapgeneration}
-To model the road network of Beijing we need to have the specific information about all the roads in the road network. This information is available several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an open source map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possibility of wrong data, limited data, since that\todo{skal væk MP} the map is updated by users, so it is is\todo{kan man da ikke sige MP} possible for a user to make erroneous updates. Another problem that are related to the limited info, is that it is illegal for unauthorized persons to collect geographical data in China\cite{chinamapillegal}. But because this service was the only free service that we could find, we see no other option than having in mind that these problems can occur.
+To model the road network of Beijing we need to have the specific information about all the roads in the road network. This information is available several places, but most of these services are not free. We have chosen to work with OpenStreetMap which is an open source map service, where users collaborate to keep the city maps updated. There are some problems in using this kind of service, such as the possibility of wrong data, limited data, since the map is updated by users, so it is possible for a user to make erroneous updates. Furthermore it is illegal for unauthorized persons to collect geographical data in China\cite{chinamapillegal}. But because this service was the only free service that we could find, we see no other option than having in mind that these problems can occur.
 
 We have also found that the OpenStreetMap site cannot export large areas of a map, such as the whole city of Beijing. Therefore we have chosen to use one of its mirror sites, Geofabrik\cite{geofabrik}, which provides map extracts of the world, segmented into countries and these are updated daily. This makes it possible for us to extract the whole map for China.
 
 \subsubsection{Format \& Pre-processing}
 \label{chap:FormatPre-processing}
-The maps from Geofabrik comes in a compressed format called pbf. To extract the relevant data from this format we are using a tool called Osmosis, to query the file using several filters to be able to extract only the information relevant\todo{giver ingen mening MP}.
+The maps from Geofabrik comes in a compressed format called pbf. To extract the relevant data from this format we are using a tool called Osmosis, to query the file using several filters to be able to extract only the relevant information.
 
 We are using two types of filters with Osmosis, the first is used to set bounds on the area that we want to extract information from, these bounds are set as north, west, south and east in longitude and latitude. This filter is used since the map we are using is all of China and we are only interested in the road network of Beijing.
 
 The second filter is used to extract only roads from the previous bounded area. With this filter we have the possibility to specify which roads we want to get in the output. Because all paths are marked in OpenStreetMap as ways, we want to filter these in order to remove side-walks, bicycle ways, and other ways that are not possible use by car or other motorized vehicles.
 
-The extracted data from the Osmosis query is then exported to a file in XML format. There are two types left in the export, which are nodes and ways, as shown in the example \figref{wayexample}. Nodes represent road intersections and are also used to indicate points along a road if the road is not straight. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a traffic light is present at a given node. Ways also contain a nd tag, with id, for every node it consists of.
+The extracted data from the Osmosis query is then exported to a file in XML format. There are two types left in the export, which are nodes and ways, as shown in the example \coderef{wayexample}. Nodes represent road intersections and are also used to indicate points along a road if the road is not straight. Both nodes and ways can include key-value pairs that contain information, i.e. if a way is one-way, if a traffic light is present at a given node. Ways also contain a nd tag, with id, for every node it consists of.
 
 \begin{lstlisting}[style=Java, caption=An simplified example of a road and its related nodes in XML, label=wayexample]
 <node id="388002830" lat="39.9931617" lon="116.4469860"/>
@@ -47,9 +47,9 @@ The extracted data from the Osmosis query is then exported to a file in XML form
 \end{lstlisting}
 
 \subsubsection{Generation}
-An XML parser is used to extract the information from the Osmosis export that is needed to model the road network. When a node or way tag is read an equivalent data structure is created and stored.
+An XML parser is used to extract the information from the Osmosis export that is needed to model the road network. When a node or way tag is read an equivalent data structure is created and stored (see \coderef{lst:node} and \coderef{lst:way}).
 
-\begin{lstlisting}[style=java, caption=Datastructure for a node]
+\begin{lstlisting}[style=java, caption=Datastructure for a node, label=lst:node]
 Node{
 	long id;
 	double longitude;
@@ -58,7 +58,7 @@ Node{
 }
 \end{lstlisting}
 
-\begin{lstlisting}[style=java, caption=Datastructure for a way]
+\begin{lstlisting}[style=java, caption=Datastructure for a way, label=lst:way]
 Way{
 	long id;
 	Node[] connectedNodes;
@@ -66,9 +66,9 @@ Way{
 }
 \end{lstlisting}
 
-A distinction between nodes have been made such that there are two kinds of nodes, one are points along a road and another are intersection nodes. Intersection nodes are either the nodes at the start or end of a road, or nodes that are intersections between ways. Using these nodes we create a class, Edge, which is a edge between every pair of concequtive nodes on a way. But since the nodes there are points along a road does not add any information for a part of a way, we have also created the class, Segment, which is an edge between every pair of intersection nodes on a way.
+A distinction between nodes have been made such that there are two kinds of nodes, one kind is points along a road and another are intersection nodes. Intersection nodes are either the nodes at the start or end of a road, or nodes that are intersections between ways. Using these nodes we create a class, Edge (see \coderef{lst:edge}, which is a edge between every pair of concequtive nodes on a way. But since the nodes there are points along a road does not add any information for a part of a way, we have also created the class, Segment (see \coderef{lst:segment}, which is an edge between every pair of intersection nodes on a way.
 
-An example is show in \figref{fig:waywithnodes} which is an illustration of the way from \figref{wayexample}. In \figref{fig:waywithnodes} the orange line describes the way, the red and green points describes nodes, where the red points are intersection nodes and the green are points along a way. The black lines describes our edges and the blue lines describes our segments.
+An example is show in \figref{fig:waywithnodes} which is an illustration of the way from \coderef{wayexample}. The orange line describes the way, the red and green points describe nodes, where the red points are intersection nodes and the green are points along a way. The black lines describe our edges and the blue lines describe our segments.
 
 \begin{figure}[h!]
   \centering
@@ -78,7 +78,7 @@ An example is show in \figref{fig:waywithnodes} which is an illustration of the 
 \end{figure}
 
 
-\begin{lstlisting}[style=java, caption=Datastructure for an edge]
+\begin{lstlisting}[style=java, caption=Datastructure for an edge, label=lst:edge]
 Edge{
 	long id;
 	double length;
@@ -88,7 +88,7 @@ Edge{
 }
 \end{lstlisting}
 
-\begin{lstlisting}[style=java, caption=Datastructure for a segment]
+\begin{lstlisting}[style=java, caption=Datastructure for a segment, label=lst:segment]
 Segment{
 	long id;
 	double length;
