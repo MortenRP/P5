@@ -70,7 +70,7 @@ The smallest part of a route we can observe is a waypoint. The shortest travel t
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
-		\textbf{Route} & \textbf{Mean waypoint-to-waypoint error (s)}    & \textbf{Mean \%} \\ \hline
+		\textbf{Route} & \textbf{Mean waypoint-to-waypoint error (s)}    & \textbf{Mean error \%} \\ \hline
 		$r_1$          & 3.66                                             & 60.2 \\
 		$r_2$          & 0.722                                            & 31.9 \\
 		$r_3$          & 1.61                                             & 50.0 \\
@@ -89,3 +89,7 @@ We start by extracting all the waypoints from each link in the route. As describ
 When we have the waypoints, we go through them one link at a time. For each consecutive waypoint pair, we can find the actual time travelled by looking at the difference in time between them. We then calculate the travel time using our weights by summing the distance travelled on each edge divided it by the weight of the edge. The time used in the weight functions is the start time in the actual route for the first node, and the start time plus the travel time so far for the rest.
 
 The error in seconds for each consecutive waypoint pair can now be calculated as $error = |T_a - T_w|$, where $T_a$ is the actual time travelled, and $T_w$ is the travel time with out weights. The error percentage is calculated as $\frac{error}{max(T_a, T_w)}$. The raw evaluation data for the first route can be seen in \appref{app:rawevaldata}.
+\\\\
+The test set of seven routes might not be representative of the whole dataset, which means that it would be preferable to perform further evaluation on a larger set of routes to get a more precise route model accuracy. Furthermore, it is not possible to know for sure whether the test routes have no intermediate stops, or are driving the route for a reason other than getting from A to B. We have tried to select where that do not exhibit such behaviour. It would have been preferable to perform a number of test drives ourselves and use these as test routes, since this would ensure no intermediate stops and would enable us to directly measure the speed instead of estimating it.
+
+Furthermore, the training set contains data from February 2-8, 2008, while the selected test routes are from August 23, 2009 to November 5, 2009. This is bad because\todo{fixme}
