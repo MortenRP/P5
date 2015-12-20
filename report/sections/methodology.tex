@@ -5,7 +5,7 @@ To solve the problem of traffic congestion, we process a large dataset of vehicl
 %Ultimately, the agent should be able to suggest a driver of a vehicle wanting to travel from point a to b, a faster route and users of the agent should be directed away from congested areas, such that the overall congestion of a city is smaller, thus utilising the road network better.
 
 %\subsection*{Data source \& collection}
-We use two GPS datasets from Beijing. One is from 10.357 taxies over a period of a week\cite{Tdrive}. This is used to construct a training set to learn traffic patterns. The other dataset contains data from 182 people over a period of 5 years\cite{Geolife}. We use this dataset to construct a test set for evaluating the learned traffic patterns.
+We use two GPS datasets from Beijing. One is from 10.357 taxies over a period of a week\cite{Tdrive}. This is used to construct a training set to learn traffic patterns. The other dataset contains data from 182 people over a period of 5 years\cite{Geolife}. It contains tags of the transportation methods, and we only consider data tagged as \emph{car} or \emph{taxi}. We use this dataset to construct a test set for evaluating the learned traffic patterns.
 
 %If we had more time we would have collected our data on our own. A problem regarding this data is the short time span, since it does not cover holidays, or other special days, which are often at fault for massive traffic problems.
 
