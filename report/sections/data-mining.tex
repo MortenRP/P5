@@ -43,7 +43,7 @@ f_n(e) & \quad \text{if } t \in p_n
 \end{cases}
 \end{equation}
 
-where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment $e$. The idea is illustrated in Figure \ref{fig:segmented-regression}.
+where $f_1,...,f_n$ are linear regression functions for each partition over the observations for segment $e$. The idea is illustrated in \figref{fig:segmented-regression}.
 \begin{figure}[H]
 \centering
 \includegraphics[trim={0 8cm 0 9cm},clip, width=\textwidth]{figures/piecewise.pdf}
@@ -81,7 +81,7 @@ where $f_1,...,f_n$ are linear regression functions for each partition over the 
 \subsection{Partitioning scheme}\label{patterns:segmentation}
 % Why do it?
 %	Want: piecewise linear functions, but how should we partition the days?
-In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in Figure \ref{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
+In order to use the piecewise linear regression approach, we must devise a partitioning scheme. One such scheme could be the one in \figref{fig:segmented-regression} where every day a split into 4 equal partitions: night, morning, afternoon, evening. The following problems are raised by the choice of partitioning scheme:
 \begin{itemize}
 	\item Where should we split the day, such that important changes in traffic are captured?
 	\item How many observations is required to perform regression?
@@ -123,7 +123,7 @@ For implementing M5' model trees and data filters we use the machine learning to
 
 \subsubsection{M5' model tree induction}
 % How does it work?
-M5' constructs a model tree, like the one illustrated in Figure \ref{fig:model-tree}, from a set of training examples, $T$.
+M5' constructs a model tree, like the one illustrated in \figref{fig:model-tree}, from a set of training examples, $T$.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -137,7 +137,8 @@ M5' constructs a model tree, like the one illustrated in Figure \ref{fig:model-t
 	}
 	;
 	\end{tikzpicture}
-	\caption{Example of a simple model tree with three partitions and three linear regression models. The $t$ feature corresponds to the input time feature in equation \ref{eq:speed-piecewise}}
+	\caption{Example of a simple model tree with three partitions and three linear regression models. The $t$ feature corresponds to the input time feature in equation \
+	ref{eq:speed-piecewise}}
 	\label{fig:model-tree}
 \end{figure}
 It works by recursively constructing a decision tree by splitting $T$ into subsets $T_1,T_2$ where the split point is determined by examining all possible splits over all non-target features (in our case, time) and the domains of those features. The split that yields the highest reduction in standard deviation is chosen at each step.
@@ -161,7 +162,7 @@ To minimize the effect of these issues we perform filtering on the observations 
 The primary filtering is based on two quality measures called \emph{Median Sample Rate} (MSR) and \emph{Map-matching Error} (MME). MME is the error returned from the map-matching service, and MSR is computed when observations are created. The idea behind MSR is illustrated \figref{fig:MSR}.
 
 The median sample rate represents the median of the change in time between the GPS samples a given observation is based on. 
-In order to use MSR and MME to filter observations thresholds for these quality measures are required to be met by observations to be used in the regression models. The thresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. Table \ref{tab:datafiltering} shows different results for different thresholds.
+In order to use MSR and MME to filter observations thresholds for these quality measures are required to be met by observations to be used in the regression models. The thresholds are determined from an empirical study of how high the requirements to MSR and MME could be without discarding too much data, since discarding too much data would yield an insufficient amount of observations to create accurate regression models. \tabref{tab:datafiltering} shows different results for different thresholds.
 
 \begin{figure}[H]
 	\centering
