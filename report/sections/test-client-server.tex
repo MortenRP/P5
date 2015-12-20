@@ -4,7 +4,7 @@ To be certain that our client server communication works as it should, we will d
 \subsection{Connection between client and server}
 To make sure that the client(s) can connect to our server we have tested it in the following ways.
 \begin{itemize}
-	\item From local host, we started the server from the IntelliJ IDE and afterwards we started the client from Android Studio and connected to the server. In IntelliJ we could see that the server accepted the connection. Which is shown in \figref{fig:serverrunning}.
+	\item From local host, we started the server and afterwards we started the client and connected to the server. We could see that the server accepted the connection. Which is shown in \figref{fig:serverrunning}.
 		\begin{figure}[h!]
   \centering
 	    \includegraphics[width=0.6\textwidth]{figures/serverrunning.png}
@@ -19,7 +19,7 @@ To make sure that the client(s) can connect to our server we have tested it in t
 \subsection{Message received matches the message sent}
 To be certain the longitude, latitude and speed that is sent is received correctly on the server. We did the following test:
 \begin{itemize}
-	\item We gave the emulator in Android Studio a specific longitude and latitude and then used the application to send the data to the server. In IntelliJ's prompt window we got the following information displayed in \figref{fig:datasentfromclienttoserver}. Which confirms that the message sent from the client is received correctly on the server.
+	\item We gave an Android emulator a specific longitude and latitude and then used the application to send the data to the server. We got the following information displayed in \figref{fig:datasentfromclienttoserver}. Which confirms that the message sent from the client is received correctly on the server.
 	\begin{figure}[h!]
   \centering
     \includegraphics[width=0.8\textwidth]{figures/datasentfromclienttoserver.png}
@@ -28,13 +28,13 @@ To be certain the longitude, latitude and speed that is sent is received correct
 \end{figure}
 \end{itemize}
 
-\subsection{If a message is lost}
-To be sure that if some message is lost or connection between the client and server is not stable, which we also described in \autoref{chap:clientserver}, we are sending acknowledgements between client server. As  \figref{fig:datasentfromclienttoserver} illustrates when the server receives data from the client the server responds with an acknowledgement message to the client, that it has received the data.
+%\subsection{If a message is lost}
+%To be sure that if some message is lost or connection between the client and server is not stable, which we also described in \autoref{chap:clientserver}, we are sending acknowledgements between client server. As  \figref{fig:datasentfromclienttoserver} illustrates when the server receives data from the client the server responds with an acknowledgement message to the client, that it has received the data.
 
-\subsection{If server is down}
+\subsection{Lack of connection}
 The user of the application has to be notified if they cant receive or send their data to the server. This is handled by giving a pop-up message to the user of the application that there is no connection to the server.
 
 \subsection{GPS location and speed}
-The location of the client and the speed it is moving at has been tested in a car with one person driving the car and another using a smartphone, where the smartphone displays the current speed and the location after a click on a button. The speed was compared to the car's speedometer which matched and the GPS location that was shown was later checked on a map, where the locations given by the smartphone also were correct.
+The location of the client and the speed it is moving at, has been tested in a car with one person driving the car and another using a smartphone, where the smartphone displays the current speed and the location after a click on a button. The speed was compared to the car's speedometer which matched and the GPS location that was shown was later checked on a map, where the locations given by the smartphone also were correct.
 \\
 By doing these tests we have achieved the criteria listed in \autoref{chap:solutioncriteria}.
