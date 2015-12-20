@@ -2,20 +2,15 @@
 \label{chap:clientserver}
 As mentioned in \secref{sec:systemarchitecture} we will be using a client-server structure.
 The reason behind this choice is that we have a model which is able to change at any time, and restraining the amount of local models needing to be updated is favorable.
+
 Smartphones used by drivers will be acting as clients,
 where they need to be able to send information such as location and speed to the server in some given time interval.
-The server will handle this information and send it further for analysing, the server will also send updates regarding the route back to the clients.
 
-The server and the client communicates through an interface, on the application layer, of the Internet protocol suite\todo{kan jeg ikke forstå MP}.
-The interface allows an application to set up a connection, and read and write strings.
-
-The interface is implemented as a protocol, that is built upon the Java ServerSocket and the Java Socket,
-which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection.
-We chose TCP because it is a stream oriented protocol,
+The server will handle this information and send it further for analysing, the server will also send updates regarding the route back to the clients. The server and the client communicates through an interface, on the application layer, of the Internet protocol suite. The interface allows an application to set up a connection, and read and write strings. The interface is implemented as a protocol, that is built upon the Java ServerSocket and the Java Socket,
+which handles opening a port, accepting a connection, and connecting to such a port, through a TCP connection. We chose TCP because it is a stream oriented protocol,
 which is ideal for transferring a lot of sequential data from one point to another,
 such as a large route planned by the system agent, without corrupting data in the transfer.
-The other option would have been UDP, which is a message oriented protocol.
-UDP is often used for sending messages from one point to many points,
+The other option would have been UDP, which is a message oriented protocol. UDP is often used for sending messages from one point to many points,
 which minimizes the time it takes for a message to be sent and received.
 UDP does not remember the sequence of what it is sending, but TCP does, which is prefered in this case.
 
@@ -78,7 +73,7 @@ and has to be split into several packages.
     \includegraphics[width=1\textwidth]{figures/bytesclientserver.pdf}
     \caption{Illustration of header composition}
     \label{fig:bytesclientserver}
-\end{figure}\todo{det der vi snakkede om med striberne}
+\end{figure}
 
 The client updates its GPS location every 5 seconds, so as to be able to maintain a precise location of the client. This information, and additionally the speed, and the time is sent to the server, and can be used to learn traffic patterns.
 %When a message is sent either from the client or the server,
