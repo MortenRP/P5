@@ -1,5 +1,5 @@
-\section{Evaluation process}
-To see how the system complies with the specified solution criteria in \secref{chap:solutioncriteria} and how the system can alleviate the problem statement, we carry out an evaluation process. More specifically, we want to evaluate the following:
+\section{Evaluation}
+To determine how well the system complies with criterion \ref{crit:cost} and \ref{crit:timesaving} of the solution criteria in \secref{chap:solutioncriteria} and how the system can alleviate the problem statement, we carry out an evaluation process. More specifically, we want to evaluate the following:
 % What do we look at to evaluate?
 \begin{itemize}
 \item How accurately does the regression models reflect the actual traffic?
@@ -17,16 +17,16 @@ Time savings represents how much faster a found route is than an actual route. T
 The following method is used to find the differences between real routes driven as given by the test-set and the routes found by the system.
 \begin{enumerate}
 \item First, we select a route $R=(n_1,...n_m)$ from the GPS data that originates in $n_1$ and ends in $n_m$. We then, directly from the data, determine weight of the route, $W_o(R)$.
-\item Secondly, we compute a new weight, $W_{a}(R)$ for every edge $(n_i,n_{i+1}) \  for \  1 \leq i \leq m$ with the weight function described in Section \ref{sec:weight-function}.
-\item Now, we traverse the road network to find a new route, $R'$ originating in $n_1$ and ends in $n_m$ such that the route is the shortest path (in time) from $n_1$ to $n_m$ by using the weight of each edge determined by the weight function.
-\item We compare $W_o(R)$ and $W_a(R)$ to see differeces. This is the route model accuracy.
-\item Finally, we compare $W_a(R')$ with $W_a(R)$ and find the difference. This is the saved time.
+\item Secondly, we compute a new weight, $W_{a}(R)$ for every edge $(n_i,n_{i+1}) \  for \  1 \leq i < m$ with the weight function described in Section \ref{sec:weight-function}.
+\item Now, we traverse the road network to find a new route, $R'$ originating in $n_1$ and ending in $n_m$ such that the route is the shortest path (in time) from $n_1$ to $n_m$ by using the weight of each edge determined by the weight function.
+\item We compare $W_o(R)$ and $W_a(R)$ to see the total weight difference. This is the \emph{route model accuracy}.
+\item Finally, we compare $W_a(R')$ with $W_a(R)$ and find the difference. This is the \emph{time improvement}.
 \end{enumerate}
 The process is illustrated in the graphs in \figref{fig:eval}. Blue nodes represent start nodes, green nodes represent goal nodes where the number in goal nodes are the aggregate weight of all the edges in the route. 
 
-Red arrows represents the uninformed route, where the uninformed route has a weight of 7. The uninformed route with adjusted weights, has a weight of 8. This means that the regression models for the segments has an aggregate route model accuracy of $\frac{7}{8}=0.875=87.5\%$. 
+Red arrows represents the uninformed route $R$, with a total weight of 7. $R$ with adjusted weights, has a total weight of 8. This means that the regression models has a route model accuracy of $\frac{7}{8}=0.875=87.5\%$. 
 
-By computing the informed route based on the regression model weights, the route marked with yellow arrows are found. This informed route has a lower weight than the uninformed route, which means that there can be saved time by 1.
+By computing the informed route $R'$, based on the regression model weights, the route marked with yellow arrows are found. $R'$ has a total weight of 6; a lower weight than $R$. This means that the time improvement is 1.
 
 \begin{figure}
 \centering
@@ -35,11 +35,11 @@ By computing the informed route based on the regression model weights, the route
 \label{fig:eval}
 \end{figure}
 
-We follow the approach on a set of 10 fairly small routes that has no signs of intermedia stops, since intermediate stops in the route, without further measuers taken, would skewer the travel time in favor of our system. 
+We follow the approach on a set of 10 fairly small routes that has no signs of intermediate stops, since intermediate stops in the route, without further measuers taken, would skewer the travel time in favor of our system. 
 \begin{table}[]
 \centering
 \begin{tabular}{llllll}
-\textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{Route Model accuracy (\%)} & \textbf{Time saved (\%)} \\ \hline
+\textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{RMA (\%)} & \textbf{TI (\%)} \\ \hline
 $r_1$          & 1767              & 2572               & 1726               & 68.7                         & 32.9 \\
 $r_2$          & 7023              & 4183               & 2574               & 59.6                         & 38.5 \\
 $r_3$          & 2735              & 1793               & 1425               & 65.6                         & 20.5 \\
@@ -52,19 +52,19 @@ $r_9$          & 2991              & 13565              & 3250               & 2
 $r_{10}$       & 1158              & 1153               & 1101               & 99.6                         & 4.51 \\ \hline
 mean       	   &                   &                    &                    & 71.17                        & 30.661
 \end{tabular}
-\caption{Model accuracy = $100 * \frac{min(W_o(R), W_a(R))}{max(W_o(R), W_a(R))}$\\
-	     Time saved = $100 * \frac{W_a(R) - W_a(R')}{W_a(R)}$}
+\caption{RMA = Route Model Accuracy = $100 * \frac{min(W_o(R), W_a(R))}{max(W_o(R), W_a(R))}$\\
+	     TI = Time Improvement = $100 * \frac{W_a(R) - W_a(R')}{W_a(R)}$}
 \label{tab:eval-results}
 \end{table}
 Table \ref{tab:eval-results} shows the time in seconds, $W_0(R)$, for the uninformed route $R$,  the adjusted time, $W_a(R)$, for route $R$, and the informed time $W_a(R)$ for the new route, $R'$.
 
-\textbf{Route Model accuracy} represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100, the better the regression models represents the actual traffic.
+\emph{Route Model Accuracy } (\textbf{RMA}) represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100, closer the regression models are to represent the actual traffic.
  
-Time saved represents the time saved for route $r_i$ by traveling the informed route instead of the uninformed route. The higher the time saved the better the informed routing is.
+\emph{Time Improvement} (\textbf{TI}) represents the time saved for route $r_i$ by traveling the informed route instead of the uninformed route. The higher the time improvement, the better the informed routing is.
 
-The mean route model accuracy of 71.17\%, shows that the predicted speed for a given route is within 71.17\% of the actual time it took\todo{kunne være rart at vide om det var underestimate / overestimate}. 
+The mean route model accuracy of 71.17\%, shows that the regression models predicts the traffic within 71.17\% of the actual traffic. 
 
-The mean value for time saved shows that for the tested routes, there are on average 30.661\% time saved by using the routes used by the route finding. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems.
+The mean value for \todo{kunne være rart at vide om det var underestimate / overestimate}time saved shows that for the tested routes, there are on average 30.661\% time saved by using the routes used by the route finding. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems.
 
 However, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on an edge basis.
 
