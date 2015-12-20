@@ -35,37 +35,50 @@ By computing the informed route $R'$, based on the regression model weights, the
 \label{fig:eval}
 \end{figure}
 
-We follow the approach on a set of 10 fairly small routes that has no signs of intermediate stops, since intermediate stops in the route, without further measuers taken, would skewer the travel time in favor of our system. 
+We follow the approach on a set of 7 fairly small routes that has no signs of intermediate stops, since intermediate stops in the route, without further measuers taken, would skewer the travel time in favor of our system. 
 \begin{table}[]
 \centering
 \begin{tabular}{llllll}
 \textbf{Route} & \textbf{$W_o(R)$} & \textbf{$W_a(R)$}  & \textbf{$W_a(R')$} & \textbf{RMA (\%)} & \textbf{TI (\%)} \\ \hline
-$r_1$          & 1767              & 2572               & 1726               & 68.7                         & 32.9 \\
-$r_2$          & 7023              & 4183               & 2574               & 59.6                         & 38.5 \\
-$r_3$          & 2735              & 1793               & 1425               & 65.6                         & 20.5 \\
-$r_4$          & 873               & 1010               & 855                & 86.4                         & 15.3 \\
-$r_5$          & 5144              & 4915               & 2803               & 95.5                         & 43.0 \\
-$r_6$          & 476               & 903                & 620                & 52.7                         & 31.3 \\
-$r_7$          & 2432              & 2368               & 1770               & 97.3                         & 25.2 \\
-$r_8$          & 2227              & 1431               & 1153               & 64.3                         & 19.4 \\
-$r_9$          & 2991              & 13565              & 3250               & 22.0                         & 76.0 \\
-$r_{10}$       & 1158              & 1153               & 1101               & 99.6                         & 4.51 \\ \hline
-mean       	   &                   &                    &                    & 71.17                        & 30.661
+$r_1$          & 353               & 393                & 263                & 89.8                         & 38.5 \\
+$r_2$          & 1822              & 2016               & 1552               & 90.4                         & 20.5 \\
+$r_3$          & 1012              & 551                & 250                & 54.4                         & 15.3 \\
+$r_4$          & 297               & 322                & 107                & 92.2                         & 43.0 \\
+$r_5$          & 1248              & 927                & 797                & 74.3                         & 31.3 \\
+$r_6$          & 469               & 440.5              & 440.0              & 93.9                         & 25.2 \\
+$r_7$          & 1676              & 1462               & 989                & 87.2                         & 19.4 \\ \hline
+mean       	   &                   &                    &                    & 83.2                         & 27.6
 \end{tabular}
 \caption{RMA = Route Model Accuracy = $100 * \frac{min(W_o(R), W_a(R))}{max(W_o(R), W_a(R))}$\\
 	     TI = Time Improvement = $100 * \frac{W_a(R) - W_a(R')}{W_a(R)}$}
 \label{tab:eval-results}
 \end{table}
-Table \ref{tab:eval-results} shows the time in seconds, $W_0(R)$, for the uninformed route $R$,  the adjusted time, $W_a(R)$, for route $R$, and the informed time $W_a(R)$ for the new route, $R'$.
+
+\tabref{tab:eval-results} shows the time in seconds, $W_0(R)$, for the uninformed route $R$, the adjusted time, $W_a(R)$, for route $R$, and the informed time $W_a(R')$ for the new (informed) route $R'$.
 
 \emph{Route Model Accuracy } (\textbf{RMA}) represents the difference between the uninformed weight and the adjusted weight. The closer the route model accuracy is to 100, closer the regression models are to represent the actual traffic.
  
 \emph{Time Improvement} (\textbf{TI}) represents the time saved for route $r_i$ by traveling the informed route instead of the uninformed route. The higher the time improvement, the better the informed routing is.
 
-The mean route model accuracy of 71.17\%, shows that the regression models predicts the traffic within 71.17\% of the actual traffic. 
+The mean route model accuracy, shows that the regression models predicts the traffic within 83.2\% of the actual traffic. 
 
-The mean value for \todo{kunne være rart at vide om det var underestimate / overestimate}time saved shows that for the tested routes, there are on average 30.661\% time saved by using the routes used by the route finding. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems.
-
-However, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on an edge basis.
+The mean time improved value shows that for the tested routes, there are on an average time improvement 27.6\% by following the routes used by the system. However, it is worthwhile to note that it is not known if the drivers in the test routes was using some kind of GPS routing or not, which means that it is not possible to tell if the system outperforms routes selected by drivers or other systems. Likewise, the mean route model accuracy in \tabref{tab:eval-results} only shows the aggregate accuracy, which could be misleading if there is a high deviation in the regression model predictions and the actual traffic, throughout the edges. For this reason, the regression model accuracy must also be determined on an edge basis.
 
 \subsubsection{Edge regression model}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\textbf{Route} & \textbf{Mean waypoints-to-waypoint error (s)}    & \textbf{Mean \%} \\ \hline
+		$r_1$          & 3.66                                             & 60.2 \\
+		$r_2$          & 0.722                                            & 31.9 \\
+		$r_3$          & 1.61                                             & 50.0 \\
+		$r_4$          & 1.69                                             & 53.6 \\
+		$r_5$          & 1.13                                             & 41.0 \\
+		$r_6$          & 2.70                                             & 59.1 \\
+		$r_7$          & 1.01                                             & 42.1 \\ \hline
+		mean           & 1.79                                             & 48.3
+	\end{tabular}
+	\caption{Mean \% is the mean of the percent errors of each consecutive waypoint pair.}
+	\label{tab:eval-results-2}
+\end{table}
